@@ -34,6 +34,7 @@ struct engineparameters{
     double Xmfuel=0;
     double Xengine=0;
     double Xemptyengine=0;
+    double Xend=0;
 };
 
 struct fuel{

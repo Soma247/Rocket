@@ -2,19 +2,6 @@
 #define ROCKETMODULE_H
 #include"abstractrocketelement.h"
 
-struct matherial{
-    std::string name="air";
-    //matherial parameters
-    double Ro=1;//плотность
-    double SigmaV=0;//предел прочности
-    matherial(){}
-    matherial(const std::string& matherialName, double Ro, double sigma):name{matherialName},Ro{Ro},SigmaV{sigma}{}
-    matherial(const matherial&mat){
-        name=mat.name;
-        Ro=mat.Ro;
-        SigmaV=mat.SigmaV;
-    }
-};
 
 class Module:public abstractRocketElement{
 public:

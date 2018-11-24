@@ -17,7 +17,8 @@ SOURCES += \
     rocket_elements/modules/engine.cpp \
     rocket_elements/modules/nosecone.cpp \
     rocket_elements/equipment.cpp \
-    rocket_elements/abstractrocketelement.cpp
+    rocket_elements/abstractrocketelement.cpp \
+    rocket_elements/plane/plane.cpp
 
 
 HEADERS += \
@@ -33,4 +34,5 @@ HEADERS += \
     rocket_elements/modules/engine.h \
     rocket_elements/modules/nosecone.h \
     rocket_elements/equipment.h \
-    rocket_elements/abstractrocketelement.h
+    rocket_elements/abstractrocketelement.h \
+    rocket_elements/plane/plane.h

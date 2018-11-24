@@ -38,6 +38,8 @@ engine::engine(matherial mathShell, matherial mathbr, matherial mathnozzle, math
 {
     constexpr double beth=18*M_PI/180;//угол полураствора
     constexpr double fi=0.3;//коэффициент степени утопленности сопла
+    const double atz=7E-7;//коэфф. теплопроводности тзп
+
     params.mfuel=mfuel;
     params.PprivUdSt=fuel.PudST*(1-0.01*(4.3+0.17*fl.ALpercent+0.009*fl.ALpercent*fl.ALpercent));
     params.PpUd=params.PprivUdSt+190.3+76*Pk-3.058*Pk*Pk-7000*Pa+25484*Pa*Pa;
@@ -49,7 +51,7 @@ engine::engine(matherial mathShell, matherial mathbr, matherial mathnozzle, math
     params.Dv=0.2*params.Dfuel;
     double e0=0.5*(params.Dfuel-params.Dv);//толщина горящего свода при старте
 
-    double t=1000*e0/fl.U(Pk);//время работы двигателя 0.4D/u,
+    double t=e0/fl.U(Pk);//время работы двигателя 0.4D/u,
 
     params.masspsec=0.98*mfuel/t;
 
@@ -103,18 +105,13 @@ engine::engine(matherial mathShell, matherial mathbr, matherial mathnozzle, math
     const double ks=2.7;//коэффициент формы заряда и канала
     const double ac=0.006;//коэффициент пропорциональности средней толщины стенки сопла к диаметру камеры сгорания
 
-    params.mbr=0.5*M_PI*matbr.Ro*pow(Dmid,3)*(0.5*abr*(1-pow(params.Dv/Dmid,2))/(2*fl.U(Pk)*1E-3)+lambdafuel*(1-params.Dfuel/Dmid));
-    std::cout<<" "<<params.Dv*params.Dv/(Dmid*Dmid)<<std::endl;
-
-    params.mnozzle=ks*fl.U(Pk)*1E-3*fl.roT*0.45*(matnozzle.Ro+mathtz.Ro)* sqrt(fl.Rst*params.Tk)*ac*(fa-1)*pow(Dmid,3)*lambdafuel/(a*Pk*1E6*sin(beth));
-
-
-
-
+    params.mbr=0.5*M_PI*matbr.Ro*pow(Dmid,3)*(0.5*abr*(1-pow(params.Dv/Dmid,2))/(2*fl.U(Pk))+lambdafuel*(1-params.Dfuel/Dmid));
+    params.mnozzle=ks*fl.U(Pk)*fl.roT*0.45*(matnozzle.Ro+mathtz.Ro)*
+                                   sqrt(fl.Rst*params.Tk)*ac*(fa-1)*pow(Dmid,3)*lambdafuel/
+                                                                                   (a*Pk*1E6*sin(beth));
 
     double Tcam0{293},TcamMax{473};
-    const double atz=7E-7;//коэфф. теплопроводности тзп
-    double deltaTZ=0.8*sqrt(atz*Dmid*(1-params.Dv/Dmid)/(2*fl.U(Pk)*1E-3*(0.1-0.8*log10((params.Tk-TcamMax)/(params.Tk-Tcam0)))));
+    double deltaTZ=0.8*sqrt(atz*Dmid*(1-params.Dv/Dmid)/(2*fl.U(Pk)*(0.1-0.8*log10((params.Tk-TcamMax)/(params.Tk-Tcam0)))));
 
     params.mtz=deltaTZ*Dmid*Dmid*matTz.Ro*(2+M_PI*(0.37*lambdafuel-0.3));
     params.muk=0.2*params.mbottoms*sqrt(1.2*Pk);
@@ -122,13 +119,15 @@ engine::engine(matherial mathShell, matherial mathbr, matherial mathnozzle, math
 
     params.Xnozzle=params.Leng-params.La*2/3;
     params.Xmfuel=params.LforwardBottom+params.Lcyl/2;
+    params.Xend=params.LforwardBottom+params.Lcyl+params.LbackwardBottom/3;
 
     params.Xengine=(params.Xnozzle*params.mnozzle+params.Xmfuel*(params.mcyl+params.mbottoms+params.mbr+params.mtz+params.muk+params.mfuel))/
             (params.mengine+params.mfuel);
     params.Xemptyengine=(params.Xnozzle*params.mnozzle+params.Xmfuel*(params.mcyl+params.mbottoms+params.mbr+params.mtz+params.muk))/
             params.mengine;
+ //   std::cout<<params.Xend<<" "<<params.mengine<<" "<<params.Xengine<<" "<<params.Xemptyengine<<std::endl;
 }
 
 double fuel::U(double pk){//in millimeter
-    return Ukoef*pow(pk,Upow);
+    return 1E-3*Ukoef*pow(pk,Upow);
 }
