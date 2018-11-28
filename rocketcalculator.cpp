@@ -16,9 +16,6 @@ void RocketCalculator::setAtmosphere(AbstractAtmosphere *aa){
     atmo.reset(aa);
 }
 
-void RocketCalculator::testprint(){
-    if(model)std::cout<<model->str<<std::endl;
-}
 
 bool InputData::iscorrect()const{
     return Dmid>0 && Hmax>Hmin && Hmin>0 && Xmax>0 && mstone>0 && Vtar>0;

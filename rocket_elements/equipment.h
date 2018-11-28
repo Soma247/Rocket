@@ -24,11 +24,11 @@ public:
     virtual std::string toString()const override;
     virtual ~equipment()override{}
     equipment(){}
-    equipment(double X, double mass, std::string eqname);
+    equipment(std::string eqname, double X, double mass);
 protected:
+    std::string name;
     double eqmass=0;
     double Xm=0;
-    std::string name;
 };
 
 

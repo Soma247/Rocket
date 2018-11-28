@@ -1,6 +1,6 @@
 #include "equipment.h"
-equipment::equipment(double X, double mass, std::string eqname):
-    eqmass{mass},Xm{X},name{eqname}
+equipment::equipment(std::string eqname, double X, double mass):
+    name{eqname},eqmass{mass},Xm{X}
 {
 }
 double equipment::S() const{return 0;}

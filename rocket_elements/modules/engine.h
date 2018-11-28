@@ -1,8 +1,31 @@
 ﻿#ifndef ENGINE_H
 #define ENGINE_H
 #include "rocket_elements/rocketmodule.h"
-
+struct fuel{
+    std::string name;
+    double AL=0;//% в топливе
+    double Prelst=0;
+    double rot=0;
+    double tst=0;
+    double rst=0;
+    double kst=0;
+    double ukoef=0;
+    double upow=0;
+    double U(double pk);
+    fuel(){}
+    fuel(std::string modulename, double Alper, double PrelativeST,double RoT, double Tst, double Rst, double Kst, double Ukoef, double Upow):
+        name{modulename},AL{Alper},Prelst{PrelativeST},rot{RoT},tst{Tst},rst{Rst},kst{Kst},ukoef{Ukoef},upow{Upow}
+    {
+    }
+};
 struct engineparameters{
+    matherial matShell;
+    matherial matnozzle;
+    matherial matbr;
+    matherial matTz;
+    fuel fl;
+    double Pk=0;
+    double Pa=0;
     double PprivUdSt=0;
     double PpUd=0;
     double Tk=0;
@@ -12,6 +35,7 @@ struct engineparameters{
     double t=0;//время работы двигателя 0.4D/u,
     double masspsec=0;
     double Pvacuum=0;//потребная тяга в пустоте
+    double Dcyl=0;
     double Dcr=0;//диаметр критического сечения сопла
     double Da=0;//диаметр выходного сечения сопла
     double La=0;//полная длина сопла
@@ -35,20 +59,11 @@ struct engineparameters{
     double Xengine=0;
     double Xemptyengine=0;
     double Xend=0;
+    double engineDiameter=0;
+    double len=0;
+    double delt=0;
 };
 
-struct fuel{
-    std::string name;
-    double ALpercent;//% в топливе
-    double PudST;
-    double roT;
-    double Tst;
-    double Rst;
-    double kst;
-    double Ukoef;
-    double Upow;
-    double U(double pk);
-};
 
 class engine:public Module{
 public:
@@ -56,10 +71,10 @@ public:
     virtual void setX0(double x)override;
 
     virtual double getL()const override;
-    virtual void setL(double length)override;
+    virtual void setL(double)override;
 
     virtual double getDend()const override;
-    virtual void setDend(double d)override;
+    virtual void setDend(double)override;
 
     virtual std::string getname()const override;
     virtual void setname(std::string n)override;
@@ -75,8 +90,16 @@ public:
     virtual double getdelt()const;
     virtual void setdelt(double d);
 
-    virtual double getDbegin()const{return d;}
+    virtual double getDbegin()const{return params.engineDiameter;}
     virtual void setDbegin(double){}//
+    virtual double getmassend()const{
+        return mass()-params.mfuel-params.mtz/2.0;
+    }
+    virtual double getmasscenterend(){
+        return (massCenter()*(mass()-params.mtz)-params.mfuel*params.Xmfuel)/getmassend();
+    }
+
+    virtual engineparameters getparams()const{return params;}
 
     engine(){}
     engine(matherial mathShell, matherial mathbr,
@@ -84,15 +107,7 @@ public:
            double Dmid, double mfuel, double Pk, double Pa);
 
 private:
-    matherial matShell;
-    matherial matnozzle;
-    matherial matbr;
-    matherial matTz;
     engineparameters params;
-    fuel fl;
-    double d=0;
-    double len=0;
-    double delt=0;
     double X0=0;
     std::string name;
 };

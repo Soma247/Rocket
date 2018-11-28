@@ -29,18 +29,19 @@ public:
     virtual double getDbegin()const;
     virtual void setDbegin(double dbeg);
 
-
     virtual ~conoid()override{}
-
+    virtual coneparam getparams()const{
+        return coneparam{mat,dbegin,dend,len,delt};
+    }
     conoid(){}
-    conoid(matherial math, double Dbegin, double Dend, double length, double delta,double X);
+    conoid(matherial math, double Dbegin, double Dend, double length, double delta);
 private:
     matherial mat;
     double dbegin=0;
     double dend=0;
     double len=0;
     double delt=0;
-    double X0;
+    double X0=0;
     std::string name;
 };
 

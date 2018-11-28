@@ -11,6 +11,7 @@ struct aerodynamics_tables{
     static interpVector& get_5_13_fi_CxWavePlane();
     static interp3DMat& get_7_2_CyaNoseCyll();
     static interp4DMat& get_7_5_CyaPlane();
+    static interp3DMat& get_11_2_deltaXf();
 };
 
 #endif // AERODYNAMICS_TABLES_H

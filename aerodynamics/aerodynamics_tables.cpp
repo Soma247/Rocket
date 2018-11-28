@@ -726,3 +726,56 @@ interp4DMat &aerodynamics_tables::get_7_5_CyaPlane(){
   };
   return _7_5_CyaPlane;
 }
+
+interp3DMat &aerodynamics_tables::get_11_2_deltaXf(){
+    static interp3DMat _11_2_deltaXf{
+        std::make_pair(0.5,
+                       interpVector{
+                           {0  ,0.1},
+                           {0.8,0.13},
+                           {2.0,0.11}
+                       }
+                       ), //первая пара, z=0
+                std::make_pair(1,
+                               interpVector{
+                                   {0  ,0.1},
+                                   {0.4,0.2},
+                                   {0.8,0.24},
+                                   {1.2,0.25},
+                                   {1.4,0.255},
+                                   {1.8,0.26}
+                               }
+                               ),    //2 пара, z=0.5
+                std::make_pair(2,
+                               interpVector{
+                                   {0  ,0.1},
+                                   {0.4,0.2},
+                                   {0.8,0.33},
+                                   {1.2,0.45},
+                                   {1.6,0.5},
+                                   {2.0,0.53}
+                               }
+                               ), //первая пара, z=0
+                std::make_pair(3,
+                               interpVector{
+                                   {0  ,0.1},
+                                   {0.4,0.2},
+                                   {0.8,0.33},
+                                   {1.2,0.047},
+                                   {1.6,0.055},
+                                   {2.0,0.063}
+                               }
+                               ),    //2 пара, z=0.5
+                std::make_pair(4,
+                               interpVector{
+                                   {0  ,0.1},
+                                   {0.4,0.2},
+                                   {0.8,0.33},
+                                   {1.2,0.047},
+                                   {1.6,0.06},
+                                   {2.0,0.067}
+                               }
+                               )   //2 пара, z=0.5
+    };
+    return _11_2_deltaXf;
+}

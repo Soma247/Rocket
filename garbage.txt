@@ -1,0 +1,65 @@
+
+// unique push_back to vector
+struct a{
+    std::vector<std::unique_ptr<std::string>> str;
+    void append(std::unique_ptr<std::string> s){
+        str.push_back(std::unique_ptr<std::string>(s.release()));
+    }
+};
+std::unique_ptr<std::string> createa(std::string n){
+    return std::unique_ptr<std::string>(new std::string(n));
+}
+
+
+
+
+
+
+nosecone cone({"123",1,1},0.35,1,1);
+
+std::cout<<"coneX="<<cone.getCp(0.5,3)<<std::endl;
+
+
+std::vector<std::unique_ptr<AbstractAtmosphere>> v;
+fInterpAtmosphere atm;//("../Rocket/1.txt");
+atm.loadfromFile("../Rocket/1.txt");
+
+v.push_back(std::unique_ptr<AbstractAtmosphere>(new fInterpAtmosphere("../Rocket/1.txt")));
+for(auto& p:v)
+    std::cout<<p->get_sound_sp(1800)<<std::endl;
+v.pop_back();
+
+//инициализация юника в калькуляторе новой моделью
+RocketCalculator rc;
+rc.setModel(std::unique_ptr<RocketModel>(new RocketModel("123")));
+rc.testprint();
+
+rc.setModel(new RocketModel("345"));
+rc.testprint();
+// InputData(double DmidMax, double Hmaximum, double Hminimum, double Xmaximum, double Vtarget,  double milestone):
+InputData(0.6,150000,8000,300000,550,6500);
+
+myclass {"first","second","third"};//проверка списка инициализации
+
+
+std::cout<<"__________________________________"<<std::endl;
+/*
+struct fuel{
+    std::string name;
+    double ALpercent;//% в топливе
+    double PudST;
+    double roT;
+    double Tst;
+    double Rst;
+    double kst;
+    double Ukoef;
+    double Upow;
+    double U(double pk);
+};
+*/
+matherial corp("orpl",1400,1400);
+matherial tzp("tzp",1600,1600);
+matherial nozzle("steel",4700,4700);
+matherial br("br",1300,1300);
+fuel fl{"fuel",15,2460,1800,3300,290,1.16,5.75,0.4};
+engine en(corp,br,nozzle,tzp,fl,1.6,16405,10,0.06)

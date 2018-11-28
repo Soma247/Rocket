@@ -8,8 +8,8 @@ public:
     virtual double mass()const override;
     virtual double massCenter()const override;
 
-    virtual double getX0()const override;
-    virtual void setX0(double x)override{x0=x;}
+    virtual double getX0()const override{return 0;}
+    virtual void setX0(double)override{}
 
     virtual double getL()const override;
     virtual void setL(double l)override{len=l;}
@@ -27,7 +27,9 @@ public:
     virtual double getdelt()const{return delt;}
     virtual void setdelt(double d);
 
-
+    virtual coneparam getparams(){
+        return coneparam{mat,0,dend,len,delt};
+    }
     virtual ~nosecone()override{}
     nosecone(){}
     nosecone(matherial math, double Dend, double length, double delta);

@@ -1,6 +1,7 @@
-﻿#include "nosecone.h"
-#include <iostream>
+﻿#include <iostream>
 #include <math.h>
+#include "nosecone.h"
+#include "aerodynamics/aerodynamics.h"
 double nosecone::S() const{
     return 0.25*M_PI*dend*dend;
 }
@@ -10,11 +11,7 @@ double nosecone::mass() const{
 }
 
 double nosecone::massCenter() const{
-    return 2*getL()/3.0;
-}
-
-double nosecone::getX0() const{
-    return 0;
+    return 3*getL()/4.0;
 }
 
 double nosecone::getL() const{
@@ -22,7 +19,7 @@ double nosecone::getL() const{
 }
 
 double nosecone::getCp(double Dmid, double M) const{
-    return 0;
+    return Aerodynamics::CxpNoseCone(len,dend,Dmid,M);
 }
 
 double nosecone::getDend() const{
@@ -40,13 +37,14 @@ std::string nosecone::toString() const{
 void nosecone::setdelt(double d){
     delt=d;
 }
+void nosecone::setDend(double d){
+    dend=d;
+}
 
 nosecone::nosecone(matherial math, double Dend, double length, double delta):
     mat{math},dend{Dend},len{length},delt{delta}
 {
 }
 
-void nosecone::setDend(double d){
-    dend=d;
-}
+
 

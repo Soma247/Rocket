@@ -36,3 +36,6 @@ HEADERS += \
     rocket_elements/equipment.h \
     rocket_elements/abstractrocketelement.h \
     rocket_elements/plane/plane.h
+
+DISTFILES += \
+    garbage.txt

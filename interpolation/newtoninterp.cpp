@@ -23,6 +23,8 @@ interpVector newtonInterp::getpowervec(const interpVector &array, double abs, si
     interpVector::const_iterator begin, end, cur;
     cur=std::find_if(array.begin(),array.end(),[&](const mypoint& mp){return mp.abs>=abs;});
 
+    if(cur==array.end()||cur==array.begin())power=2;
+
     begin=cur-power/2;
     end=begin+power;
 

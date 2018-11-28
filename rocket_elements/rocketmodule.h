@@ -1,7 +1,13 @@
 #ifndef ROCKETMODULE_H
 #define ROCKETMODULE_H
 #include"abstractrocketelement.h"
-
+struct coneparam{
+    matherial mat;
+    double dbeg=0;
+    double dend=0;
+    double len=0;
+    double delt=0;
+};
 
 class Module:public abstractRocketElement{
 public:
@@ -18,7 +24,6 @@ public:
 
     virtual double getCp(double Dmid, double M)const=0;
     virtual double getDend()const=0;
-
     virtual void setDend(double d)=0;
     virtual ~Module()override{}
 };

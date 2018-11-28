@@ -1,6 +1,7 @@
-﻿#include "conoid.h"
-#include <math.h>
-
+﻿#include <math.h>
+#include "conoid.h"
+#include "aerodynamics/aerodynamics.h"
+#include <iostream>
 double conoid::S() const{
     return 0.25*M_PI*dend*dend;
 }
@@ -10,11 +11,11 @@ double conoid::mass() const{
 }
 
 double conoid::massCenter() const{
-
+    return 0.25*len*(dend*dend+2*dend*dbegin+3*dend*dend)/(dbegin*dbegin+dend*dend+dbegin*dend);
 }
 
 double conoid::getCp(double Dmid, double M) const{
-
+    return Aerodynamics::CxpConoid(len,dbegin,dend,Dmid,M);
 }
 
 double conoid::getX0() const{
@@ -69,8 +70,8 @@ void conoid::setDbegin(double dbeg){
     dbegin=dbeg;
 }
 
-conoid::conoid(matherial math, double Dbegin, double Dend, double length, double delta, double X):
-    mat{math},dbegin{Dbegin},dend{Dend},len{length},delt{delta},X0{X}
+conoid::conoid(matherial math, double Dbegin, double Dend, double length, double delta):
+    mat{math},dbegin{Dbegin},dend{Dend},len{length},delt{delta}
 {
 }
 
