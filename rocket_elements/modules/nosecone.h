@@ -27,7 +27,7 @@ public:
     virtual double getdelt()const{return delt;}
     virtual void setdelt(double d);
 
-    virtual coneparam getparams(){
+    virtual coneparam getparams()const{
         return coneparam{mat,0,dend,len,delt};
     }
     virtual ~nosecone()override{}
@@ -41,6 +41,10 @@ private:
     double x0=0;
     std::string name;
 };
+
+std::ostream &operator<<(std::ostream &os, const nosecone &ncone);
+
+std::istream &operator>>(std::istream &in, nosecone &ncone);
 
 
 #endif // NOSECONE_H

@@ -45,6 +45,9 @@ private:
     std::string name;
 };
 
+std::ostream& operator<<(std::ostream& os, const conoid& cone);
+std::istream& operator>>(std::istream& in, conoid& cone);
+
 
 
 

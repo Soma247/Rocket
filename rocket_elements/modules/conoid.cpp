@@ -2,6 +2,9 @@
 #include "conoid.h"
 #include "aerodynamics/aerodynamics.h"
 #include <iostream>
+
+const std::string coneheader{"conoid"};
+
 double conoid::S() const{
     return 0.25*M_PI*dend*dend;
 }
@@ -75,3 +78,45 @@ conoid::conoid(matherial math, double Dbegin, double Dend, double length, double
 {
 }
 
+
+std::ostream &operator<<(std::ostream &os, const conoid &cone){
+    coneparam par=cone.getparams();
+    return os<<coneheader<<'{'<<par.mat<<','<<par.dbeg<<','<<par.dend
+            <<','<<par.len<<','<<par.delt<<','<<cone.getX0()<<'}';
+}
+
+std::istream &operator>>(std::istream &in, conoid &cone){
+    std::string header;
+    matherial mat;
+    char delim1{0},delim2{0},delim3{0},delim4{0},delim5{0},footer{0};
+    int tmp{0};
+    double dbeg{0},dend{0},len{0},delt{0},x0{0};
+
+    while((tmp=in.get())!=EOF && isspace(tmp));
+    in.unget();
+    while((tmp=in.get())!=EOF && tmp!='{')
+        header.push_back(static_cast<char>(tmp));
+
+    if(tmp==EOF)return in;
+    if(header!=coneheader){
+        in.clear(std::ios::failbit);
+        return in;
+    }
+    in>>mat>>delim1>>dbeg>>delim2>>dend>>delim3>>len>>delim4>>delt>>delim5>>x0>>footer;
+    if(!in)return in;
+    if(delim1!=delim2 ||
+            delim2!=delim3||
+            delim3!=delim4||
+            delim4!=delim5||
+              delim5!=',' ||
+               footer!='}'||
+                   dbeg<0 ||
+                   dend<0 ||
+                    len<0 || x0<0){
+        in.clear(std::ios::failbit);
+        return in;
+    }
+    cone=conoid(mat,dbeg,dend,len,delt);
+    cone.setX0(x0);
+    return in;
+}

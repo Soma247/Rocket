@@ -7,9 +7,6 @@
 #include "rocketcalcexceptions.h"
 
 
-struct hardFuel{
-
-};
 
 struct InputData{
     double Dmid;
@@ -36,7 +33,7 @@ struct InputData{
 class RocketCalculator{
 
     InputData indat;
-    hardFuel fueltype;
+    fuel fueltype;
 
     std::unique_ptr<RocketModel> model;//модель ракеты (нос, отсеки, ду, несущие плоскости и параметры вцелом)
     std::unique_ptr<AbstractAtmosphere> atmo;//характеристики атмосферы

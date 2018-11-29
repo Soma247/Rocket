@@ -1,6 +1,8 @@
 #ifndef ABSTRACTROCKETELEMENT_H
 #define ABSTRACTROCKETELEMENT_H
 #include <string>
+#include <iostream>
+const std::string matherialheader{"matherial"};
 
 class abstractRocketElement{
 public:
@@ -19,8 +21,8 @@ public:
 
     virtual std::string toString()const;
     virtual ~abstractRocketElement(){}
-};
 
+};
 
 struct matherial{
     std::string name="air";
@@ -35,6 +37,8 @@ struct matherial{
         SigmaV=mat.SigmaV;
     }
 };
+std::ostream& operator<<(std::ostream& os, const matherial&mat);
+std::istream& operator>>(std::istream& in, matherial&mat);
 
 
 #endif // ABSTRACTROCKETELEMENT_H

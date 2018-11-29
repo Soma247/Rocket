@@ -1,9 +1,5 @@
 #include "rocketmodel.h"
 
-
-
-
-
 coneparam RocketModel::getNCparams() const{return pnosecone->getparams();}
 coneparam RocketModel::getTailConeParams() const{return ptailcone->getparams();}
 coneparam RocketModel::getModuleParams(size_t num)const{
@@ -15,6 +11,7 @@ planeparams RocketModel::getPlaneParams(size_t num)const{
     if(num>pconoids.size())throw std::out_of_range("planeeparams num is out of range");
     return pplanes[num].getparams();
 }
+
 std::pair<double, double> RocketModel::geteqparams(size_t num)const{
     if(num>pequipments.size())throw std::out_of_range("eqparams num is out of range");
     return std::pair<double,double>(pequipments[num].getX0(),pequipments[num].getL());
@@ -25,11 +22,13 @@ void RocketModel::setNosecone(matherial math, double Dend, double len, double de
     pnosecone.reset(new nosecone(math,Dend,len,delta));
     update();
 }
-void RocketModel::setEngine(matherial mathShell, matherial mathbr, matherial mathnozzle, matherial mathtzp, fuel fuel, double fuelmass, double Pk, double Pa){
-
+void RocketModel::setEngine(matherial mathShell, matherial mathbr,
+                            matherial mathnozzle, matherial mathtzp,
+                            fuel fuel, double fuelmass, double Pk, double Pa){
     pengine.reset(new engine(mathShell, mathbr,mathnozzle, mathtzp,fuel, Dmax, fuelmass, Pk, Pa));
     engineparameters par=pengine->getparams();
-    ptailcone.reset(new conoid(mathShell,Dmax,par.Da,par.Leng-par.LforwardBottom-par.Lcyl,0.08));//конус обратный от сопла до миделя по длине сопла
+    ptailcone.reset(new conoid(mathShell,Dmax,par.Da,par.Leng-par.LforwardBottom-par.Lcyl,0.08));
+    //конус обратный от сопла до миделя по длине сопла
     update();
 }
 
@@ -59,7 +58,6 @@ void RocketModel::addEquipment(std::string eqname, double X, double mass){
 }
 
 
-
 void RocketModel::ejectConoid(size_t num){
     if(num>pconoids.size())throw std::out_of_range("conoid num is out of range");
     pconoids.erase(pconoids.begin()+num);
@@ -76,13 +74,26 @@ void RocketModel::ejectEquipment(size_t num){
     update();
 }
 
-std::pair<double, double> RocketModel::getCxCyaa(double M, double alphagrad, double sound_sp, double cin_visc, bool engineisactive) const{
+std::pair<double, double> RocketModel::getCyaaCx(double M, double alphagrad, double sound_sp, double cin_visc, bool engineisactive) const{
     if(M<1E-1)M=1E-1;
     double Cx0=getCx0(M,sound_sp,cin_visc,engineisactive);
     double Cya=getCya(M,sound_sp,cin_visc);
- //   std::cout<<"cx0="<<Cx0<<" Cya="<<Cya<<std::endl;
     return std::pair<double,double>(Cya-(Cx0/57.3),
                                     Cx0+alphagrad*alphagrad*(Cya+2*(0.1*(Dmax*sqrt(fabs(M*M-1))/Lnc)-0.2)/57.3)/57.3);
+}
+
+double RocketModel::getXp(double M, double sound_sp, double cin_visc) const{
+    if(M<0.5)M=0.5;
+    double cyan=Aerodynamics::CyaNoseCyll(Dmax,SmidLA,Lnc,Lcyl,M)*0.25*Dmax*Dmax*M_PI/SmidLA;
+    double xpf=Lnc*(2/3.0+Aerodynamics::xpf(Dmax,Lnc,Lcyl,M))*cyan;
+    double k=isxplane?2/sqrt(2):1;
+    double cyap=0;
+    for(const plane& p:pplanes){
+        planeparams par=p.getparams();
+        xpf+=k*2*p.getcyaConsole(Dmax,SmidLA,M,sound_sp,cin_visc)*p.getXp(M);
+        cyap+=k*2*p.getcyaConsole(Dmax,SmidLA,M,sound_sp,cin_visc);
+    }
+    return xpf/(cyan+cyap);
 }
 
 
@@ -111,8 +122,7 @@ double RocketModel::getmasscenter()const{
     return mx/getmass();
 }
 
-double RocketModel::getmassend() const
-{
+double RocketModel::getmassend() const{
     double mass=pnosecone->mass()+pengine->getmassend()+ptailcone->mass();
     for(const conoid& c:pconoids)
         mass+=c.mass();
@@ -123,12 +133,10 @@ double RocketModel::getmassend() const
     return mass;
 }
 
-double RocketModel::getmasscenterend() const
-{
+double RocketModel::getmasscenterend() const{
     double mx=pnosecone->mass()*pnosecone->massCenter()+
             pengine->getmassend()*(pengine->getX0()+pengine->getmasscenterend())+
             ptailcone->mass()*(ptailcone->massCenter()+ptailcone->getX0());
-
     for(const conoid& c:pconoids)
         mx+=c.mass()*(c.massCenter()+c.getX0());
     for(const equipment& e:pequipments)
@@ -146,11 +154,9 @@ double RocketModel::getLength() const{
 }
 
 double RocketModel::getCp(double M, bool engineisactive)const{
-
     double cp=pnosecone->getCp(Dmax,M);
     for(const conoid& c:pconoids)
         cp+=c.getCp(Dmax,M);
-
     engineparameters par=pengine->getparams();
     cp+=Aerodynamics::CxpSternBottom(ptailcone->getL(),Dmax,ptailcone->getDend(),ptailcone->getDend(),M,engineisactive);
     cp*=0.25*Dmax*Dmax*M_PI/SmidLA;
@@ -178,6 +184,33 @@ double RocketModel::getCx0(double M, double sound_sp, double cin_visc, bool engi
     return getCp(M,engineisactive)+getCxTr(M,sound_sp,cin_visc);
 }
 
+void RocketModel::setscalePlane(size_t num, double scale){
+    if(num>=pplanes.size())throw std::out_of_range("rm::setscaleplane out of range");
+    planeparams par=pplanes[num].getparams();
+    std::string name=pplanes[num].getname();
+    pplanes[num]=plane(par.mat,name,
+                       num==pplanes.size()-1?getLength()-par.broot*scale:par.XfromNose,
+                       par.broot*scale,
+                       par.btip*scale,
+                       par.croot*scale,
+                       par.ctip*scale,
+                       par.xtip*scale,
+                       par.xrf*scale,
+                       par.xrr*scale,
+                       par.xtf*scale,
+                       par.xtr*scale,
+                       par.h*scale);
+    update();
+}
+
+double RocketModel::getbalanceEnd(double M, double sound_sp, double cin_visc){
+    return (getmasscenterend()-getXp(M,sound_sp,cin_visc))/getLength();
+}
+
+double RocketModel::getbalanceStart(double M, double sound_sp, double cin_visc){
+    return (getmasscenter()-getXp(M,sound_sp,cin_visc))/getLength();
+}
+
 void RocketModel::update(){
     if(pnosecone && pengine && ptailcone){
         double L=pnosecone->getL();
@@ -191,7 +224,6 @@ void RocketModel::update(){
             L+=c.getL();
         }
         pengine->setX0(L);
-
         pengine->setname(std::to_string(++i));
         engineparameters par=pengine->getparams();
         ptailcone->setX0(L+par.LforwardBottom+par.Lcyl);
@@ -201,8 +233,6 @@ void RocketModel::update(){
             Smidplanes+=p.S();
         SmidLA=Smidplanes+0.25*M_PI*Dmax*Dmax;
         Lcyl=getLength()-Lnc-ptailcone->getL();
-
-
     }
 }
 
