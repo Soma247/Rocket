@@ -13,8 +13,8 @@
 
 class RocketModel{
 public:
-    RocketModel(){}
-    RocketModel(double Dmid, bool isXplane):Dmax{Dmid},isxplane{isXplane}{}
+    RocketModel():pnosecone{new nosecone()},ptailcone{new conoid}{}
+    RocketModel(double Dmid, bool isXplane):Dmax{Dmid},isxplane{isXplane},pnosecone{new nosecone()},ptailcone{new conoid}{}
 
     coneparam getNCparams()const;
     coneparam getTailConeParams()const;
@@ -28,17 +28,19 @@ public:
     size_t getPlanesCount()const{return pplanes.size();}
 
     double getmass()const;
+    double getheadmass()const;
     double getmasscenter()const;
     double getmassend()const;
     double getmasscenterend()const;
-    double getLength()const;
+    double getLength()const;  
+
 
     void setNosecone(matherial math,double Dend, double len, double delta);
     void setEngine(matherial mathShell, matherial mathbr, matherial mathnozzle, matherial mathtzp,
                    fuel fuel,double fuelmass, double Pk, double Pa);
     void addConoid(matherial math, double Dbegin, double Dend, double length, double delta);
     void insertConoid(matherial math, double Dbegin, double Dend, double length, double delta, size_t num=100);
-    void addplane(matherial math,std::string pname,
+    void addplane(matherial math,
                   double Xfromnose,
                   double Broot, double Btip,
                   double Croot, double Ctip,
@@ -56,6 +58,15 @@ public:
     double getXp(double M, double sound_sp, double cin_visc)const;
     double getbalanceEnd(double M=3,double sound_sp=340, double cin_visc=1.4E-5);
     double getbalanceStart(double M=1,double sound_sp=340, double cin_visc=1.4E-5);
+    double getS()const{return SmidLA;}
+    bool isheadcorrect(){
+        update();
+        return pnosecone&&
+                Dmax>0;
+    }
+
+    friend std::ostream& operator<<(std::ostream &os, const RocketModel& rm);
+    friend std::istream& operator>>(std::istream &in, RocketModel& rm);
 
 protected:
     double getCp(double M, bool engineisactive)const;
@@ -78,5 +89,7 @@ protected:
     std::vector<plane>pplanes;
     std::vector<equipment>pequipments;
 };
+
+
 
 #endif // ROCKETMODEL_H

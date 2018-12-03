@@ -64,19 +64,19 @@ void fInterpAtmosphere::loadfromFile(const std::string& fname){
 }
 
 double fInterpAtmosphere::get_sound_sp(double h) const{
-    return newtonInterp::interp2d(high,sound_sp,h,3);
+    return newtonInterp::interp2d(high,sound_sp,h,2);
 }
 
 double fInterpAtmosphere::get_cinem_viscidity(double h) const{
-    return newtonInterp::interp2d(high,cinematic_viscidity,h,3);
+    return newtonInterp::interp2d(high,cinematic_viscidity,h,2);
 }
 
 double fInterpAtmosphere::get_Pression(double h) const{
-    return newtonInterp::interp2d(high,Pression,h,3);
+    return newtonInterp::interp2d(high,Pression,h,2);
 }
 
 double fInterpAtmosphere::get_density(double h) const{
-    return newtonInterp::interp2d(high,density,h,3);
+    return newtonInterp::interp2d(high,density,h,2);
 }
 
 

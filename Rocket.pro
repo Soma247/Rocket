@@ -6,7 +6,6 @@ CONFIG -= qt
 SOURCES += \
     main.cpp \
     abstractatmosphere.cpp \
-    rocketcalculator.cpp \
     rocketmodel.cpp \
     rocketcalcexceptions.cpp \
     interpolation/newtoninterp.cpp \
@@ -18,12 +17,13 @@ SOURCES += \
     rocket_elements/modules/nosecone.cpp \
     rocket_elements/equipment.cpp \
     rocket_elements/abstractrocketelement.cpp \
-    rocket_elements/plane/plane.cpp
+    rocket_elements/plane/plane.cpp \
+    rocket_elements/modules/hfuel.cpp \
+    ballisticcalc.cpp
 
 
 HEADERS += \
     abstractatmosphere.h \
-    rocketcalculator.h \
     rocketmodel.h \
     rocketcalcexceptions.h \
     interpolation/newtoninterp.h \
@@ -35,7 +35,9 @@ HEADERS += \
     rocket_elements/modules/nosecone.h \
     rocket_elements/equipment.h \
     rocket_elements/abstractrocketelement.h \
-    rocket_elements/plane/plane.h
+    rocket_elements/plane/plane.h \
+    rocket_elements/modules/hfuel.h \
+    ballisticcalc.h
 
 DISTFILES += \
     garbage.txt

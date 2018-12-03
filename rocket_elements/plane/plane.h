@@ -56,7 +56,7 @@ public:
         return params;
     }
     plane(){}
-    plane(matherial math,std::string pname,
+    plane(matherial math,
           double Xfromnose,
           double Broot, double Btip,
           double Croot, double Ctip,
@@ -69,5 +69,11 @@ protected:
     planeparams params;
     std::string name;
 };
+
+
+std::ostream &operator<<(std::ostream &os, const plane &pl);
+
+std::istream &operator>>(std::istream &in, plane &pl);
+
 
 #endif // PLANE_H

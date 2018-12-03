@@ -1,4 +1,6 @@
 #include "rocketmodel.h"
+#include <sstream>
+const std::string rocketmodelheader{"RocketModel"};
 
 coneparam RocketModel::getNCparams() const{return pnosecone->getparams();}
 coneparam RocketModel::getTailConeParams() const{return ptailcone->getparams();}
@@ -44,11 +46,11 @@ void RocketModel::insertConoid(matherial math, double Dbegin, double Dend, doubl
     update();
 }
 
-void RocketModel::addplane(matherial math, std::string pname, double Xfromnose,
+void RocketModel::addplane(matherial math, double Xfromnose,
                            double Broot, double Btip, double Croot, double Ctip,
                            double Xtip, double Xrf, double Xrr, double Xtf,
                            double Xtr, double H){
-    pplanes.push_back(plane(math,pname,Xfromnose,Broot,Btip,Croot,Ctip,
+    pplanes.push_back(plane(math,Xfromnose,Broot,Btip,Croot,Ctip,
                                                  Xtip,Xrf,Xrr,Xtf,Xtr,H));
     update();
 }
@@ -99,6 +101,18 @@ double RocketModel::getXp(double M, double sound_sp, double cin_visc) const{
 
 double RocketModel::getmass()const{
     double mass=pnosecone->mass()+pengine->mass()+ptailcone->mass();
+    for(const conoid& c:pconoids)
+        mass+=c.mass();
+    for(const equipment& e:pequipments)
+        mass+=e.mass();
+    for(const plane& p:pplanes)
+        mass+=p.mass();
+    return mass;
+}
+
+double RocketModel::getheadmass() const
+{
+    double mass=pnosecone->mass();
     for(const conoid& c:pconoids)
         mass+=c.mass();
     for(const equipment& e:pequipments)
@@ -188,7 +202,7 @@ void RocketModel::setscalePlane(size_t num, double scale){
     if(num>=pplanes.size())throw std::out_of_range("rm::setscaleplane out of range");
     planeparams par=pplanes[num].getparams();
     std::string name=pplanes[num].getname();
-    pplanes[num]=plane(par.mat,name,
+    pplanes[num]=plane(par.mat,
                        num==pplanes.size()-1?getLength()-par.broot*scale:par.XfromNose,
                        par.broot*scale,
                        par.btip*scale,
@@ -236,3 +250,128 @@ void RocketModel::update(){
     }
 }
 
+
+
+
+
+std::ostream& operator<<(std::ostream &os, const RocketModel& rm){
+    os<<rocketmodelheader<<'{'
+                   <<rm.Dmax<<','
+               <<rm.isxplane<<','
+        <<bool(rm.pnosecone)<<','
+          <<bool(rm.pengine)<<','
+         <<rm.pconoids.size()<<','
+        <<rm.pplanes.size()<<','
+       <<rm.pequipments.size();
+
+    if(rm.pnosecone)
+        os<<','<<*rm.pnosecone;
+    if(rm.pengine)
+        os<<','<<*rm.pengine;
+    for(const conoid& c:rm.pconoids)
+        os<<','<<c;
+    for(const plane& p:rm.pplanes)
+        os<<','<<p;
+    for(const equipment& eq:rm.pequipments)
+        os<<','<<eq;
+    return os<<'}';
+}
+
+std::istream &operator>>(std::istream &is, RocketModel &rm){
+    std::string header;
+    matherial mat;
+    int tmp{0};
+    size_t pconesize{0},pplansize{0},peqsize{0};
+    char delim{0},delim1{0},delim2{0},delim3{0},delim4{0},delim5{0},
+    delim6{0},footer{0};
+    double Dmax{0};
+    bool isxplane{true},pncone{false},pengn{false};
+    std::unique_ptr<nosecone> nc;
+    std::unique_ptr<engine>en;
+
+
+
+    while((tmp=is.get())!=EOF && isspace(tmp));
+    is.unget();
+    while((tmp=is.get())!=EOF && tmp!='{')
+        header.push_back(static_cast<char>(tmp));
+
+std::cout<<"read header"<<std::endl;
+
+    if(tmp==EOF)return is;
+    if(header!=rocketmodelheader){
+        is.clear(std::ios::failbit);
+        return is;
+    }
+std::cout<<"read rocket params"<<std::endl;
+    is>>Dmax>>delim1
+       >>isxplane>>delim2
+            >>pncone>>delim3
+            >>pengn>>delim4
+            >>pconesize>>delim5
+            >>pplansize>>delim6
+            >>peqsize;
+
+    if(!is)return is;
+    if(delim1!=delim2 ||
+            delim2!=delim3||
+            delim3!=delim4||
+            delim4!=delim5||
+            delim5!=delim6||
+            delim6!=','||Dmax<0){
+        is.clear(std::ios::failbit);
+        return is;
+    }
+    std::vector<conoid>pcon(pconesize);
+    std::vector<plane>plane(pplansize);
+    std::vector<equipment>equip(peqsize);
+
+std::cout<<"read pcone"<<std::endl;
+    if(pncone){
+        nc.reset(new nosecone);
+        is>>delim>>*nc;
+        if(!is)return is;
+        if(delim!=','){std::cout<<"delim is:"<<delim<<"("<<int(delim)<<")"<<std::endl;is.clear(std::ios::failbit);return is;}
+    }
+std::cout<<"read en"<<std::endl;
+    if(pengn){
+        en.reset(new engine);
+        is>>delim>>*en;
+        if(!is)return is;
+        if(delim!=','){is.clear(std::ios::failbit);return is;}
+    }
+
+std::cout<<"read conoids"<<std::endl;
+        for(size_t i=0;i<pconesize;i++){
+            is>>delim>>pcon[i];
+            if(!is)return is;
+            if(delim!=','){is.clear(std::ios::failbit);return is;}
+        }
+std::cout<<"read planes"<<std::endl;
+        for(size_t i=0;i<pplansize;i++){
+            is>>delim>>plane[i];
+            if(!is)return is;
+            if(delim!=','){is.clear(std::ios::failbit);return is;}
+        }
+        std::cout<<"read eqs"<<std::endl;
+        for(size_t i=0;i<peqsize;i++){
+            is>>delim>>equip[i];
+            if(!is)return is;
+            if(delim!=','){is.clear(std::ios::failbit);return is;}
+        }
+        is>>footer;
+        if(!is)return is;
+        if(footer!='}'){is.clear(std::ios::failbit);return is;}
+
+        rm.Dmax=Dmax;
+        rm.isxplane=isxplane;
+        if(pncone)rm.pnosecone.reset(nc.release());
+
+        if(pengn)rm.pengine.reset(en.release());
+
+        rm.pconoids=pcon;
+        rm.pplanes=plane;
+        rm.pequipments=equip;
+        rm.update();
+    return is;
+}

@@ -1,34 +1,9 @@
 ﻿#ifndef ENGINE_H
 #define ENGINE_H
 #include "rocket_elements/rocketmodule.h"
+#include "rocket_elements/modules/hfuel.h"
 
-const std::string engineheader{"HFengine"};
-const std::string fuelheader{"Hfuel"};
-struct fuel{
-    std::string name;
-    double AL=0;//% в топливе
-    double Prelst=0;
-    double rot=0;
-    double tst=0;
-    double rst=0;
-    double kst=0;
-    double ukoef=0;
-    double upow=0;
-    double U(double pk);
-    bool iscorrect(){return AL>=0 && Prelst>=0 &&
-                              rot>=0 && tst>=0 &&
-                               rst>=0 && kst>=0 &&
-                                 ukoef>=0 && upow>=0;
-    }
-    fuel(){}
-    fuel(std::string modulename, double Alper, double PrelativeST,double RoT, double Tst, double Rst, double Kst, double Ukoef, double Upow):
-        name{modulename},AL{Alper},Prelst{PrelativeST},rot{RoT},tst{Tst},rst{Rst},kst{Kst},ukoef{Ukoef},upow{Upow}
-    {
-    }
-};
-    std::ostream &operator<<(std::ostream &os, const fuel &fl);
 
-    std::istream &operator>>(std::istream &in, fuel& fl);
 
 
 
@@ -74,7 +49,7 @@ struct engineparameters{
     double Xemptyengine=0;
     double Xend=0;
     double engineDiameter=0;
-    double len=0;
+  //  double len=0;
     double delt=0;
 };
 
@@ -114,7 +89,7 @@ public:
         return (massCenter()*(mass()-params.mtz)-params.mfuel*params.Xmfuel)/getmassend();
     }
 
-    virtual engineparameters getparams()const{return params;}
+    virtual engineparameters getparams()const;
 
     engine(){}
     engine(matherial mathShell, matherial mathbr,
@@ -127,48 +102,10 @@ private:
     std::string name;
 };
 
-/*
-std::ostream &operator<<(std::ostream &os, const engine &en){
-    engineparameters par=en.getparams();
-    return os<<engineheader<<'{'<<par.matShell<<','<<par.matbr<<','<<par.matnozzle
-            <<','<<par.matTz<<','<<par.fl<<par.Dcyl<<','<<par.mfuel<<','<<par.Pk<<','<<par.Pa<<'}';
-}
 
-std::istream &operator>>(std::istream &in, conoid &cone){
-    std::string header;
-    matherial mat;
-    char delim1{0},delim2{0},delim3{0},delim4{0},delim5{0},footer{0};
-    int tmp{0};
-    double dbeg{0},dend{0},len{0},delt{0},x0{0};
+std::ostream &operator<<(std::ostream &os, const engine &en);
 
-    while((tmp=in.get())!=EOF && isspace(tmp));
-    in.unget();
-    while((tmp=in.get())!=EOF && tmp!='{')
-        header.push_back(static_cast<char>(tmp));
-
-    if(tmp==EOF)return in;
-    if(header!=coneheader){
-        in.clear(std::ios::failbit);
-        return in;
-    }
-    in>>mat>>delim1>>dbeg>>delim2>>dend>>delim3>>len>>delim4>>delt>>delim5>>x0>>footer;
-    if(!in)return in;
-    if(delim1!=delim2 ||
-            delim2!=delim3||
-            delim3!=delim4||
-            delim4!=delim5||
-              delim5!=',' ||
-               footer!='}'||
-                   dbeg<0 ||
-                   dend<0 ||
-                    len<0 || x0<0){
-        in.clear(std::ios::failbit);
-        return in;
-    }
-    cone=conoid(mat,dbeg,dend,len,delt);
-    cone.setX0(x0);
-    return in;
-}
+std::istream &operator>>(std::istream &in, engine &en);
 
 
 
@@ -177,7 +114,7 @@ std::istream &operator>>(std::istream &in, conoid &cone){
 
 
 
-*/
+
 
 
 #endif // ENGINE_H

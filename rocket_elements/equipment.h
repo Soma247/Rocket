@@ -31,5 +31,10 @@ protected:
     double Xm=0;
 };
 
+std::ostream& operator<<(std::ostream& os, const equipment& eq);
+std::istream& operator>>(std::istream& in, equipment& eq);
+
+
+
 
 #endif // EQUIPMENT_H
