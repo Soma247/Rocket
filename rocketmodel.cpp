@@ -234,7 +234,7 @@ void RocketModel::update(){
         for(conoid& c:pconoids){
             c.setX0(L);
             if(c.getDend()<Dmax)Lnc=L;
-            c.setname(std::to_string(i++));
+            c.setname(std::string("module ")+=std::to_string(i++));
             L+=c.getL();
         }
         pengine->setX0(L);
@@ -247,6 +247,7 @@ void RocketModel::update(){
             Smidplanes+=p.S();
         SmidLA=Smidplanes+0.25*M_PI*Dmax*Dmax;
         Lcyl=getLength()-Lnc-ptailcone->getL();
+        if(pplanes.size())pplanes[pplanes.size()-1].setX0(getLength()-pplanes[pplanes.size()-1].getL());
     }
 }
 

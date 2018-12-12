@@ -1,36 +1,91 @@
 #include "ballisticcalc.h"
 #include <iomanip>
 
-bool RocketCalculator::iscorrect(){return model&&
+ballisticCalculator::ballisticCalculator(AbstractAtmosphere *atm):atmo{atm}
+{
+}
+
+ballisticCalculator::ballisticCalculator(const InputData &data, AbstractAtmosphere *atm):indat{data},atmo{atm}
+{
+}
+
+ballisticCalculator::ballisticCalculator(const InputData &data, std::unique_ptr<AbstractAtmosphere> atm):indat{data}
+{atmo.reset(atm.release());
+}
+
+ballisticCalculator::ballisticCalculator(const InputData &data, std::unique_ptr<RocketModel> rm, std::unique_ptr<AbstractAtmosphere> atm):indat{data}{
+    model.reset(rm.release());
+    atmo.reset(atm.release());
+}
+
+bool ballisticCalculator::iscorrect(){return model&&
             atmo&&
             model->isheadcorrect()&&indat.iscorrect();
                                   }
 
-void RocketCalculator::setModel(std::unique_ptr<RocketModel> rm){
+void ballisticCalculator::setModel(std::unique_ptr<RocketModel> rm){
     model.reset(rm.release());
 }
 
-void RocketCalculator::setModel(RocketModel *rm){
+void ballisticCalculator::setModel(RocketModel *rm){
     model.reset(rm);
 }
 
-void RocketCalculator::setAtmosphere(std::unique_ptr<AbstractAtmosphere> aa){
+void ballisticCalculator::setAtmosphere(std::unique_ptr<AbstractAtmosphere> aa){
     atmo.reset(aa.release());
 }
 
-void RocketCalculator::setAtmosphere(AbstractAtmosphere *aa){
+void ballisticCalculator::setAtmosphere(AbstractAtmosphere *aa){
     atmo.reset(aa);
 }
-struct baldat{
-    double t=0;
-    double V=0;//скорость
-    double H=0;//высота
-    double X=0;//горизонт дальность
-    double teth=0;//угол наклона
-    double mass=0;
-};
 
-void RocketCalculator::calculate(){
+void ballisticCalculator::setNosecone(matherial math, double Dend, double len, double delta){
+    if(model)
+        model->setNosecone(math,Dend,len,delta);
+}
+
+void ballisticCalculator::setEngine(matherial mathShell, matherial mathbr, matherial mathnozzle, matherial mathtzp, fuel fuel, double fuelmass, double Pk, double Pa){
+    if(model)
+        model->setEngine(mathShell, mathbr, mathnozzle,mathtzp,
+                         fuel, fuelmass, Pk, Pa);
+}
+
+void ballisticCalculator::addConoid(matherial math, double Dbegin, double Dend, double length, double delta){
+    if(model)
+        model->addConoid(math, Dbegin, Dend, length,delta);
+}
+
+void ballisticCalculator::insertConoid(matherial math, double Dbegin, double Dend, double length, double delta, size_t num){
+    if(model)
+        model->insertConoid(math,Dbegin,Dend,length,delta,num);
+}
+
+void ballisticCalculator::addplane(matherial math, double Xfromnose, double Broot, double Btip, double Croot, double Ctip, double Xtip, double Xrf, double Xrr, double Xtf, double Xtr, double H){
+    if(model)
+        model->addplane(math,Xfromnose,
+                        Broot,Btip,
+                        Croot,Ctip,
+                        Xtip,Xrf,
+                        Xrr,Xtf,
+                        Xtr,H);
+}
+
+void ballisticCalculator::setscalePlane(size_t num, double scale){
+    if(model)
+        model->setscalePlane(num,scale);
+}
+
+void ballisticCalculator::addEquipment(std::string eqname, double X, double mass){
+    if(model)
+        model->addEquipment(eqname,X,mass);
+}
+
+void ballisticCalculator::openProject(std::string proFile)
+{
+
+}
+
+void ballisticCalculator::calculate(){
     std::cout<<"calc started"<<std::endl;
     if(!iscorrect())throw std::runtime_error("bc:1");
 
@@ -51,7 +106,7 @@ void RocketCalculator::calculate(){
 
         engineparameters enpar=model->getEngineParams();
         std::vector<baldat> ballisticData;
-
+        ballisticData.reserve(static_cast<size_t>(indat.Taverage)*2);
         double V=15;//скорость
         double H=y0;//высота
         double X=x0;//горизонт дальность
@@ -61,23 +116,13 @@ void RocketCalculator::calculate(){
         double q{0};
         double P{0};
         std::pair<double,double>cyacx;
-
-        std::cout<<"second c"<<std::endl;
         for(double t=0;t<indat.Taverage;t+=0.5){//одна траектория по времени полета
-
             V+=dV;
             H+=dH;
             X+=dX;
             teth+=dteth;
             if(t<enpar.t)mass-=enpar.masspsec;
             else mass=model->getmassend();
-
-            /*      std::cout<<"t= "<<t<<" V= "<<V<<" m= "<<mass
-                        <<" teth= "<<teth*180/M_PI
-                       <<" H= "<<H
-                      <<" X= "<<X<<std::endl;*/
-
-
             q=atmo->get_density(H)*V*V/2;
             cyacx= model->getCyaaCx(
                         V/atmo->get_sound_sp(H),
@@ -91,15 +136,9 @@ void RocketCalculator::calculate(){
             dV=(P*cos(alpha)-
                 cyacx.second*q*model->getS()-
                 mass*9.81*sin(teth))/mass;
-            //   std::cout<<"cx="<<cyacx.second<<"dens="<<atmo->get_density(H)<<std::endl;
             teth=atan(A*X+B);//dteth=(P*sin(alpha)+    cyacx.first*(alpha)*q*model->getS()-   mass*9.81*cos(teth))/(mass*V);
             dH=V*sin(teth);
             dX=V*cos(teth);
-            /*     std::cout<<" dV= "<<dV<<" dm= "<<enpar.masspsec
-                        <<" dteth= "<<dteth*180/M_PI
-                       <<" dH= "<<dH
-                      <<" dX= "<<dX<<std::endl<<std::endl;*/
-
             if(V<0||H<0||X>=indat.Xmax)break;
             ballisticData.push_back(baldat{t,V,H,X,teth,mass});
         }
@@ -109,15 +148,23 @@ void RocketCalculator::calculate(){
                         <<std::setw(4)<<dat.t
                        <<std::setw(6)<<" V= "<<dat.V
                       <<std::setw(5)<<" m= "<<dat.mass
-                        <<std::setw(5)<<" teth= "<<dat.teth*180/M_PI
-                       <<std::setw(6)<<" H= "<<dat.H
-                      <<std::setw(6)<<" X= "<<dat.X<<std::endl;
-                std::cout<<std::endl<<"length="<<model->getLength()<<std::endl
-                        <<" englen="<<model->getEngineParams().Leng<<std::endl
-                        <<" mass0="<<model->getmass()<<std::endl
-                       <<" massend="<<model->getmassend()<<std::endl
-                      <<" mc0="<<model->getmasscenter()<<std::endl
-                     <<" mcend="<<model->getmasscenterend()<<std::endl;
+                     <<std::setw(5)<<" teth= "<<dat.teth*180/M_PI
+                    <<std::setw(6)<<" H= "<<dat.H
+                   <<std::setw(6)<<" X= "<<dat.X<<std::endl;
+            std::cout<<std::endl<<"length="<<model->getLength()<<std::endl
+                    <<" englen="<<model->getEngineParams().Leng<<std::endl
+                   <<" mass0="<<model->getmass()<<std::endl
+                  <<" massend="<<model->getmassend()<<std::endl
+                 <<" mc0="<<model->getmasscenter()<<std::endl
+                <<" mcend="<<model->getmasscenterend()<<std::endl
+               <<" balance0="<<model->getbalanceStart()<<std::endl;
+            if(ballisticData.size())
+                std::cout<<" balanceEnd="<<model->getbalanceEnd(
+                               ballisticData[ballisticData.size()-1].V/
+                                  atmo->get_sound_sp(ballisticData[ballisticData.size()-1].H),
+                               atmo->get_sound_sp(ballisticData[ballisticData.size()-1].H),
+                               atmo->get_cinem_viscidity(ballisticData[ballisticData.size()-1].H));
+            // std::cout<<std::endl<<*model<<std::endl;
             return;
         }
         ballisticData.clear();
@@ -149,4 +196,9 @@ InputData::InputData(double DmidMax, double Hmaximum, double Hminimum, double Xm
     Taverage=(Xmax-mstone)/Vtar;
     Lmax=sqrt(Hmax*Hmax+mstone*mstone)/(Taverage+7);
     Vavg=Lmax/Taverage;
+}
+
+void ballisticCalculator::saveProject(std::string proFile)
+{
+
 }

@@ -1,7 +1,7 @@
 TEMPLATE = app
-CONFIG += console c++14
-CONFIG -= app_bundle
-CONFIG -= qt
+#CONFIG -= app_bundle
+QT += widgets
+CONFIG +=  c++14
 
 SOURCES += \
     main.cpp \
@@ -19,7 +19,10 @@ SOURCES += \
     rocket_elements/abstractrocketelement.cpp \
     rocket_elements/plane/plane.cpp \
     rocket_elements/modules/hfuel.cpp \
-    ballisticcalc.cpp
+    ballisticcalc.cpp \
+    Gui/ItemModel/balcalcitemmodel.cpp \
+    Gui/workwindow.cpp \
+    Gui/ItemModel/balcalcitem.cpp
 
 
 HEADERS += \
@@ -37,7 +40,13 @@ HEADERS += \
     rocket_elements/abstractrocketelement.h \
     rocket_elements/plane/plane.h \
     rocket_elements/modules/hfuel.h \
-    ballisticcalc.h
+    ballisticcalc.h \
+    Gui/ItemModel/balcalcitemmodel.h \
+    Gui/workwindow.h \
+    Gui/ItemModel/balcalcitem.h
 
 DISTFILES += \
     garbage.txt
+
+FORMS += \
+    Gui/workwindow.ui

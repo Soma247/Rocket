@@ -14,6 +14,14 @@
        teth(t)=atan((Hmax-y0)/Xmax+2*A*x(t)+B)
 
 */
+struct baldat{
+    double t=0;
+    double V=0;//скорость
+    double H=0;//высота
+    double X=0;//горизонт дальность
+    double teth=0;//угол наклона
+    double mass=0;
+};
 
 struct InputData{
     double Dmid=0;
@@ -43,35 +51,46 @@ struct InputData{
     bool iscorrect()const;
 
 };
+struct OutputData{
+    std::vector<baldat>traect;
 
-//V0^2*t^2 - X^2 + 2X*Vtar*T - Vtar^2*t^2 -H^2=0;
-//(V0^2-Vtar^2)*t^2+(2*x*Vtar)*t -(X^2+H^2)=0;
-//x1,2=(-b+-sqrt(b^2-4*a*c))/2*a
-//x=-2*Xmax*Vtar+-sqrt((2*Xmax*Vtar)^2+4*((X^2+H^2)(V0^2-Vtar^2)))/2*(V0^2-Vtar^2)
+};
 
-class RocketCalculator{
 
+class ballisticCalculator{
     InputData indat;
-
-
     std::unique_ptr<RocketModel> model;//модель ракеты (нос, отсеки, ду, несущие плоскости и параметры вцелом)
     std::unique_ptr<AbstractAtmosphere> atmo;//характеристики атмосферы
 public:
-    RocketCalculator(AbstractAtmosphere* atm):atmo{atm}
-    {
-    }
-    RocketCalculator(const InputData& data, AbstractAtmosphere* atm):indat{data},atmo{atm}
-    {
-    }
+    ballisticCalculator(AbstractAtmosphere* atm);
+    ballisticCalculator(const InputData& data, AbstractAtmosphere* atm);
+    ballisticCalculator(const InputData& data, std::unique_ptr<AbstractAtmosphere>atm);
+    ballisticCalculator(const InputData& data, std::unique_ptr<RocketModel> rm, std::unique_ptr<AbstractAtmosphere>atm);
     bool iscorrect();
     void setModel(std::unique_ptr<RocketModel> rm);
     void setModel(RocketModel* rm);
     void setAtmosphere(std::unique_ptr<AbstractAtmosphere> aa);
     void setAtmosphere(AbstractAtmosphere* aa);
-    void testprint();//проверка загрузки конкретной модели
-    void openProject(std::string proFile);
 
+    void setNosecone(matherial math,double Dend, double len, double delta);
+    void setEngine(matherial mathShell, matherial mathbr, matherial mathnozzle, matherial mathtzp,
+                   fuel fuel,double fuelmass, double Pk=10, double Pa=0.06);
+    void addConoid(matherial math, double Dbegin, double Dend, double length, double delta);
+    void insertConoid(matherial math, double Dbegin, double Dend, double length, double delta, size_t num=100);
+    void addplane(matherial math,
+                  double Xfromnose,
+                  double Broot, double Btip,
+                  double Croot, double Ctip,
+                  double Xtip, double Xrf,
+                  double Xrr, double Xtf,
+                  double Xtr, double H);
+    void setscalePlane(size_t num, double scale);
+    void addEquipment(std::string eqname, double X, double mass);
+    void openProject(std::string proFile);
+    void saveProject(std::string proFile);
     void calculate();
 };
+
+
 
 #endif // BALLISTICCALC_H
