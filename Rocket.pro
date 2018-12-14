@@ -46,7 +46,8 @@ HEADERS += \
     Gui/ItemModel/balcalcitem.h
 
 DISTFILES += \
-    garbage.txt
+    garbage.txt \
+    resources/cont_red_circle.png
 
 FORMS += \
     Gui/workwindow.ui

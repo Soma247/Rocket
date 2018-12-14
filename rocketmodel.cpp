@@ -225,6 +225,15 @@ double RocketModel::getbalanceStart(double M, double sound_sp, double cin_visc){
     return (getmasscenter()-getXp(M,sound_sp,cin_visc))/getLength();
 }
 
+std::vector<size_t> RocketModel::state() const{
+    return {
+             bool(pnosecone),
+             pconoids.size(),
+             pplanes.size(),
+             pequipments.size()
+            };
+}
+
 void RocketModel::update(){
     if(pnosecone && pengine && ptailcone){
         double L=pnosecone->getL();

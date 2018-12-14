@@ -1,9 +1,12 @@
 #include "balcalcitemmodel.h"
 
+
 balcalcItemModel::balcalcItemModel(std::unique_ptr<ballisticCalculator> bc, QObject *parent)
     : QAbstractItemModel(parent)
-{balcal.reset(bc.release());
+{
+    balcal.reset(bc.release());
 }
+
 
 QVariant balcalcItemModel::headerData(int section, Qt::Orientation orientation, int role) const
 {

@@ -21,6 +21,8 @@ struct baldat{
     double X=0;//горизонт дальность
     double teth=0;//угол наклона
     double mass=0;
+    double cx=0;
+    double cy=0;
 };
 
 struct InputData{
@@ -32,11 +34,8 @@ struct InputData{
     double Vtar=0;//скорость цели
     double mstone=0;//Рубеж выполнения задания (минимальная дальность от точки старта)
     double teth0=M_PI/8;//угол наклона траектории к линии визирования на старте(dy/dx,x=x0)
-
     double Taverage;//среднее время полета к цели
     double Vavg;//средняя скорость полета к цели на наибольшее расстояние
-
-
     matherial enmatShell;
     matherial enmatnozzle;
     matherial enmatbr;
@@ -51,10 +50,23 @@ struct InputData{
     bool iscorrect()const;
 
 };
+struct RocketHeadData{
+    coneparam nconepar;
+    std::vector<coneparam>conespar;
+    std::vector<planeparams>planespar;
+    std::vector<equipmentparameters>equipspar;
+};
 struct OutputData{
     std::vector<baldat>traect;
-
+    RocketHeadData headData;
+    engineparameters engpar;
+    double massfull;
+    double massempty;
+    double xmfull;
+    double xmempty;
+    double xdaverage;
 };
+
 
 
 class ballisticCalculator{
@@ -65,13 +77,15 @@ public:
     ballisticCalculator(AbstractAtmosphere* atm);
     ballisticCalculator(const InputData& data, AbstractAtmosphere* atm);
     ballisticCalculator(const InputData& data, std::unique_ptr<AbstractAtmosphere>atm);
-    ballisticCalculator(const InputData& data, std::unique_ptr<RocketModel> rm, std::unique_ptr<AbstractAtmosphere>atm);
+    ballisticCalculator(const InputData& data, std::unique_ptr<RocketModel> rm,
+                                               std::unique_ptr<AbstractAtmosphere>atm);
     bool iscorrect();
     void setModel(std::unique_ptr<RocketModel> rm);
     void setModel(RocketModel* rm);
     void setAtmosphere(std::unique_ptr<AbstractAtmosphere> aa);
     void setAtmosphere(AbstractAtmosphere* aa);
-
+    void setInputData(const InputData& data);
+    InputData getInputData()const{return indat;}
     void setNosecone(matherial math,double Dend, double len, double delta);
     void setEngine(matherial mathShell, matherial mathbr, matherial mathnozzle, matherial mathtzp,
                    fuel fuel,double fuelmass, double Pk=10, double Pa=0.06);
@@ -87,8 +101,11 @@ public:
     void setscalePlane(size_t num, double scale);
     void addEquipment(std::string eqname, double X, double mass);
     void openProject(std::string proFile);
-    void saveProject(std::string proFile);
-    void calculate();
+    void saveProject(std::string proFile)const;
+    OutputData calculate();
+    std::vector<size_t>state()const;
+    RocketHeadData getheadData();
+
 };
 
 

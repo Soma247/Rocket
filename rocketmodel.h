@@ -11,6 +11,9 @@
 #include "aerodynamics/aerodynamics.h"
 #include <algorithm>
 
+
+using equipmentparameters=std::pair<double,double>;
+
 class RocketModel{
 public:
     RocketModel():pnosecone{new nosecone()},ptailcone{new conoid}{}
@@ -64,6 +67,8 @@ public:
         return pnosecone&&
                 Dmax>0;
     }
+
+    std::vector<size_t>state()const;
 
     friend std::ostream& operator<<(std::ostream &os, const RocketModel& rm);
     friend std::istream& operator>>(std::istream &in, RocketModel& rm);

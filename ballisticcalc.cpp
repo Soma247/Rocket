@@ -85,7 +85,7 @@ void ballisticCalculator::openProject(std::string proFile)
 
 }
 
-void ballisticCalculator::calculate(){
+OutputData ballisticCalculator::calculate(){
     std::cout<<"calc started"<<std::endl;
     if(!iscorrect())throw std::runtime_error("bc:1");
 
@@ -165,11 +165,36 @@ void ballisticCalculator::calculate(){
                                atmo->get_sound_sp(ballisticData[ballisticData.size()-1].H),
                                atmo->get_cinem_viscidity(ballisticData[ballisticData.size()-1].H));
             // std::cout<<std::endl<<*model<<std::endl;
-            return;
+            return OutputData{
+
+            };
         }
         ballisticData.clear();
 
     }
+}
+
+RocketHeadData ballisticCalculator::getheadData(){
+    if(model && model->isheadcorrect()){
+        RocketHeadData dat;
+        std::vector<size_t>flags=model->state();
+        dat.nconepar=model->getNCparams();
+        for(size_t i=0;i<flags.at(1);++i)
+            dat.conespar.push_back(model->getModuleParams(i));
+        for(size_t i=0;i<flags.at(2);++i)
+            dat.planespar.push_back(model->getPlaneParams(i));
+        for(size_t i=0;i<flags.at(2);++i)
+            dat.equipspar.push_back(model->geteqparams(i));
+        return dat;
+    }
+}
+
+std::vector<size_t> ballisticCalculator::state() const{
+    return model? model->state() : std::vector<size_t>{};
+}
+
+void ballisticCalculator::setInputData(const InputData &data){
+    indat=data;
 }
 
 
@@ -198,7 +223,7 @@ InputData::InputData(double DmidMax, double Hmaximum, double Hminimum, double Xm
     Vavg=Lmax/Taverage;
 }
 
-void ballisticCalculator::saveProject(std::string proFile)
+void ballisticCalculator::saveProject(std::string proFile) const
 {
 
 }
