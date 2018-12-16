@@ -2,13 +2,13 @@
 #include <sstream>
 const std::string rocketmodelheader{"RocketModel"};
 
-coneparam RocketModel::getNCparams() const{return pnosecone->getparams();}
-coneparam RocketModel::getTailConeParams() const{return ptailcone->getparams();}
+coneparam RocketModel::getNCparams() const{return pnosecone?pnosecone->getparams():coneparam();}
+coneparam RocketModel::getTailConeParams() const{return ptailcone?ptailcone->getparams():coneparam();}
 coneparam RocketModel::getModuleParams(size_t num)const{
     if(num>pconoids.size())throw std::out_of_range("moduleparams num is out of range");
     return pconoids[num].getparams();
 }
-engineparameters RocketModel::getEngineParams() const{return pengine->getparams();}
+engineparameters RocketModel::getEngineParams() const{return pengine?pengine->getparams():engineparameters();}
 planeparams RocketModel::getPlaneParams(size_t num)const{
     if(num>pconoids.size())throw std::out_of_range("planeeparams num is out of range");
     return pplanes[num].getparams();
@@ -22,6 +22,13 @@ std::pair<double, double> RocketModel::geteqparams(size_t num)const{
 
 void RocketModel::setNosecone(matherial math, double Dend, double len, double delta){
     pnosecone.reset(new nosecone(math,Dend,len,delta));
+    update();
+}
+
+void RocketModel::setTailStab(matherial math, double Xfromnose, double Broot, double Btip, double Croot, double Ctip, double Xtip, double Xrf, double Xrr, double Xtf, double Xtr, double H)
+{
+    ptailplane.reset(new plane(math,Xfromnose,Broot,Btip,Croot,Ctip,
+                                     Xtip,Xrf,Xrr,Xtf,Xtr,H));
     update();
 }
 void RocketModel::setEngine(matherial mathShell, matherial mathbr,
@@ -61,6 +68,7 @@ void RocketModel::addEquipment(std::string eqname, double X, double mass){
 
 
 void RocketModel::ejectConoid(size_t num){
+    std::cerr<<"RM:eject "<<num<<std::endl;
     if(num>pconoids.size())throw std::out_of_range("conoid num is out of range");
     pconoids.erase(pconoids.begin()+num);
     update();
@@ -95,12 +103,19 @@ double RocketModel::getXp(double M, double sound_sp, double cin_visc) const{
         xpf+=k*2*p.getcyaConsole(Dmax,SmidLA,M,sound_sp,cin_visc)*p.getXp(M);
         cyap+=k*2*p.getcyaConsole(Dmax,SmidLA,M,sound_sp,cin_visc);
     }
+
+    if(ptailplane){
+        planeparams par=ptailplane->getparams();
+        xpf+=k*2*ptailplane->getcyaConsole(Dmax,SmidLA,M,sound_sp,cin_visc)*ptailplane->getXp(M);
+        cyap+=k*2*ptailplane->getcyaConsole(Dmax,SmidLA,M,sound_sp,cin_visc);
+    }
     return xpf/(cyan+cyap);
 }
 
 
 double RocketModel::getmass()const{
     double mass=pnosecone->mass()+pengine->mass()+ptailcone->mass();
+    if(ptailplane)mass+=ptailplane->mass();
     for(const conoid& c:pconoids)
         mass+=c.mass();
     for(const equipment& e:pequipments)
@@ -123,6 +138,7 @@ double RocketModel::getheadmass() const
 }
 
 double RocketModel::getmasscenter()const{
+
     double mx=pnosecone->mass()*pnosecone->massCenter()+
             pengine->mass()*(pengine->getX0()+pengine->massCenter())+
             ptailcone->mass()*(ptailcone->massCenter()+ptailcone->getX0());
@@ -133,6 +149,8 @@ double RocketModel::getmasscenter()const{
         mx+=e.mass()*(e.massCenter()+e.getX0());
     for(const plane& p:pplanes)
         mx+=p.mass()*(p.massCenter()+p.getX0());
+    if(ptailplane)
+        mx+=ptailplane->mass()*ptailplane->massCenter();
     return mx/getmass();
 }
 
@@ -144,6 +162,8 @@ double RocketModel::getmassend() const{
         mass+=e.mass();
     for(const plane& p:pplanes)
         mass+=p.mass();
+    if(ptailplane)
+        mass+=ptailplane->mass();
     return mass;
 }
 
@@ -157,6 +177,8 @@ double RocketModel::getmasscenterend() const{
         mx+=e.mass()*(e.massCenter()+e.getX0());
     for(const plane& p:pplanes)
         mx+=p.mass()*(p.massCenter()+p.getX0());
+    if(ptailplane)
+        mx+=ptailplane->mass()*ptailplane->massCenter();
     return mx/getmassend();
 }
 
@@ -176,6 +198,8 @@ double RocketModel::getCp(double M, bool engineisactive)const{
     cp*=0.25*Dmax*Dmax*M_PI/SmidLA;
     for(const plane& p:pplanes)
         cp+=4*p.getCp(SmidLA,M);
+    if(ptailplane)
+        cp+=4*ptailplane->getCp(SmidLA,M);
     return cp;//отнесен ко всему ЛА
 }
 
@@ -183,6 +207,8 @@ double RocketModel::getCxTr(double M, double sound_sp, double cin_visc)const{
     double cxt=Aerodynamics::CxTrF(SmidLA,Dmax,Lnc,Lcyl,ptailcone->getL(),ptailcone->getDend(),M,sound_sp,cin_visc);
     for(const plane& p:pplanes)
         cxt+=p.getCxtr(SmidLA,M,sound_sp,cin_visc);
+    if(ptailplane)
+        cxt+=ptailplane->getCxtr(SmidLA,M,sound_sp,cin_visc);
     return cxt;//отнесен ко всему ЛА
 }
 
@@ -191,6 +217,8 @@ double RocketModel::getCya(double M, double sound_sp, double cin_visc) const{
     double cya=Aerodynamics::CyaNoseCyll(Dmax,SmidLA,Lnc,Lcyl,M);
     for(const plane& p:pplanes)
         cya+=k*p.getcyaConsole(Dmax,SmidLA,M,sound_sp,cin_visc);
+    if(ptailplane)
+        cya+=k*ptailplane->getcyaConsole(Dmax,SmidLA,M,sound_sp,cin_visc);
     return cya;
 }
 
@@ -225,9 +253,17 @@ double RocketModel::getbalanceStart(double M, double sound_sp, double cin_visc){
     return (getmasscenter()-getXp(M,sound_sp,cin_visc))/getLength();
 }
 
-std::vector<size_t> RocketModel::state() const{
+std::vector<size_t> RocketModel::state() const{/*
+    std::cout<<"rm:conoids ";
+    for(auto&c:pconoids)
+        std::cout<<c.getL()<<" ";
+    std::cout<<std::endl;
+*/
+
+
     return {
              bool(pnosecone),
+             bool(ptailplane),
              pconoids.size(),
              pplanes.size(),
              pequipments.size()
@@ -254,9 +290,12 @@ void RocketModel::update(){
         double Smidplanes=0;
         for(const plane& p:pplanes)
             Smidplanes+=p.S();
+        if(ptailplane){
+            Smidplanes+=ptailplane->S();
+            ptailplane->setX0(getLength()-ptailplane->getL());
+        }
         SmidLA=Smidplanes+0.25*M_PI*Dmax*Dmax;
         Lcyl=getLength()-Lnc-ptailcone->getL();
-        if(pplanes.size())pplanes[pplanes.size()-1].setX0(getLength()-pplanes[pplanes.size()-1].getL());
     }
 }
 

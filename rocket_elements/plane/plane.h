@@ -68,6 +68,7 @@ public:
 protected:
     planeparams params;
     std::string name;
+    bool tailstab=false;
 };
 
 

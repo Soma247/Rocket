@@ -22,7 +22,9 @@ SOURCES += \
     ballisticcalc.cpp \
     Gui/ItemModel/balcalcitemmodel.cpp \
     Gui/workwindow.cpp \
-    Gui/ItemModel/balcalcitem.cpp
+    Gui/ItemModel/balcalcitem.cpp \
+    Gui/Dialogs/addconoiddialog.cpp \
+    Gui/Dialogs/setnoseconedialog.cpp
 
 
 HEADERS += \
@@ -43,11 +45,15 @@ HEADERS += \
     ballisticcalc.h \
     Gui/ItemModel/balcalcitemmodel.h \
     Gui/workwindow.h \
-    Gui/ItemModel/balcalcitem.h
+    Gui/ItemModel/balcalcitem.h \
+    Gui/Dialogs/addconoiddialog.h \
+    Gui/Dialogs/setnoseconedialog.h
 
 DISTFILES += \
     garbage.txt \
     resources/cont_red_circle.png
 
 FORMS += \
-    Gui/workwindow.ui
+    Gui/workwindow.ui \
+    Gui/Dialogs/addconoiddialog.ui \
+    Gui/Dialogs/setnoseconedialog.ui

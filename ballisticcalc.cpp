@@ -44,6 +44,16 @@ void ballisticCalculator::setNosecone(matherial math, double Dend, double len, d
         model->setNosecone(math,Dend,len,delta);
 }
 
+void ballisticCalculator::setTailStab(matherial math, double Xfromnose, double Broot, double Btip, double Croot, double Ctip, double Xtip, double Xrf, double Xrr, double Xtf, double Xtr, double H){
+    if(model)
+        model->setTailStab(math,Xfromnose,
+                        Broot,Btip,
+                        Croot,Ctip,
+                        Xtip,Xrf,
+                        Xrr,Xtf,
+                        Xtr,H);
+}
+
 void ballisticCalculator::setEngine(matherial mathShell, matherial mathbr, matherial mathnozzle, matherial mathtzp, fuel fuel, double fuelmass, double Pk, double Pa){
     if(model)
         model->setEngine(mathShell, mathbr, mathnozzle,mathtzp,
@@ -78,6 +88,21 @@ void ballisticCalculator::setscalePlane(size_t num, double scale){
 void ballisticCalculator::addEquipment(std::string eqname, double X, double mass){
     if(model)
         model->addEquipment(eqname,X,mass);
+}
+
+void ballisticCalculator::ejectConoid(size_t num){
+    if(model)
+        model->ejectConoid(num);
+}
+
+void ballisticCalculator::ejectPlane(size_t num){
+    if(model)
+        model->ejectPlane(num);
+}
+
+void ballisticCalculator::ejectEquipment(size_t num){
+    if(model)
+        model->ejectEquipment(num);
 }
 
 void ballisticCalculator::openProject(std::string proFile)

@@ -87,6 +87,13 @@ public:
     void setInputData(const InputData& data);
     InputData getInputData()const{return indat;}
     void setNosecone(matherial math,double Dend, double len, double delta);
+    void setTailStab(matherial math,
+                  double Xfromnose,
+                  double Broot, double Btip,
+                  double Croot, double Ctip,
+                  double Xtip, double Xrf,
+                  double Xrr, double Xtf,
+                  double Xtr, double H);
     void setEngine(matherial mathShell, matherial mathbr, matherial mathnozzle, matherial mathtzp,
                    fuel fuel,double fuelmass, double Pk=10, double Pa=0.06);
     void addConoid(matherial math, double Dbegin, double Dend, double length, double delta);
@@ -100,6 +107,12 @@ public:
                   double Xtr, double H);
     void setscalePlane(size_t num, double scale);
     void addEquipment(std::string eqname, double X, double mass);
+
+
+    void ejectConoid(size_t num);
+    void ejectPlane(size_t num);
+    void ejectEquipment(size_t num);
+
     void openProject(std::string proFile);
     void saveProject(std::string proFile)const;
     OutputData calculate();

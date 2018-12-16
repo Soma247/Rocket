@@ -16,8 +16,8 @@ using equipmentparameters=std::pair<double,double>;
 
 class RocketModel{
 public:
-    RocketModel():pnosecone{new nosecone()},ptailcone{new conoid}{}
-    RocketModel(double Dmid, bool isXplane):Dmax{Dmid},isxplane{isXplane},pnosecone{new nosecone()},ptailcone{new conoid}{}
+    RocketModel(){}
+    RocketModel(double Dmid, bool isXplane):Dmax{Dmid},isxplane{isXplane}{}
 
     coneparam getNCparams()const;
     coneparam getTailConeParams()const;
@@ -39,6 +39,13 @@ public:
 
 
     void setNosecone(matherial math,double Dend, double len, double delta);
+    void setTailStab(matherial math,
+                  double Xfromnose,
+                  double Broot, double Btip,
+                  double Croot, double Ctip,
+                  double Xtip, double Xrf,
+                  double Xrr, double Xtf,
+                  double Xtr, double H);
     void setEngine(matherial mathShell, matherial mathbr, matherial mathnozzle, matherial mathtzp,
                    fuel fuel,double fuelmass, double Pk, double Pa);
     void addConoid(matherial math, double Dbegin, double Dend, double length, double delta);
@@ -88,6 +95,7 @@ protected:
     double Lcyl=0;
     bool isxplane=true;
     std::unique_ptr<nosecone> pnosecone;
+    std::unique_ptr<plane> ptailplane;
     std::unique_ptr<engine> pengine;
     std::unique_ptr<conoid> ptailcone;
     std::vector<conoid>pconoids;
