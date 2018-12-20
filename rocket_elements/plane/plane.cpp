@@ -25,7 +25,7 @@ double plane::getcyaConsole(double Dmid, double SmidLA, double M, double sound_s
                                             params.h,params.angleCmax,M,sound_sp,cin_visc);
 }
 
-plane::plane(matherial math,
+plane::plane(material math,
              double Xfromnose,
              double Broot, double Btip,
              double Croot, double Ctip,
@@ -46,7 +46,7 @@ plane::plane(matherial math,
     params.xtr=Xtr;
     params.h=H;
     params.n=N;
-    params.angle0=atan(params.h/params.xtip);
+    params.angle0=atan(H/(fabs(Xtip)>0.00001?Xtip:0.00001));//поправка для деления));
     params.angleCmax=atan(params.h/(params.xtip-params.xrf+params.xtf));
     params.massn=params.n*0.5*(params.btip+params.broot)*params.h*0.5*(params.ctip+params.croot)*params.mat.Ro;
 }
@@ -71,7 +71,7 @@ std::ostream &operator<<(std::ostream &os, const plane &pl){
 
 std::istream &operator>>(std::istream &in, plane &pl){
     std::string header;
-    matherial mat;
+    material mat;
     int tmp{0};
     char delim1{0},delim2{0},delim3{0},delim4{0},delim5{0},
          delim6{0},delim7{0},delim8{0},delim9{0},delim10{0},delim11{0},footer{0};

@@ -51,15 +51,15 @@ public:
     balcalcItem* getItem(const QModelIndex &index) const;
 
 
-    void setNosecone(matherial math,double Dend, double len, double delta);
-    void setTailStab(matherial math,
+    void setNosecone(material math,double Dend, double len, double delta);
+    void setTailStab(material math,
                      double Broot, double Btip,
                      double Croot, double Ctip,
                      double Xtip, double Xrf,
                      double Xrr, double Xtf,
                      double Xtr, double H);
-    void addConoid(matherial math, double Dbegin, double Dend, double length, double delta);
-    void addplane(matherial math,
+    void addConoid(material math, double Dbegin, double Dend, double length, double delta);
+    void addplane(material math,
                   double Xfromnose,
                   double Broot, double Btip,
                   double Croot, double Ctip,
@@ -73,7 +73,7 @@ public:
     void ejectConoid(size_t index);
     void ejectPlane(size_t index);
     void ejectEquipment(size_t index);
-    void insertConoid(matherial math, double Dbegin, double Dend, double length, double delta, size_t index);
+    void insertConoid(material math, double Dbegin, double Dend, double length, double delta, size_t index);
 
 
     void openProject(std::string proFile){
@@ -86,6 +86,9 @@ public:
         return balcal->state();
     }
     void update();
+    const RocketHeadData& getheaddata()const{
+        return headData;
+    }
 
 signals:
     void updated();
@@ -99,6 +102,7 @@ private:
     balcalcItem* cones;
     balcalcItem* equips;
     balcalcItem* flytask;
+    RocketHeadData headData;
 };
 
 #endif // BALCALCITEMMODEL_H

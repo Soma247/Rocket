@@ -44,7 +44,7 @@ void nosecone::setDend(double d){
     dend=d;
 }
 
-nosecone::nosecone(matherial math, double Dend, double length, double delta):
+nosecone::nosecone(material math, double Dend, double length, double delta):
     mat{math},dend{Dend},len{length},delt{delta}
 {
 }
@@ -60,7 +60,7 @@ std::ostream &operator<<(std::ostream &os, const nosecone &ncone){
 
 std::istream &operator>>(std::istream &in, nosecone &ncone){
     std::string header;
-    matherial mat;
+    material mat;
     char delim1{0},delim2{0},delim3{0},footer{0};
     int tmp{0};
     double dend{0},len{0},delt{0};

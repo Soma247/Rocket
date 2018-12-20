@@ -19,9 +19,9 @@
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
     <rect>
-     <x>130</x>
+     <x>260</x>
      <y>300</y>
-     <width>301</width>
+     <width>171</width>
      <height>32</height>
     </rect>
    </property>
@@ -35,8 +35,8 @@
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>10</y>
+     <x>140</x>
+     <y>0</y>
      <width>151</width>
      <height>16</height>
     </rect>
@@ -45,22 +45,12 @@
     <string>Выберите параметры отсека</string>
    </property>
   </widget>
-  <widget class="QComboBox" name="matComboBox">
-   <property name="geometry">
-    <rect>
-     <x>180</x>
-     <y>40</y>
-     <width>121</width>
-     <height>22</height>
-    </rect>
-   </property>
-  </widget>
   <widget class="QLabel" name="label_warning">
    <property name="geometry">
     <rect>
-     <x>0</x>
-     <y>180</y>
-     <width>291</width>
+     <x>10</x>
+     <y>300</y>
+     <width>241</width>
      <height>20</height>
     </rect>
    </property>
@@ -108,8 +98,8 @@
   <widget class="QWidget" name="">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>50</y>
+     <x>10</x>
+     <y>30</y>
      <width>110</width>
      <height>184</height>
     </rect>
@@ -144,7 +134,7 @@
     <item>
      <widget class="QLabel" name="label_4">
       <property name="text">
-       <string>L</string>
+       <string>L (длина отсека)</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
@@ -166,6 +156,31 @@
     </item>
     <item>
      <widget class="QLineEdit" name="le_delt"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="">
+   <property name="geometry">
+    <rect>
+     <x>120</x>
+     <y>30</y>
+     <width>151</width>
+     <height>43</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout_2">
+    <item>
+     <widget class="QLabel" name="label_6">
+      <property name="text">
+       <string>Материал корпуса</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QComboBox" name="matComboBox"/>
     </item>
    </layout>
   </widget>

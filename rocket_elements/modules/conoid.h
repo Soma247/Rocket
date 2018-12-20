@@ -34,9 +34,9 @@ public:
         return coneparam{mat,dbegin,dend,len,delt};
     }
     conoid(){}
-    conoid(matherial math, double Dbegin, double Dend, double length, double delta);
+    conoid(material math, double Dbegin, double Dend, double length, double delta);
 private:
-    matherial mat;
+    material mat;
     double dbegin=0;
     double dend=0;
     double len=0;

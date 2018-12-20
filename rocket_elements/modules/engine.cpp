@@ -20,7 +20,7 @@ void engine::setdelt(double){}
 
 engineparameters engine::getparams() const{return params;}//
 
-engine::engine(matherial mathShell, matherial mathbr, matherial mathnozzle, matherial mathtz,
+engine::engine(material mathShell, material mathbr, material mathnozzle, material mathtz,
                fuel fuel, double Dmid, double mfuel, double Pk, double Pa){//pk/pa~40, pk,pa в мегапаскалях
     constexpr double beth=18*M_PI/180;//угол полураствора
     constexpr double fi=0.3;//коэффициент степени утопленности сопла
@@ -122,7 +122,7 @@ std::ostream &operator<<(std::ostream &os, const engine &en){
 
 std::istream &operator>>(std::istream &in, engine &en){
     std::string header;
-    matherial mathShell, mathbr, mathnozzle, mathtz;
+    material mathShell, mathbr, mathnozzle, mathtz;
     fuel fl;
     double Dmid{0},mfuel{0},Pk{0},Pa{0};
     char delim1{0},delim2{0},delim3{0},delim4{0},delim5{0},delim6{0},delim7{0},delim8{0},footer{0};

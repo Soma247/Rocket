@@ -2,7 +2,7 @@
 #define ABSTRACTROCKETELEMENT_H
 #include <string>
 #include <iostream>
-const std::string matherialheader{"matherial"};
+const std::string materialheader{"material"};
 
 class abstractRocketElement{
 public:
@@ -24,21 +24,26 @@ public:
 
 };
 
-struct matherial{
+struct material{
     std::string name="air";
     //matherial parameters
     double Ro=1;//плотность
     double SigmaV=0;//предел прочности
-    matherial(){}
-    matherial(const std::string& matherialName, double Ro, double sigma):name{matherialName},Ro{Ro},SigmaV{sigma}{}
-    matherial(const matherial&mat){
+    material(){}
+    material(const std::string& matherialName, double Ro, double sigma):name{matherialName},Ro{Ro},SigmaV{sigma}{}
+    material(const material&mat){
         name=mat.name;
         Ro=mat.Ro;
         SigmaV=mat.SigmaV;
     }
+    bool operator==(const material& second)const{
+        return name==second.name&&
+                Ro==second.Ro&&
+                SigmaV==second.SigmaV;
+    }
 };
-std::ostream& operator<<(std::ostream& os, const matherial&mat);
-std::istream& operator>>(std::istream& in, matherial&mat);
+std::ostream& operator<<(std::ostream& os, const material&mat);
+std::istream& operator>>(std::istream& in, material&mat);
 
 
 #endif // ABSTRACTROCKETELEMENT_H

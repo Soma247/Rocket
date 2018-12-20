@@ -11,14 +11,23 @@
 #include "aerodynamics/aerodynamics.h"
 #include <algorithm>
 
-
 using equipmentparameters=std::pair<double,double>;
+struct RocketHeadData{
+    coneparam nconepar;
+    planeparams tailstabpar;
+    std::vector<coneparam>conespar;
+    std::vector<planeparams>planespar;
+    std::vector<equipmentparameters>equipspar;
+};
+
+
 
 class RocketModel{
 public:
     RocketModel(){}
     RocketModel(double Dmid, bool isXplane):Dmax{Dmid},isxplane{isXplane}{}
 
+    RocketHeadData getheadData();
     coneparam getNCparams()const;
     coneparam getTailConeParams()const;
     coneparam getModuleParams(size_t num)const;
@@ -38,19 +47,19 @@ public:
     double getLength()const;  
 
 
-    void setNosecone(matherial math,double Dend, double len, double delta);
-    void setTailStab(matherial math,
+    void setNosecone(material math,double Dend, double len, double delta);
+    void setTailStab(material math,
                   double Xfromnose,
                   double Broot, double Btip,
                   double Croot, double Ctip,
                   double Xtip, double Xrf,
                   double Xrr, double Xtf,
                   double Xtr, double H);
-    void setEngine(matherial mathShell, matherial mathbr, matherial mathnozzle, matherial mathtzp,
+    void setEngine(material mathShell, material mathbr, material mathnozzle, material mathtzp,
                    fuel fuel,double fuelmass, double Pk, double Pa);
-    void addConoid(matherial math, double Dbegin, double Dend, double length, double delta);
-    void insertConoid(matherial math, double Dbegin, double Dend, double length, double delta, size_t num=100);
-    void addplane(matherial math,
+    void addConoid(material math, double Dbegin, double Dend, double length, double delta);
+    void insertConoid(material math, double Dbegin, double Dend, double length, double delta, size_t num=100);
+    void addplane(material math,
                   double Xfromnose,
                   double Broot, double Btip,
                   double Croot, double Ctip,

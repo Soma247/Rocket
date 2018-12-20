@@ -2,7 +2,7 @@
 #define PLANE_H
 #include "rocket_elements/abstractrocketelement.h"
 struct planeparams{
-    matherial mat;
+    material mat;
     double XfromNose=0;
     double broot=0;
     double btip=0;
@@ -56,7 +56,7 @@ public:
         return params;
     }
     plane(){}
-    plane(matherial math,
+    plane(material math,
           double Xfromnose,
           double Broot, double Btip,
           double Croot, double Ctip,

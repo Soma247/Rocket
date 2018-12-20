@@ -73,7 +73,7 @@ void conoid::setDbegin(double dbeg){
     dbegin=dbeg;
 }
 
-conoid::conoid(matherial math, double Dbegin, double Dend, double length, double delta):
+conoid::conoid(material math, double Dbegin, double Dend, double length, double delta):
     mat{math},dbegin{Dbegin},dend{Dend},len{length},delt{delta}
 {
 }
@@ -87,7 +87,7 @@ std::ostream &operator<<(std::ostream &os, const conoid &cone){
 
 std::istream &operator>>(std::istream &in, conoid &cone){
     std::string header;
-    matherial mat;
+    material mat;
     char delim1{0},delim2{0},delim3{0},delim4{0},delim5{0},footer{0};
     int tmp{0};
     double dbeg{0},dend{0},len{0},delt{0},x0{0};

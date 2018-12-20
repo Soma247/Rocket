@@ -17,6 +17,7 @@ std::istream &operator>>(std::istream &in, fuel &fl){
     fuel tmpfuel;
 
     while((tmp=in.get())!=EOF && isspace(tmp));
+    if(tmp==EOF)return in;
     in.unget();
     while((tmp=in.get())!=EOF && tmp!='{')
         header.push_back(static_cast<char>(tmp));

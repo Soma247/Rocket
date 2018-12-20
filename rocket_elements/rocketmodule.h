@@ -2,7 +2,7 @@
 #define ROCKETMODULE_H
 #include"abstractrocketelement.h"
 struct coneparam{
-    matherial mat;
+    material mat;
     double dbeg=0;
     double dend=0;
     double len=0;

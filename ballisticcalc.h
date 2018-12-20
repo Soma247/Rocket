@@ -36,26 +36,21 @@ struct InputData{
     double teth0=M_PI/8;//угол наклона траектории к линии визирования на старте(dy/dx,x=x0)
     double Taverage;//среднее время полета к цели
     double Vavg;//средняя скорость полета к цели на наибольшее расстояние
-    matherial enmatShell;
-    matherial enmatnozzle;
-    matherial enmatbr;
-    matherial enmatTz;
+    material enmatShell;
+    material enmatnozzle;
+    material enmatbr;
+    material enmatTz;
     fuel enfl;
     double enPk=10;
     double enPa=0.06;
     InputData(){}
     InputData(double DmidMax, double Hmaximum, double Hminimum, double Xmaximum, double Vtarget,  double milestone,
-              matherial enmatShell,matherial enmatnozzle, matherial enmatbr,  matherial enmatTz, fuel enfl, double enPk,
+              material enmatShell,material enmatnozzle, material enmatbr,  material enmatTz, fuel enfl, double enPk,
     double enPa);
     bool iscorrect()const;
 
 };
-struct RocketHeadData{
-    coneparam nconepar;
-    std::vector<coneparam>conespar;
-    std::vector<planeparams>planespar;
-    std::vector<equipmentparameters>equipspar;
-};
+
 struct OutputData{
     std::vector<baldat>traect;
     RocketHeadData headData;
@@ -86,19 +81,19 @@ public:
     void setAtmosphere(AbstractAtmosphere* aa);
     void setInputData(const InputData& data);
     InputData getInputData()const{return indat;}
-    void setNosecone(matherial math,double Dend, double len, double delta);
-    void setTailStab(matherial math,
+    void setNosecone(material math,double Dend, double len, double delta);
+    void setTailStab(material math,
                   double Xfromnose,
                   double Broot, double Btip,
                   double Croot, double Ctip,
                   double Xtip, double Xrf,
                   double Xrr, double Xtf,
                   double Xtr, double H);
-    void setEngine(matherial mathShell, matherial mathbr, matherial mathnozzle, matherial mathtzp,
+    void setEngine(material mathShell, material mathbr, material mathnozzle, material mathtzp,
                    fuel fuel,double fuelmass, double Pk=10, double Pa=0.06);
-    void addConoid(matherial math, double Dbegin, double Dend, double length, double delta);
-    void insertConoid(matherial math, double Dbegin, double Dend, double length, double delta, size_t num=100);
-    void addplane(matherial math,
+    void addConoid(material math, double Dbegin, double Dend, double length, double delta);
+    void insertConoid(material math, double Dbegin, double Dend, double length, double delta, size_t num=100);
+    void addplane(material math,
                   double Xfromnose,
                   double Broot, double Btip,
                   double Croot, double Ctip,

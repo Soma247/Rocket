@@ -8,10 +8,10 @@
 
 
 struct engineparameters{
-    matherial matShell;
-    matherial matnozzle;
-    matherial matbr;
-    matherial matTz;
+    material matShell;
+    material matnozzle;
+    material matbr;
+    material matTz;
     fuel fl;
     double Pk=0;
     double Pa=0;
@@ -92,8 +92,8 @@ public:
     virtual engineparameters getparams()const;
 
     engine(){}
-    engine(matherial mathShell, matherial mathbr,
-           matherial mathnozzle, matherial mathtz, fuel fuel,
+    engine(material mathShell, material mathbr,
+           material mathnozzle, material mathtz, fuel fuel,
            double Dmid, double mfuel, double Pk, double Pa);
 
 private:

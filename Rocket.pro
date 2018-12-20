@@ -24,7 +24,9 @@ SOURCES += \
     Gui/workwindow.cpp \
     Gui/ItemModel/balcalcitem.cpp \
     Gui/Dialogs/addconoiddialog.cpp \
-    Gui/Dialogs/setnoseconedialog.cpp
+    Gui/Dialogs/setnoseconedialog.cpp \
+    Gui/Dialogs/errordialog.cpp \
+    Gui/Dialogs/addplanedialog.cpp
 
 
 HEADERS += \
@@ -47,13 +49,19 @@ HEADERS += \
     Gui/workwindow.h \
     Gui/ItemModel/balcalcitem.h \
     Gui/Dialogs/addconoiddialog.h \
-    Gui/Dialogs/setnoseconedialog.h
+    Gui/Dialogs/setnoseconedialog.h \
+    Gui/Dialogs/errordialog.h \
+    Gui/Dialogs/addplanedialog.h
 
 DISTFILES += \
     garbage.txt \
-    resources/cont_red_circle.png
+    resources/cont_red_circle.png \
+    hardfuels.txt \
+    materials.txt
 
 FORMS += \
     Gui/workwindow.ui \
     Gui/Dialogs/addconoiddialog.ui \
-    Gui/Dialogs/setnoseconedialog.ui
+    Gui/Dialogs/setnoseconedialog.ui \
+    Gui/Dialogs/errordialog.ui \
+    Gui/Dialogs/addplanedialog.ui

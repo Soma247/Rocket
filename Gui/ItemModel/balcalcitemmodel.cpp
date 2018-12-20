@@ -1,5 +1,5 @@
 #include "balcalcitemmodel.h"
-
+constexpr size_t statevlen=6;
 //конструктор
 balcalcItemModel::balcalcItemModel(std::unique_ptr<ballisticCalculator> bc, QObject *parent)
     : QAbstractItemModel(parent){
@@ -48,20 +48,20 @@ balcalcItem *balcalcItemModel::getItem(const QModelIndex &index) const {
  return rootItem;
 }
 
-void balcalcItemModel::setNosecone(matherial math, double Dend, double len, double delta)
+void balcalcItemModel::setNosecone(material math, double Dend, double len, double delta)
 {
     if(balcal)
         balcal->setNosecone(math,Dend,len,delta);
     update();
 }
 
-void balcalcItemModel::setTailStab(matherial math, double Broot, double Btip, double Croot, double Ctip, double Xtip, double Xrf, double Xrr, double Xtf, double Xtr, double H){
+void balcalcItemModel::setTailStab(material math, double Broot, double Btip, double Croot, double Ctip, double Xtip, double Xrf, double Xrr, double Xtf, double Xtr, double H){
     if(balcal)
         balcal->setTailStab(math,0,Broot,Btip,Croot,Ctip,Xtip,Xrf,Xrr,Xtf,Xtr,H);
     update();
 }
 
-void balcalcItemModel::addConoid(matherial math, double Dbegin, double Dend, double length, double delta)
+void balcalcItemModel::addConoid(material math, double Dbegin, double Dend, double length, double delta)
 {
    if(balcal){
     balcal->addConoid(math,Dbegin,Dend,length,delta);
@@ -69,7 +69,7 @@ void balcalcItemModel::addConoid(matherial math, double Dbegin, double Dend, dou
     update();
 }
 
-void balcalcItemModel::addplane(matherial math, double Xfromnose, double Broot, double Btip, double Croot, double Ctip, double Xtip, double Xrf, double Xrr, double Xtf, double Xtr, double H)
+void balcalcItemModel::addplane(material math, double Xfromnose, double Broot, double Btip, double Croot, double Ctip, double Xtip, double Xrf, double Xrr, double Xtf, double Xtr, double H)
 {
     if(balcal)
         balcal->setTailStab(math,Xfromnose,Broot,Btip,Croot,Ctip,Xtip,Xrf,Xrr,Xtf,Xtr,H);
@@ -102,7 +102,7 @@ void balcalcItemModel::ejectEquipment(size_t index){
      update();
 }
 
-void balcalcItemModel::insertConoid(matherial math, double Dbegin, double Dend, double length, double delta, size_t index){
+void balcalcItemModel::insertConoid(material math, double Dbegin, double Dend, double length, double delta, size_t index){
     if(balcal)
         balcal->insertConoid(math,Dbegin,Dend,length,delta,index);
     update();
@@ -110,7 +110,7 @@ void balcalcItemModel::insertConoid(matherial math, double Dbegin, double Dend, 
 
 void balcalcItemModel::update(){
     beginResetModel();
-    if(rootItem){
+    if(rootItem&&balcal){
         std::vector<size_t> state=balcal->state();
         nosecone->removeAllChildrens();
         tailstab->removeAllChildrens();
@@ -118,7 +118,7 @@ void balcalcItemModel::update(){
         cones->removeAllChildrens();
         equips->removeAllChildrens();
 
-        if(state.size()==5){
+        if(state.size()==statevlen){
             for(auto&s:state)
                 std::cout<<s<<" ";
             std::cout<<std::endl;
@@ -142,6 +142,7 @@ void balcalcItemModel::update(){
                             new balcalcItem(balcalcItem::itemtype::Equipment,QString("груз %1").arg(i+1),equips));
 
         }
+        headData=balcal->getheadData();
     }
     endResetModel();
     emit updated();

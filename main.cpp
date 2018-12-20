@@ -7,8 +7,9 @@
 
 int main(int argc, char *argv[]){
     QApplication app(argc, argv);
-    WorkWindow ww;
+    WorkWindow ww("D:/Qt/projects/Rocket/materials.txt","D:/Qt/projects/Rocket/hardfuels.txt");
     ww.show();
+    std::ifstream ifs("D:/Qt/projects/Rocket/materials.txt");
     try{/*
         std::list<double> m;
         std::cout<<"--------------------------"<<m.front()<<" "<<m.back()<<std::endl;

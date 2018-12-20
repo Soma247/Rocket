@@ -39,12 +39,12 @@ void ballisticCalculator::setAtmosphere(AbstractAtmosphere *aa){
     atmo.reset(aa);
 }
 
-void ballisticCalculator::setNosecone(matherial math, double Dend, double len, double delta){
+void ballisticCalculator::setNosecone(material math, double Dend, double len, double delta){
     if(model)
         model->setNosecone(math,Dend,len,delta);
 }
 
-void ballisticCalculator::setTailStab(matherial math, double Xfromnose, double Broot, double Btip, double Croot, double Ctip, double Xtip, double Xrf, double Xrr, double Xtf, double Xtr, double H){
+void ballisticCalculator::setTailStab(material math, double Xfromnose, double Broot, double Btip, double Croot, double Ctip, double Xtip, double Xrf, double Xrr, double Xtf, double Xtr, double H){
     if(model)
         model->setTailStab(math,Xfromnose,
                         Broot,Btip,
@@ -54,23 +54,23 @@ void ballisticCalculator::setTailStab(matherial math, double Xfromnose, double B
                         Xtr,H);
 }
 
-void ballisticCalculator::setEngine(matherial mathShell, matherial mathbr, matherial mathnozzle, matherial mathtzp, fuel fuel, double fuelmass, double Pk, double Pa){
+void ballisticCalculator::setEngine(material mathShell, material mathbr, material mathnozzle, material mathtzp, fuel fuel, double fuelmass, double Pk, double Pa){
     if(model)
         model->setEngine(mathShell, mathbr, mathnozzle,mathtzp,
                          fuel, fuelmass, Pk, Pa);
 }
 
-void ballisticCalculator::addConoid(matherial math, double Dbegin, double Dend, double length, double delta){
+void ballisticCalculator::addConoid(material math, double Dbegin, double Dend, double length, double delta){
     if(model)
         model->addConoid(math, Dbegin, Dend, length,delta);
 }
 
-void ballisticCalculator::insertConoid(matherial math, double Dbegin, double Dend, double length, double delta, size_t num){
+void ballisticCalculator::insertConoid(material math, double Dbegin, double Dend, double length, double delta, size_t num){
     if(model)
         model->insertConoid(math,Dbegin,Dend,length,delta,num);
 }
 
-void ballisticCalculator::addplane(matherial math, double Xfromnose, double Broot, double Btip, double Croot, double Ctip, double Xtip, double Xrf, double Xrr, double Xtf, double Xtr, double H){
+void ballisticCalculator::addplane(material math, double Xfromnose, double Broot, double Btip, double Croot, double Ctip, double Xtip, double Xrf, double Xrr, double Xtf, double Xtr, double H){
     if(model)
         model->addplane(math,Xfromnose,
                         Broot,Btip,
@@ -200,22 +200,23 @@ OutputData ballisticCalculator::calculate(){
 }
 
 RocketHeadData ballisticCalculator::getheadData(){
-    if(model && model->isheadcorrect()){
-        RocketHeadData dat;
-        std::vector<size_t>flags=model->state();
-        dat.nconepar=model->getNCparams();
-        for(size_t i=0;i<flags.at(1);++i)
-            dat.conespar.push_back(model->getModuleParams(i));
-        for(size_t i=0;i<flags.at(2);++i)
-            dat.planespar.push_back(model->getPlaneParams(i));
-        for(size_t i=0;i<flags.at(2);++i)
-            dat.equipspar.push_back(model->geteqparams(i));
-        return dat;
-    }
+    if(model)return model->getheadData();
+    return RocketHeadData();
 }
 
 std::vector<size_t> ballisticCalculator::state() const{
-    return model? model->state() : std::vector<size_t>{};
+   std::vector<size_t>temp;
+   if(model){
+    temp=model->state();
+    temp.push_back(indat.iscorrect());
+   }
+
+   std::cout<<"bcal state is: ";
+   for(auto&s:temp)
+       std::cout<<s<<" ";
+   std::cout<<std::endl;
+
+    return temp;
 }
 
 void ballisticCalculator::setInputData(const InputData &data){
@@ -224,11 +225,11 @@ void ballisticCalculator::setInputData(const InputData &data){
 
 
 bool InputData::iscorrect()const{
-    std::cout<<"iscorrid"<<(Dmid>0 && Hmax>Hmin && Hmin>0 && Xmax>0 && mstone>0 && Vtar>0)<<std::endl;
+   // std::cout<<"iscorrid"<<(Dmid>0 && Hmax>Hmin && Hmin>0 && Xmax>0 && mstone>0 && Vtar>0)<<std::endl;
     return Dmid>0 && Hmax>Hmin && Hmin>0 && Xmax>0 && mstone>0 && Vtar>0;
 }
 
-InputData::InputData(double DmidMax, double Hmaximum, double Hminimum, double Xmaximum, double Vtarget, double milestone, matherial enMatShell, matherial enMatnozzle, matherial enMatbr, matherial enMatTz, fuel enFl, double Pk, double Pa):
+InputData::InputData(double DmidMax, double Hmaximum, double Hminimum, double Xmaximum, double Vtarget, double milestone, material enMatShell, material enMatnozzle, material enMatbr, material enMatTz, fuel enFl, double Pk, double Pa):
     Dmid{DmidMax},
     Hmax{Hmaximum},
     Hmin{Hminimum},

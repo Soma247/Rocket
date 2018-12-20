@@ -2,6 +2,19 @@
 #include <sstream>
 const std::string rocketmodelheader{"RocketModel"};
 
+RocketHeadData RocketModel::getheadData(){
+    RocketHeadData data;
+    if(pnosecone)data.nconepar=pnosecone->getparams();
+    if(ptailplane)data.tailstabpar=ptailplane->getparams();
+    for(auto&c:pconoids)
+        data.conespar.push_back(c.getparams());
+    for(auto&p:pplanes)
+        data.planespar.push_back(p.getparams());
+    for(auto&e:pequipments)
+        data.equipspar.push_back(std::make_pair<double,double>(e.massCenter(),e.mass()));
+    return data;
+}
+
 coneparam RocketModel::getNCparams() const{return pnosecone?pnosecone->getparams():coneparam();}
 coneparam RocketModel::getTailConeParams() const{return ptailcone?ptailcone->getparams():coneparam();}
 coneparam RocketModel::getModuleParams(size_t num)const{
@@ -20,19 +33,19 @@ std::pair<double, double> RocketModel::geteqparams(size_t num)const{
 }
 
 
-void RocketModel::setNosecone(matherial math, double Dend, double len, double delta){
+void RocketModel::setNosecone(material math, double Dend, double len, double delta){
     pnosecone.reset(new nosecone(math,Dend,len,delta));
     update();
 }
 
-void RocketModel::setTailStab(matherial math, double Xfromnose, double Broot, double Btip, double Croot, double Ctip, double Xtip, double Xrf, double Xrr, double Xtf, double Xtr, double H)
+void RocketModel::setTailStab(material math, double Xfromnose, double Broot, double Btip, double Croot, double Ctip, double Xtip, double Xrf, double Xrr, double Xtf, double Xtr, double H)
 {
     ptailplane.reset(new plane(math,Xfromnose,Broot,Btip,Croot,Ctip,
                                      Xtip,Xrf,Xrr,Xtf,Xtr,H));
     update();
 }
-void RocketModel::setEngine(matherial mathShell, matherial mathbr,
-                            matherial mathnozzle, matherial mathtzp,
+void RocketModel::setEngine(material mathShell, material mathbr,
+                            material mathnozzle, material mathtzp,
                             fuel fuel, double fuelmass, double Pk, double Pa){
     pengine.reset(new engine(mathShell, mathbr,mathnozzle, mathtzp,fuel, Dmax, fuelmass, Pk, Pa));
     engineparameters par=pengine->getparams();
@@ -41,11 +54,11 @@ void RocketModel::setEngine(matherial mathShell, matherial mathbr,
     update();
 }
 
-void RocketModel::addConoid(matherial math, double Dbegin, double Dend, double length, double delta){
+void RocketModel::addConoid(material math, double Dbegin, double Dend, double length, double delta){
     pconoids.push_back(conoid{math,Dbegin,Dend,length,delta});
     update();
 }
-void RocketModel::insertConoid(matherial math, double Dbegin, double Dend, double length, double delta, size_t num){
+void RocketModel::insertConoid(material math, double Dbegin, double Dend, double length, double delta, size_t num){
     if(num>pconoids.size())
         pconoids.push_back(conoid(math,Dbegin,Dend,length,delta));
     else
@@ -53,7 +66,7 @@ void RocketModel::insertConoid(matherial math, double Dbegin, double Dend, doubl
     update();
 }
 
-void RocketModel::addplane(matherial math, double Xfromnose,
+void RocketModel::addplane(material math, double Xfromnose,
                            double Broot, double Btip, double Croot, double Ctip,
                            double Xtip, double Xrf, double Xrr, double Xtf,
                            double Xtr, double H){
@@ -276,6 +289,15 @@ void RocketModel::update(){
         int i=1;
         Lnc=pnosecone->getL();
         pnosecone->setname(std::to_string(i++));
+
+        //корректировка диаметров стыков переместить проверку на вычисление
+        /*
+        if(pconoids.size())
+            pconoids.at(0).setDbegin(pnosecone->getDend());
+        for(size_t i=1;i<pconoids.size();++i)
+            pconoids.at(i).setDbegin(pconoids.at(i-1).getDend());
+            */
+
         for(conoid& c:pconoids){
             c.setX0(L);
             if(c.getDend()<Dmax)Lnc=L;
@@ -328,7 +350,7 @@ std::ostream& operator<<(std::ostream &os, const RocketModel& rm){
 
 std::istream &operator>>(std::istream &is, RocketModel &rm){
     std::string header;
-    matherial mat;
+    material mat;
     int tmp{0};
     size_t pconesize{0},pplansize{0},peqsize{0};
     char delim{0},delim1{0},delim2{0},delim3{0},delim4{0},delim5{0},

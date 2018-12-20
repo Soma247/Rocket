@@ -32,9 +32,9 @@ public:
     }
     virtual ~nosecone()override{}
     nosecone(){}
-    nosecone(matherial math, double Dend, double length, double delta);
+    nosecone(material math, double Dend, double length, double delta);
 private:
-    matherial mat;
+    material mat;
     double dend=0;
     double len=0;
     double delt=0;
