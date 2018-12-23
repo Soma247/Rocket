@@ -105,6 +105,12 @@ void ballisticCalculator::ejectEquipment(size_t num){
         model->ejectEquipment(num);
 }
 
+void ballisticCalculator::ejectTailStab()
+{
+    if(model)
+        model->ejectTailStab();
+}
+
 void ballisticCalculator::openProject(std::string proFile)
 {
 
@@ -226,11 +232,11 @@ void ballisticCalculator::setInputData(const InputData &data){
 
 bool InputData::iscorrect()const{
    // std::cout<<"iscorrid"<<(Dmid>0 && Hmax>Hmin && Hmin>0 && Xmax>0 && mstone>0 && Vtar>0)<<std::endl;
-    return Dmid>0 && Hmax>Hmin && Hmin>0 && Xmax>0 && mstone>0 && Vtar>0;
+    return /*Dmid>0 && */Hmax>Hmin && Hmin>0 && Xmax>mstone && mstone>0 && Vtar>0;
 }
 
-InputData::InputData(double DmidMax, double Hmaximum, double Hminimum, double Xmaximum, double Vtarget, double milestone, material enMatShell, material enMatnozzle, material enMatbr, material enMatTz, fuel enFl, double Pk, double Pa):
-    Dmid{DmidMax},
+InputData::InputData(double Hmaximum, double Hminimum, double Xmaximum, double Vtarget, double milestone, material enMatShell, material enMatnozzle, material enMatbr, material enMatTz, fuel enFl, double Pk, double Pa):
+ //   Dmid{DmidMax},
     Hmax{Hmaximum},
     Hmin{Hminimum},
     Xmax{Xmaximum},

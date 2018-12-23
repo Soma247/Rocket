@@ -11,8 +11,8 @@ balcalcItemModel::balcalcItemModel(std::unique_ptr<ballisticCalculator> bc, QObj
         tailstab =new balcalcItem(balcalcItem::itemtype::TailStabCont,"Хвостовой стабилизатор");
         stabs =new balcalcItem(balcalcItem::itemtype::PlanesCont,"Несущие плоскости");
         cones =new balcalcItem(balcalcItem::itemtype::ConesCont,"Отсеки");
-        equips =new balcalcItem(balcalcItem::itemtype::EquipsCont,"Аппаратура");
-    flytask =new balcalcItem(balcalcItem::itemtype::FlyTask,"Программа полета");
+        equips =new balcalcItem(balcalcItem::itemtype::EquipsCont,"Аппаратура(грузы)");
+    flytask =new balcalcItem(balcalcItem::itemtype::FlyTask,"Исходные данные");
     rootItem->appendChild(rocket);
     rootItem->appendChild(flytask);
 
@@ -48,6 +48,13 @@ balcalcItem *balcalcItemModel::getItem(const QModelIndex &index) const {
  return rootItem;
 }
 
+void balcalcItemModel::setInputData(const InputData &indat){
+    if(balcal)balcal->setInputData(indat);
+    update();
+}
+
+InputData balcalcItemModel::getInputData(){return balcal?balcal->getInputData():InputData();}
+
 void balcalcItemModel::setNosecone(material math, double Dend, double len, double delta)
 {
     if(balcal)
@@ -72,7 +79,7 @@ void balcalcItemModel::addConoid(material math, double Dbegin, double Dend, doub
 void balcalcItemModel::addplane(material math, double Xfromnose, double Broot, double Btip, double Croot, double Ctip, double Xtip, double Xrf, double Xrr, double Xtf, double Xtr, double H)
 {
     if(balcal)
-        balcal->setTailStab(math,Xfromnose,Broot,Btip,Croot,Ctip,Xtip,Xrf,Xrr,Xtf,Xtr,H);
+        balcal->addplane(math,Xfromnose,Broot,Btip,Croot,Ctip,Xtip,Xrf,Xrr,Xtf,Xtr,H);
     update();
 }
 
@@ -102,6 +109,13 @@ void balcalcItemModel::ejectEquipment(size_t index){
      update();
 }
 
+void balcalcItemModel::ejectTailStab(){
+    if(!balcal)return;
+    balcal->ejectTailStab();
+    update();
+}
+
+
 void balcalcItemModel::insertConoid(material math, double Dbegin, double Dend, double length, double delta, size_t index){
     if(balcal)
         balcal->insertConoid(math,Dbegin,Dend,length,delta,index);
@@ -119,6 +133,7 @@ void balcalcItemModel::update(){
         equips->removeAllChildrens();
 
         if(state.size()==statevlen){
+           headData=balcal->getheadData();
             for(auto&s:state)
                 std::cout<<s<<" ";
             std::cout<<std::endl;
@@ -139,10 +154,10 @@ void balcalcItemModel::update(){
 
             for(size_t i=0;i<state.at(4);++i)
                 equips->appendChild(
-                            new balcalcItem(balcalcItem::itemtype::Equipment,QString("груз %1").arg(i+1),equips));
-
+                            new balcalcItem(balcalcItem::itemtype::Equipment,
+                                            QString::fromStdString(headData.equipspar.at(i).name),
+                                            equips));
         }
-        headData=balcal->getheadData();
     }
     endResetModel();
     emit updated();

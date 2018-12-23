@@ -15,11 +15,13 @@ struct fuel{
     double ukoef=0;
     double upow=0;
     double U(double pk);
-    bool iscorrect(){return AL>=0 && Prelst>=0 &&
+    bool operator==(const fuel& second)const;
+    bool iscorrect()const{return AL>=0 && Prelst>=0 &&
                               rot>=0 && tst>=0 &&
                                rst>=0 && kst>=0 &&
                                  ukoef>=0 && upow>=0;
     }
+    bool operator!=(const fuel&second)const;
     fuel(){}
     fuel(std::string modulename, double Alper, double PrelativeST,double RoT, double Tst, double Rst, double Kst, double Ukoef, double Upow):
         name{modulename},AL{Alper},Prelst{PrelativeST},rot{RoT},tst{Tst},rst{Rst},kst{Kst},ukoef{Ukoef},upow{Upow}

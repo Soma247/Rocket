@@ -26,7 +26,9 @@ SOURCES += \
     Gui/Dialogs/addconoiddialog.cpp \
     Gui/Dialogs/setnoseconedialog.cpp \
     Gui/Dialogs/errordialog.cpp \
-    Gui/Dialogs/addplanedialog.cpp
+    Gui/Dialogs/addplanedialog.cpp \
+    Gui/Dialogs/addequipmentdialog.cpp \
+    Gui/Dialogs/setflytask.cpp
 
 
 HEADERS += \
@@ -51,7 +53,9 @@ HEADERS += \
     Gui/Dialogs/addconoiddialog.h \
     Gui/Dialogs/setnoseconedialog.h \
     Gui/Dialogs/errordialog.h \
-    Gui/Dialogs/addplanedialog.h
+    Gui/Dialogs/addplanedialog.h \
+    Gui/Dialogs/addequipmentdialog.h \
+    Gui/Dialogs/setflytask.h
 
 DISTFILES += \
     garbage.txt \
@@ -64,4 +68,6 @@ FORMS += \
     Gui/Dialogs/addconoiddialog.ui \
     Gui/Dialogs/setnoseconedialog.ui \
     Gui/Dialogs/errordialog.ui \
-    Gui/Dialogs/addplanedialog.ui
+    Gui/Dialogs/addplanedialog.ui \
+    Gui/Dialogs/addequipmentdialog.ui \
+    Gui/Dialogs/setflytask.ui

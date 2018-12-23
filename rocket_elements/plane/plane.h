@@ -18,12 +18,13 @@ struct planeparams{
     double angleCmax=0;
     double massn=0;
     double n=4;
-    double Kaa;
+    double Kaa=0;
+    double S(){return 0.5*(broot+btip)*h;}
 };
 
 class plane:public abstractRocketElement{
 public:
-    virtual double S()const override{return 0.5*(params.croot+params.ctip)*params.h*params.n;}//S площадь миделя всех элементов
+    virtual double Smid()const override{return 0.5*(params.croot+params.ctip)*params.h*params.n;}//S площадь миделя всех элементов
 
     virtual double mass()const override{return  params.massn;}
     virtual void setmass(double m){params.massn=m;}

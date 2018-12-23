@@ -5,12 +5,12 @@
 
 const std::string noseconeheader{"nosecone"};
 
-double nosecone::S() const{
+double nosecone::Smid() const{
     return 0.25*M_PI*dend*dend;
 }
 
 double nosecone::mass() const{
-    return mat.Ro*(S()-0.25*M_PI*pow(dend-2*delt,2))*getL()/3.0;
+    return mat.Ro*(Smid()-0.25*M_PI*pow(dend-2*delt,2))*getL()/3.0;
 }
 
 double nosecone::massCenter() const{

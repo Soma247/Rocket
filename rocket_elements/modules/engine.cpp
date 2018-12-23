@@ -2,7 +2,7 @@
 #include <iostream>
 #include <math.h>
 const std::string engineheader {"HFengine"};
-double engine::S() const{return 0.25*M_PI*params.engineDiameter*params.engineDiameter;}
+double engine::Smid() const{return 0.25*M_PI*params.engineDiameter*params.engineDiameter;}
 double engine::mass() const{return params.mengine+params.mfuel;}
 double engine::massCenter() const{return params.Xengine;}
 double engine::getCp(double, double) const{return 0;}//

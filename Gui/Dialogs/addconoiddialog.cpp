@@ -2,8 +2,7 @@
 #include "ui_addconoiddialog.h"
 
 addConoidDialog::addConoidDialog(const std::vector<material> *materials, balcalcItemModel* model, QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::addConoidDialog),bcmodel{model}
+    QDialog(parent),ui(new Ui::addConoidDialog),bcmodel{model}
 {
     ui->setupUi(this);
     mats=materials;

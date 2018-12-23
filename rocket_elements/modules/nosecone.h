@@ -4,7 +4,7 @@
 
 class nosecone:public Module{
 public:
-    virtual double S()const override;
+    virtual double Smid()const override;
     virtual double mass()const override;
     virtual double massCenter()const override;
 
@@ -28,7 +28,7 @@ public:
     virtual void setdelt(double d);
 
     virtual coneparam getparams()const{
-        return coneparam{mat,0,dend,len,delt};
+        return coneparam{mat,0,dend,len,delt,mass()};
     }
     virtual ~nosecone()override{}
     nosecone(){}

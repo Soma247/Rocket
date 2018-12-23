@@ -4,7 +4,7 @@ equipment::equipment(std::string eqname, double X, double mass):
     name{eqname},eqmass{mass},Xm{X}
 {
 }
-double equipment::S() const{return 0;}
+double equipment::Smid() const{return 0;}
 
 double equipment::mass() const{return eqmass;}
 

@@ -4,7 +4,7 @@
 
 class conoid:public Module{
 public:
-    virtual double S()const override;
+    virtual double Smid()const override;
     virtual double mass()const override;
     virtual double massCenter()const override;
     virtual double getCp(double Dmid, double M)const override;
@@ -31,7 +31,7 @@ public:
 
     virtual ~conoid()override{}
     virtual coneparam getparams()const{
-        return coneparam{mat,dbegin,dend,len,delt};
+        return coneparam{mat,dbegin,dend,len,delt,mass()};
     }
     conoid(){}
     conoid(material math, double Dbegin, double Dend, double length, double delta);

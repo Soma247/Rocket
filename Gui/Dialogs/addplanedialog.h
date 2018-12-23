@@ -24,14 +24,15 @@ class addPlaneDialog : public QDialog
     bool isXtfValid=true;
     bool isXtrValid=true;
     bool isHvalid=true;
-    bool isNvalid=true;
     bool isTail=false;
+    bool isEdit=false;
     int curindex=0;
 
 public:
     explicit addPlaneDialog(const std::vector<material>* materials, balcalcItemModel* model,QWidget *parent = nullptr);
     ~addPlaneDialog();
     void setdata (bool tail=false, bool edit =false, int index=0);
+    bool isDataValid();
 
 
 
@@ -42,12 +43,12 @@ private slots:
     void on_le_Ctip_editingFinished();
     void on_le_Xtip_editingFinished();
     void on_le_X_editingFinished();
-    void on_le_N_editingFinished();
     void on_le_Xrf_editingFinished();
     void on_le_Xrr_editingFinished();
     void on_le_Xtf_editingFinished();
     void on_le_Xtr_editingFinished();
     void on_le_H_editingFinished();
+    void on_buttonBox_accepted();
 };
 
 #endif // ADDPLANEDIALOG_H

@@ -50,7 +50,8 @@ public:
 
     balcalcItem* getItem(const QModelIndex &index) const;
 
-
+    void setInputData(const InputData& indat);
+    InputData getInputData();
     void setNosecone(material math,double Dend, double len, double delta);
     void setTailStab(material math,
                      double Broot, double Btip,
@@ -73,6 +74,7 @@ public:
     void ejectConoid(size_t index);
     void ejectPlane(size_t index);
     void ejectEquipment(size_t index);
+    void ejectTailStab();
     void insertConoid(material math, double Dbegin, double Dend, double length, double delta, size_t index);
 
 

@@ -4,14 +4,22 @@ const std::string rocketmodelheader{"RocketModel"};
 
 RocketHeadData RocketModel::getheadData(){
     RocketHeadData data;
-    if(pnosecone)data.nconepar=pnosecone->getparams();
+    if(pnosecone){
+        data.nconepar=pnosecone->getparams();
+        data.headLen+=data.nconepar.len;
+    }
     if(ptailplane)data.tailstabpar=ptailplane->getparams();
-    for(auto&c:pconoids)
+    for(auto&c:pconoids){
         data.conespar.push_back(c.getparams());
+        data.headLen+=c.getL();
+    }
     for(auto&p:pplanes)
         data.planespar.push_back(p.getparams());
-    for(auto&e:pequipments)
-        data.equipspar.push_back(std::make_pair<double,double>(e.massCenter(),e.mass()));
+    for(size_t i=0;i<pequipments.size();++i)
+        data.equipspar.push_back(geteqparams(i));
+    data.headDend=Dengine;
+    data.headMass=getmass();
+    data.headDmax=Dmax;
     return data;
 }
 
@@ -27,9 +35,11 @@ planeparams RocketModel::getPlaneParams(size_t num)const{
     return pplanes[num].getparams();
 }
 
-std::pair<double, double> RocketModel::geteqparams(size_t num)const{
+equipmentparameters RocketModel::geteqparams(size_t num)const{
     if(num>pequipments.size())throw std::out_of_range("eqparams num is out of range");
-    return std::pair<double,double>(pequipments[num].getX0(),pequipments[num].getL());
+    return {pequipments[num].getname(),
+                pequipments[num].massCenter(),
+                pequipments[num].mass()};
 }
 
 
@@ -47,18 +57,22 @@ void RocketModel::setTailStab(material math, double Xfromnose, double Broot, dou
 void RocketModel::setEngine(material mathShell, material mathbr,
                             material mathnozzle, material mathtzp,
                             fuel fuel, double fuelmass, double Pk, double Pa){
-    pengine.reset(new engine(mathShell, mathbr,mathnozzle, mathtzp,fuel, Dmax, fuelmass, Pk, Pa));
+    pengine.reset(new engine(mathShell, mathbr,mathnozzle,
+                             mathtzp,fuel, Dengine, fuelmass, Pk, Pa));
     engineparameters par=pengine->getparams();
-    ptailcone.reset(new conoid(mathShell,Dmax,par.Da,par.Leng-par.LforwardBottom-par.Lcyl,0.08));
+    ptailcone.reset(new conoid(mathShell,Dengine,par.Da,
+                               par.Leng-par.LforwardBottom-par.Lcyl,0.08));
     //конус обратный от сопла до миделя по длине сопла
     update();
 }
 
-void RocketModel::addConoid(material math, double Dbegin, double Dend, double length, double delta){
+void RocketModel::addConoid(material math, double Dbegin, double Dend,
+                            double length, double delta){
     pconoids.push_back(conoid{math,Dbegin,Dend,length,delta});
     update();
 }
-void RocketModel::insertConoid(material math, double Dbegin, double Dend, double length, double delta, size_t num){
+void RocketModel::insertConoid(material math, double Dbegin,
+                               double Dend, double length, double delta, size_t num){
     if(num>pconoids.size())
         pconoids.push_back(conoid(math,Dbegin,Dend,length,delta));
     else
@@ -127,7 +141,13 @@ double RocketModel::getXp(double M, double sound_sp, double cin_visc) const{
 
 
 double RocketModel::getmass()const{
-    double mass=pnosecone->mass()+pengine->mass()+ptailcone->mass();
+    double mass{0};
+    if(pnosecone)
+        mass+=pnosecone->mass();
+    if(pengine)
+        mass+=pengine->mass();
+    if(ptailcone)
+        mass+=ptailcone->mass();
     if(ptailplane)mass+=ptailplane->mass();
     for(const conoid& c:pconoids)
         mass+=c.mass();
@@ -140,7 +160,10 @@ double RocketModel::getmass()const{
 
 double RocketModel::getheadmass() const
 {
-    double mass=pnosecone->mass();
+
+    double mass{0};
+    if(pnosecone)
+        mass+=pnosecone->mass();
     for(const conoid& c:pconoids)
         mass+=c.mass();
     for(const equipment& e:pequipments)
@@ -152,9 +175,13 @@ double RocketModel::getheadmass() const
 
 double RocketModel::getmasscenter()const{
 
-    double mx=pnosecone->mass()*pnosecone->massCenter()+
-            pengine->mass()*(pengine->getX0()+pengine->massCenter())+
-            ptailcone->mass()*(ptailcone->massCenter()+ptailcone->getX0());
+    double mx{0};
+    if(pnosecone)
+        mx+=pnosecone->mass()*pnosecone->massCenter();
+    if(pengine)
+        mx+=pengine->mass()*(pengine->getX0()+pengine->massCenter());
+    if(ptailcone)
+        mx+=ptailcone->mass()*(ptailcone->massCenter()+ptailcone->getX0());
 
     for(const conoid& c:pconoids)
         mx+=c.mass()*(c.massCenter()+c.getX0());
@@ -168,7 +195,13 @@ double RocketModel::getmasscenter()const{
 }
 
 double RocketModel::getmassend() const{
-    double mass=pnosecone->mass()+pengine->getmassend()+ptailcone->mass();
+    double mass{0};
+    if(pnosecone)
+        mass+=pnosecone->mass();
+    if(pengine)
+        mass+=pengine->getmassend();
+    if(ptailcone)
+        mass+=ptailcone->mass();
     for(const conoid& c:pconoids)
         mass+=c.mass();
     for(const equipment& e:pequipments)
@@ -181,9 +214,13 @@ double RocketModel::getmassend() const{
 }
 
 double RocketModel::getmasscenterend() const{
-    double mx=pnosecone->mass()*pnosecone->massCenter()+
-            pengine->getmassend()*(pengine->getX0()+pengine->getmasscenterend())+
-            ptailcone->mass()*(ptailcone->massCenter()+ptailcone->getX0());
+    double mx{0};
+    if(pnosecone)
+        mx+=pnosecone->mass()*pnosecone->massCenter();
+    if(pengine)
+        mx+=pengine->mass()*(pengine->getX0()+pengine->getmasscenterend());
+    if(ptailcone)
+        mx+=ptailcone->mass()*(ptailcone->massCenter()+ptailcone->getX0());
     for(const conoid& c:pconoids)
         mx+=c.mass()*(c.massCenter()+c.getX0());
     for(const equipment& e:pequipments)
@@ -196,18 +233,23 @@ double RocketModel::getmasscenterend() const{
 }
 
 double RocketModel::getLength() const{
-    double length=pnosecone->getL()+pengine->getL();
+    double length{0};
+    if(pnosecone)
+        length+=pnosecone->getL();
+    if(pengine)
+        length+=pengine->getL();
     for (const conoid& c:pconoids)
         length+=c.getL();
     return length;
 }
 
 double RocketModel::getCp(double M, bool engineisactive)const{
+    if(!pnosecone||!pengine)throw std::logic_error("model uncomplete");
     double cp=pnosecone->getCp(Dmax,M);
     for(const conoid& c:pconoids)
         cp+=c.getCp(Dmax,M);
     engineparameters par=pengine->getparams();
-    cp+=Aerodynamics::CxpSternBottom(ptailcone->getL(),Dmax,ptailcone->getDend(),ptailcone->getDend(),M,engineisactive);
+    cp+=Aerodynamics::CxpSternBottom(ptailcone->getL(),Dengine,ptailcone->getDend(),ptailcone->getDend(),M,engineisactive);
     cp*=0.25*Dmax*Dmax*M_PI/SmidLA;
     for(const plane& p:pplanes)
         cp+=4*p.getCp(SmidLA,M);
@@ -231,7 +273,7 @@ double RocketModel::getCya(double M, double sound_sp, double cin_visc) const{
     for(const plane& p:pplanes)
         cya+=k*p.getcyaConsole(Dmax,SmidLA,M,sound_sp,cin_visc);
     if(ptailplane)
-        cya+=k*ptailplane->getcyaConsole(Dmax,SmidLA,M,sound_sp,cin_visc);
+        cya+=k*ptailplane->getcyaConsole(Dengine,SmidLA,M,sound_sp,cin_visc);
     return cya;
 }
 
@@ -284,36 +326,38 @@ std::vector<size_t> RocketModel::state() const{/*
 }
 
 void RocketModel::update(){
-    if(pnosecone && pengine && ptailcone){
-        double L=pnosecone->getL();
-        int i=1;
-        Lnc=pnosecone->getL();
-        pnosecone->setname(std::to_string(i++));
+    if(pconoids.size())
+        Dengine=pconoids.back().getDend();
+    else if(pnosecone)
+        Dengine=pnosecone->getDend();
+    else Dengine=0;
+    Dmax=Dengine;
+    for(conoid& c:pconoids)
+    if(c.getDend()>Dmax)
+            Dmax=c.getDend();
 
-        //корректировка диаметров стыков переместить проверку на вычисление
-        /*
-        if(pconoids.size())
-            pconoids.at(0).setDbegin(pnosecone->getDend());
-        for(size_t i=1;i<pconoids.size();++i)
-            pconoids.at(i).setDbegin(pconoids.at(i-1).getDend());
-            */
-
-        for(conoid& c:pconoids){
-            c.setX0(L);
-            if(c.getDend()<Dmax)Lnc=L;
-            c.setname(std::string("module ")+=std::to_string(i++));
-            L+=c.getL();
+    double Lhead=Lnc=pnosecone->getL();
+    int i=1;
+    for(conoid& c:pconoids){
+        c.setX0(Lhead);
+        if(c.getDend()<Dmax){
+            Lnc+=c.getL();
         }
-        pengine->setX0(L);
+        c.setname(std::string("module ")+=std::to_string(i++));
+        Lhead+=c.getL();
+    }
+
+    if(pnosecone && pengine && ptailcone){  
+        pengine->setX0(Lhead);
         pengine->setname(std::to_string(++i));
         engineparameters par=pengine->getparams();
-        ptailcone->setX0(L+par.LforwardBottom+par.Lcyl);
+        ptailcone->setX0(Lhead+par.LforwardBottom+par.Lcyl);
         ptailcone->setname(std::to_string(++i));
         double Smidplanes=0;
         for(const plane& p:pplanes)
-            Smidplanes+=p.S();
+            Smidplanes+=p.Smid();
         if(ptailplane){
-            Smidplanes+=ptailplane->S();
+            Smidplanes+=ptailplane->Smid();
             ptailplane->setX0(getLength()-ptailplane->getL());
         }
         SmidLA=Smidplanes+0.25*M_PI*Dmax*Dmax;
@@ -327,7 +371,7 @@ void RocketModel::update(){
 
 std::ostream& operator<<(std::ostream &os, const RocketModel& rm){
     os<<rocketmodelheader<<'{'
-                   <<rm.Dmax<<','
+                   <<rm.Dengine<<','
                <<rm.isxplane<<','
         <<bool(rm.pnosecone)<<','
           <<bool(rm.pengine)<<','
@@ -434,12 +478,13 @@ std::cout<<"read planes"<<std::endl;
         if(!is)return is;
         if(footer!='}'){is.clear(std::ios::failbit);return is;}
 
-        rm.Dmax=Dmax;
+        rm.Dengine=Dmax;
         rm.isxplane=isxplane;
         if(pncone)rm.pnosecone.reset(nc.release());
 
         if(pengn)rm.pengine.reset(en.release());
-
+        if(rm.pengine)rm.Dengine=rm.pengine->getDend();
+        else rm.Dengine=rm.Dmax;
         rm.pconoids=pcon;
         rm.pplanes=plane;
         rm.pequipments=equip;

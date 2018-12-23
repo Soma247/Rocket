@@ -11,13 +11,21 @@
 #include "aerodynamics/aerodynamics.h"
 #include <algorithm>
 
-using equipmentparameters=std::pair<double,double>;
+struct equipmentparameters{
+    std::string name;
+    double X;
+    double m;
+};
 struct RocketHeadData{
     coneparam nconepar;
     planeparams tailstabpar;
     std::vector<coneparam>conespar;
     std::vector<planeparams>planespar;
     std::vector<equipmentparameters>equipspar;
+    double headMass=0;
+    double headLen=0;
+    double headDend=0;
+    double headDmax=0;
 };
 
 
@@ -25,7 +33,7 @@ struct RocketHeadData{
 class RocketModel{
 public:
     RocketModel(){}
-    RocketModel(double Dmid, bool isXplane):Dmax{Dmid},isxplane{isXplane}{}
+    RocketModel(bool isXplane):isxplane{isXplane}{}
 
     RocketHeadData getheadData();
     coneparam getNCparams()const;
@@ -33,7 +41,7 @@ public:
     coneparam getModuleParams(size_t num)const;
     engineparameters getEngineParams()const;
     planeparams getPlaneParams(size_t num)const;
-    std::pair<double,double> geteqparams(size_t num)const;
+    equipmentparameters geteqparams(size_t num)const;
 
     size_t getModulesCount()const{return pconoids.size();}
     size_t getEquipmentsCount()const{return pequipments.size();}
@@ -55,6 +63,10 @@ public:
                   double Xtip, double Xrf,
                   double Xrr, double Xtf,
                   double Xtr, double H);
+    void ejectTailStab(){
+        if(ptailplane)
+            ptailplane.reset(nullptr);
+    }
     void setEngine(material mathShell, material mathbr, material mathnozzle, material mathtzp,
                    fuel fuel,double fuelmass, double Pk, double Pa);
     void addConoid(material math, double Dbegin, double Dend, double length, double delta);
@@ -81,7 +93,7 @@ public:
     bool isheadcorrect(){
         update();
         return pnosecone&&
-                Dmax>0;
+                Dengine>0;
     }
 
     std::vector<size_t>state()const;
@@ -98,6 +110,7 @@ protected:
 
     void update();
 
+    double Dengine=0;
     double Dmax=0;
     double SmidLA=0;
     double Lnc=0;

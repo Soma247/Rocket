@@ -69,7 +69,7 @@ public:
     virtual std::string getname()const override;
     virtual void setname(std::string n)override;
 
-    virtual double S()const override;
+    virtual double Smid()const override;
     virtual double mass()const override;
     virtual double massCenter()const override;
     virtual double getCp(double Dmid, double M)const override;

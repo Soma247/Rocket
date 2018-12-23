@@ -56,3 +56,19 @@ std::istream &operator>>(std::istream &in, fuel &fl){
     fl=tmpfuel;
     return in;
 }
+
+bool fuel::operator==(const fuel &second)const{
+    return name==second.name&&
+            AL==second.AL&&
+            Prelst==second.Prelst&&
+            rot==second.rot&&
+            tst==second.tst&&
+            rst==second.rst&&
+            kst==second.kst&&
+            ukoef==second.ukoef&&
+            upow==second.upow;
+}
+
+bool fuel::operator!=(const fuel &second)const{
+    return !(*this==second);
+}

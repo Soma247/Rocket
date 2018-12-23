@@ -4,7 +4,7 @@
 
 class equipment:public abstractRocketElement{
 public:
-    virtual double S()const override;//S площадь миделя элемента
+    virtual double Smid()const override;//S площадь миделя элемента
 
     virtual double mass()const override;
     virtual void setmass(double m);

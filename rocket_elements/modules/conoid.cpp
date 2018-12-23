@@ -5,7 +5,7 @@
 
 const std::string coneheader{"conoid"};
 
-double conoid::S() const{
+double conoid::Smid() const{
     return 0.25*M_PI*dend*dend;
 }
 

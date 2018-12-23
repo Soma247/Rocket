@@ -26,7 +26,6 @@ struct baldat{
 };
 
 struct InputData{
-    double Dmid=0;
     double Hmax=0;//максимальная высота цели
     double Hmin=0;//минимальная высота полета ракеты
     double Xmax=0;//дальняя граница зоны поражения
@@ -44,8 +43,8 @@ struct InputData{
     double enPk=10;
     double enPa=0.06;
     InputData(){}
-    InputData(double DmidMax, double Hmaximum, double Hminimum, double Xmaximum, double Vtarget,  double milestone,
-              material enmatShell,material enmatnozzle, material enmatbr,  material enmatTz, fuel enfl, double enPk,
+    InputData(double Hmaximum, double Hminimum, double Xmaximum, double Vtarget,  double milestone,
+              material enmatShell, material enmatnozzle, material enmatbr,  material enmatTz, fuel enfl, double enPk,
     double enPa);
     bool iscorrect()const;
 
@@ -107,7 +106,7 @@ public:
     void ejectConoid(size_t num);
     void ejectPlane(size_t num);
     void ejectEquipment(size_t num);
-
+    void ejectTailStab();
     void openProject(std::string proFile);
     void saveProject(std::string proFile)const;
     OutputData calculate();

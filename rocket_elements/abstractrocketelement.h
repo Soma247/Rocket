@@ -6,7 +6,7 @@ const std::string materialheader{"material"};
 
 class abstractRocketElement{
 public:
-    virtual double S()const=0;//S площадь миделя элемента
+    virtual double Smid()const=0;//S площадь миделя элемента
     virtual double mass()const=0;
     virtual double massCenter()const=0;
 

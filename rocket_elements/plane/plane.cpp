@@ -7,7 +7,7 @@ const std::string planeheader{"plane"};
 double plane::massCenter() const{return 0.6*params.broot+params.XfromNose;}
 
 double plane::getCp(double SmidLA,double M) const{
-    if(M<1)return S()*(0.1*M+0.06)/SmidLA;
+    if(M<1)return Smid()*(0.1*M+0.06)/SmidLA;
     return Aerodynamics::CxWavPlaneOneConsole(SmidLA,
                                     params.broot,params.btip,
                                     (params.broot+params.btip)/(params.broot+params.btip-params.xrf-params.xrr-params.xtf-params.xtr),

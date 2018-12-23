@@ -20,11 +20,10 @@ WorkWindow::WorkWindow(QString matfile, QString hfuelsfile, QWidget *parent) :
     material nozzle("steel",4700,4700);
     material br("br",1300,1300);
     fuel fl("fuel",15,2460,1800,3300,290,1.16,5.75,0.4);
-    double Dmax=0.255;
-    InputData indat(Dmax,40000,1000,120000,350,1500,corp,nozzle,br,tzp,fl,10,0.06);
+    InputData indat(40000,1000,120000,350,1500,corp,nozzle,br,tzp,fl,10,0.06);
     ballisticCalculator* rc=new ballisticCalculator(
                 indat,
-                std::make_unique<RocketModel>(Dmax,true),
+                std::make_unique<RocketModel>(true),
                 std::make_unique<fInterpAtmosphere>("1.txt")
                 );
 
@@ -36,7 +35,7 @@ WorkWindow::WorkWindow(QString matfile, QString hfuelsfile, QWidget *parent) :
     ui->treeView->setContextMenuPolicy(Qt::CustomContextMenu);
     ui->treeView->setAutoExpandDelay(0);
     connect(bc,SIGNAL(updated()),ui->treeView,SLOT(expandAll()));
-
+    connect(bc,SIGNAL(updated()),this,SLOT(updateActions()));
 
 
     //проверка
@@ -61,6 +60,9 @@ WorkWindow::WorkWindow(QString matfile, QString hfuelsfile, QWidget *parent) :
 
     addconedial=new addConoidDialog(&materials,bc,this);
     ncdial=new SetNoseConeDialog(&materials,bc,this);
+    addplane=new addPlaneDialog(&materials,bc,this);
+    addeqdial=new addequipmentDialog(bc,this);
+    setflytaskdial=new SetFlyTask(&materials,&hardfuels,bc,this);
 }
 
 WorkWindow::~WorkWindow()
@@ -86,104 +88,128 @@ void WorkWindow::selectionChangedSlot(const QItemSelection &, const QItemSelecti
     std::cout<<"selch"<<std::endl;
 }
 
-void WorkWindow::on_treeView_customContextMenuRequested(const QPoint &pos)
-{
-    /*constexpr int rocketid=1,
-nconeid{10},
-tailstabid{11},
-stabsid{12},
-conesid{13},equipsid{14};*/
-
-
-
-
+void WorkWindow::on_treeView_customContextMenuRequested(const QPoint &pos){
     QModelIndex index = ui->treeView->selectionModel()->currentIndex();
     if(!index.isValid())return;
     curindex=static_cast<size_t>(index.row());
     QMenu menu(this);
     int id=index.data(Qt::UserRole+1).toInt();
     switch(id){
-        case int(balcalcItem::itemtype::Project):{
-            QAction *newActc = new QAction(QIcon(":/Resource/warning32.ico"), tr("&Новый"), this);
-            newActc->setStatusTip(tr("create"));
-            connect(newActc, SIGNAL(triggered()), this, SLOT(insertChild()));
-            menu.addAction(newActc);
-            break;
-        }
-        case int(balcalcItem::itemtype::FlyTask):{
-            QAction *newActr = new QAction(tr("&Редактировать"), this);
-            newActr->setStatusTip(tr("edit"));
-            connect(newActr, SIGNAL(triggered()), this, SLOT(insertChild()));
+    case int(balcalcItem::itemtype::Project):{
+        QAction *newActc = new QAction(QIcon(":/Resource/warning32.ico"), tr("&Новый"), this);
+        newActc->setStatusTip(tr("create"));
+        connect(newActc, SIGNAL(triggered()), this, SLOT(insertChild()));
+        menu.addAction(newActc);
+        break;
+    }
+    case int(balcalcItem::itemtype::FlyTask):{
+        if(isfirstSetInputData){
+            isfirstSetInputData=false;
+            QAction *newActr = new QAction(tr("&Выбрать"), this);
+            newActr->setStatusTip(tr("set"));
+            connect(newActr, SIGNAL(triggered()), this, SLOT(setFlyTaskDialog()));
             menu.addAction(newActr);
             break;
         }
+        else{
+            QAction *newActr = new QAction(tr("&Редактировать"), this);
+            newActr->setStatusTip(tr("edit"));
+            connect(newActr, SIGNAL(triggered()), this, SLOT(setFlyTaskDialog()));
+            menu.addAction(newActr);
+            break;
+        }
+    }
+    case int(balcalcItem::itemtype::TailStabCont):{
+        QAction *newActs = new QAction(tr("&Установить"), this);
+        newActs->setStatusTip(tr("set"));
+        connect(newActs, SIGNAL(triggered()), this, SLOT(SetTailStabDialog()));
+        menu.addAction(newActs);
+        break;
+    }
+    case int(balcalcItem::itemtype::TailStab):{
+        QAction *newActs = new QAction(tr("&Изменить"), this);
+        newActs->setStatusTip(tr("set"));
+        connect(newActs, SIGNAL(triggered()), this, SLOT(EditTailStabDialog()));
+        menu.addAction(newActs);
 
-        case int(balcalcItem::itemtype::TailStabCont):{
-            QAction *newActs = new QAction(tr("&Установить"), this);
-            newActs->setStatusTip(tr("set"));
-            connect(newActs, SIGNAL(triggered()), this, SLOT(insertChild()));
-            menu.addAction(newActs);
-            break;
-        }
-        case int(balcalcItem::itemtype::TailStab):{
-            QAction *newActs = new QAction(tr("&Изменить"), this);
-            newActs->setStatusTip(tr("set"));
-            connect(newActs, SIGNAL(triggered()), this, SLOT(insertChild()));
-            menu.addAction(newActs);
+        QAction *newActs2 = new QAction(tr("&Удалить"), this);
+        newActs->setStatusTip(tr("del"));
+        connect(newActs2, SIGNAL(triggered()), this, SLOT(RemoveTailStabDialog()));
+        menu.addAction(newActs2);
+        break;
+    }
 
-            QAction *newActs2 = new QAction(tr("&Удалить"), this);
-            newActs->setStatusTip(tr("del"));
-            connect(newActs2, SIGNAL(triggered()), this, SLOT(insertChild()));
-            menu.addAction(newActs2);
-            break;
-        }
+    case int(balcalcItem::itemtype::NoseconeCont):{
+        QAction *newActs = new QAction(tr("&Установить"), this);
+        newActs->setStatusTip(tr("set"));
+        connect(newActs, SIGNAL(triggered()), this, SLOT(SetNoseDialog()));
+        menu.addAction(newActs);
+        break;
+    }
+    case int(balcalcItem::itemtype::Nosecone):{
+        QAction *newActs = new QAction(tr("&Изменить"), this);
+        newActs->setStatusTip(tr("edit"));
+        connect(newActs, SIGNAL(triggered()), this, SLOT(EditNoseDialog()));
+        menu.addAction(newActs);
+        break;
+    }
 
-        case int(balcalcItem::itemtype::NoseconeCont):{
-            QAction *newActs = new QAction(tr("&Установить"), this);
-            newActs->setStatusTip(tr("set"));
-            connect(newActs, SIGNAL(triggered()), this, SLOT(SetNoseDialog()));
-            menu.addAction(newActs);
-            break;
-        }
-        case int(balcalcItem::itemtype::Nosecone):{
-            QAction *newActs = new QAction(tr("&Изменить"), this);
-            newActs->setStatusTip(tr("edit"));
-            connect(newActs, SIGNAL(triggered()), this, SLOT(EditNoseDialog()));
-            menu.addAction(newActs);
-            break;
-        }
+    case int(balcalcItem::itemtype::ConesCont):{
+        QAction *newActa = new QAction(tr("&Добавить"), this);
+        newActa->setStatusTip(tr("add"));
+        connect(newActa, SIGNAL(triggered()), this, SLOT(AddConDialog()));
+        menu.addAction(newActa);
+        break;
+    }
+    case int(balcalcItem::itemtype::Cone):{
+        QAction *newActa = new QAction(tr("&Редактировать"), this);
+        newActa->setStatusTip(tr("edit"));
+        connect(newActa, SIGNAL(triggered()), this, SLOT(EditConDialog()));
+        menu.addAction(newActa);
+        QAction *newActa2 = new QAction(tr("&Удалить"), this);
+        newActa->setStatusTip(tr("del"));
+        connect(newActa2, SIGNAL(triggered()), this, SLOT(RemoveConoid()));
+        menu.addAction(newActa2);
+        break;
+    }
 
-        case int(balcalcItem::itemtype::ConesCont):{
-            QAction *newActa = new QAction(tr("&Добавить"), this);
-            newActa->setStatusTip(tr("add"));
-            connect(newActa, SIGNAL(triggered()), this, SLOT(AddConDialog()));
-            menu.addAction(newActa);
-            break;
-        }
-        case int(balcalcItem::itemtype::Cone):{
-            QAction *newActa = new QAction(tr("&Редактировать"), this);
-            newActa->setStatusTip(tr("edit"));
-            connect(newActa, SIGNAL(triggered()), this, SLOT(EditConDialog()));
-            menu.addAction(newActa);
-            QAction *newActa2 = new QAction(tr("&Удалить"), this);
-            newActa->setStatusTip(tr("del"));
-            connect(newActa2, SIGNAL(triggered()), this, SLOT(RemoveConoid()));
-            menu.addAction(newActa2);
-            break;
-        }
+    case int(balcalcItem::itemtype::PlanesCont):{
+        QAction *newActa = new QAction(tr("&Добавить"), this);
+        newActa->setStatusTip(tr("add"));
+        connect(newActa, SIGNAL(triggered()), this, SLOT(SetStabDialog()));
+        menu.addAction(newActa);
+        break;
+    }
+    case int(balcalcItem::itemtype::Plane):{
+        QAction *newActa = new QAction(tr("&Редактировать"), this);
+        newActa->setStatusTip(tr("edit"));
+        connect(newActa, SIGNAL(triggered()), this, SLOT(EditStabDialog()));
+        menu.addAction(newActa);
+        QAction *newActa2 = new QAction(tr("&Удалить"), this);
+        newActa->setStatusTip(tr("del"));
+        connect(newActa2, SIGNAL(triggered()), this, SLOT(RemoveStabDialog()));
+        menu.addAction(newActa2);
+        break;
 
-        case int(balcalcItem::itemtype::PlanesCont):{
-            break;
-        }
-        case int(balcalcItem::itemtype::Plane):{
-            break;
-        }
-        case int(balcalcItem::itemtype::EquipsCont):{
-            break;
-        }
-        case int(balcalcItem::itemtype::Equipment):{
-            break;
-        }
+    }
+    case int(balcalcItem::itemtype::EquipsCont):{
+        QAction *newActa = new QAction(tr("&Добавить"), this);
+        newActa->setStatusTip(tr("add"));
+        connect(newActa, SIGNAL(triggered()), this, SLOT(AddEqDialog()));
+        menu.addAction(newActa);
+        break;
+    }
+    case int(balcalcItem::itemtype::Equipment):{
+        QAction *newActa = new QAction(tr("&Редактировать"), this);
+        newActa->setStatusTip(tr("edit"));
+        connect(newActa, SIGNAL(triggered()), this, SLOT(EditEqDialog()));
+        menu.addAction(newActa);
+        QAction *newActa2 = new QAction(tr("&Удалить"), this);
+        newActa->setStatusTip(tr("del"));
+        connect(newActa2, SIGNAL(triggered()), this, SLOT(RemoveEqDialog()));
+        menu.addAction(newActa2);
+        break;
+    }
 
     }
     menu.exec(ui->treeView->mapToGlobal(pos));
@@ -228,35 +254,134 @@ void WorkWindow::RemoveConoid(){
     int ret = msgBox.exec();
     if(ret==QMessageBox::Ok){
         balcalcItemModel* model=dynamic_cast<balcalcItemModel*>(ui->treeView->model());
-        if(model && curindex<model->modelstate().at(2)>curindex)
+        if(model && curindex<model->modelstate().at(2))
             model->ejectConoid(curindex);
     }
 }
 
-void WorkWindow::updateActions() {
-    bool hasSelection = !ui->treeView->selectionModel()->selection().isEmpty();
-    //  ui->treeView->setEnabled(hasSelection);
-    // ui->treeView->setEnabled(hasSelection);
-    bool hasCurrent = ui->treeView->selectionModel()->currentIndex().isValid();
-    //  ui->treeView->setEnabled(hasCurrent);
-    //  ui->treeView->setEnabled(hasCurrent);
-    if (hasCurrent) {
-        ui->treeView->closePersistentEditor(ui->treeView->selectionModel()->currentIndex());
+void WorkWindow::SetTailStabDialog()
+{
+    addplane->setdata(true,false);
+    addplane->show();
+}
 
-        int row = ui->treeView->selectionModel()->currentIndex().row();
-        int column = ui->treeView->selectionModel()->currentIndex().column();
-        if (ui->treeView->selectionModel()->currentIndex().parent().isValid())
-            statusBar()->showMessage(tr("Position: (%1,%2)").arg(row).arg(column));
-        else
-            statusBar()->showMessage(tr("Position: (%1,%2) in top level").arg(row).arg(column));
+void WorkWindow::EditTailStabDialog()
+{
+    addplane->setdata(true,true);
+    addplane->show();
+}
+
+void WorkWindow::RemoveTailStabDialog()
+{
+    QMessageBox msgBox(this);
+    msgBox.setInformativeText("Вы действительно хотите удалить хвостовой стабилизатор?");
+    msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+    msgBox.setDefaultButton(QMessageBox::Cancel);
+    //поправить вид диалога
+    int ret = msgBox.exec();
+    if(ret==QMessageBox::Ok)
+        dynamic_cast<balcalcItemModel*>(ui->treeView->model())->ejectTailStab();
+
+}
+
+void WorkWindow::SetStabDialog()
+{
+    addplane->setdata(false,false);
+    addplane->show();
+}
+
+void WorkWindow::EditStabDialog()
+{
+    addplane->setdata(false,true,curindex);
+    addplane->show();
+}
+
+void WorkWindow::RemoveStabDialog()
+{
+    QMessageBox msgBox(this);
+    msgBox.setInformativeText("Вы действительно хотите удалить данную плоскость?");
+    msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+    msgBox.setDefaultButton(QMessageBox::Cancel);
+    //поправить вид диалога
+    int ret = msgBox.exec();
+    if(ret==QMessageBox::Ok)
+        dynamic_cast<balcalcItemModel*>(ui->treeView->model())->ejectPlane(curindex);
+}
+
+void WorkWindow::AddEqDialog()
+{
+    addeqdial->setdata();
+    addeqdial->show();
+
+}
+
+void WorkWindow::EditEqDialog()
+{
+    addeqdial->setdata(curindex);
+    addeqdial->show();
+}
+
+void WorkWindow::RemoveEqDialog()
+{
+    QMessageBox msgBox(this);
+    msgBox.setInformativeText("Вы действительно этот груз?");
+    msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+    msgBox.setDefaultButton(QMessageBox::Cancel);
+    //поправить вид диалога
+    int ret = msgBox.exec();
+    if(ret==QMessageBox::Ok)
+        dynamic_cast<balcalcItemModel*>(ui->treeView->model())->ejectEquipment(curindex);
+}
+
+void WorkWindow::setFlyTaskDialog()
+{
+    setflytaskdial->setdata(!isfirstSetInputData);
+    if(isfirstSetInputData)isfirstSetInputData=false;
+    setflytaskdial->show();
+}
+
+void WorkWindow::updateActions() {
+    balcalcItemModel* bc=dynamic_cast<balcalcItemModel*>(ui->treeView->model());
+    InputData id=bc->getInputData();
+    RocketHeadData rh=bc->getheaddata();
+    QString mes=QString("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\"><html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">p, li {white-space: pre-wrap; }</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;\"><p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt; font-weight:600;\">Параметры ракеты:</span></p><p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Длина головной части: %1 м;</span></p><p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Масса головной части: %2 кг;</span></p><p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Диаметр РДТТ: %3 м;</span></p><p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Максимальный диаметр: %4 м;</span></p>").arg(rh.headLen).arg(rh.headMass).arg(rh.headDend).arg(rh.headDmax);
+    mes+="<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\"> </span></p>";
+    mes+=QString("<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt; font-weight:600;\">Отсеки:</span><span style=\" font-size:7pt;\"> D0(м)    D1(м)    L(м)    масса(кг):</span></p>");
+    mes+=QString("<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Отсек 1: %1  %2  %3  %4;</span></p>").arg(rh.nconepar.dbeg,0,'D',2).arg(rh.nconepar.dend,0,'D',2).arg(rh.nconepar.len,0,'D',2).arg(rh.nconepar.mass,0,'D',1);
+    for(size_t i=0;i<rh.conespar.size();i++){
+        mes+=QString("<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Отсек %1: %2  %3  %4  %5;</span></p>").arg(i+2).arg(rh.conespar.at(i).dbeg,0,'D',2).arg(rh.conespar.at(i).dend,0,'D',2).arg(rh.conespar.at(i).len,0,'D',2).arg(rh.conespar.at(i).mass,0,'D',1);
     }
+    mes+="<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\"> </span></p>";
+
+    mes+=QString("<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt; font-weight:600;\">Плоскости(1 конс):</span><span style=\" font-size:7pt;\"> S(кв.м)  X(м)  масса (кг):</span></p>");
+    size_t i=0;
+    for(;i<rh.planespar.size();i++){
+        mes+=QString("<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Плоскость %1: %2  %3  %4;</span></p>").arg(i+1).arg(rh.planespar.at(i).S(),0,'D',2).arg(rh.planespar.at(i).XfromNose,0,'D',2).arg(rh.planespar.at(i).massn/4,0,'D',2);
+    }
+    mes+=QString("<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Хвост. стаб : %1           %2;</span></p>").arg(rh.tailstabpar.S(),0,'D',2).arg(rh.tailstabpar.massn/4,0,'D',2);
+    mes+="<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\"> </span></p>";
+    mes+=QString("<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt; font-weight:600;\">Грузы:</span><span style=\" font-size:7pt;\">Координата(м)  масса (кг):</span></p>");
+    for(auto&e:rh.equipspar)
+        mes+=QString("<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">%1: %2  %3;</span></p>").arg(QString::fromStdString(e.name),8).arg(e.X,0,'D',2).arg(e.m,0,'D',2);
+    mes+="<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\"> </span></p>";
+    mes+=QString("<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt; font-weight:600;\">Исходные данные:</span></p>");
+    mes+=QString("<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Макс. высота полета цели(м): %1;</span></p>").arg(id.Hmax);
+    mes+=QString("<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Мин. высота полета ракеты(м): %1;</span></p>").arg(id.Hmin);
+    mes+=QString("<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Дальняя граница зоны поражения(м): %1;</span></p>").arg(id.Xmax);
+    mes+=QString("<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Рубеж выполнения задания(м): %1;</span></p>").arg(id.mstone);
+    mes+=QString("<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Скорость цели(м/с): %1;</span></p>").arg(id.Vtar);
+    mes+=QString("<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Давление на срезе сопла(мПА): %1;</span></p>").arg(id.enPa);
+    mes+=QString("<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Давление в кр. сечении сопла(мПА): %1;</span></p>").arg(id.enPk);
+    mes+="</body></html>";
+    ui->textBrowser->setHtml(mes);
+    ui->textBrowser->reload();
+    ui->textBrowser->repaint();
 }
 
 bool WorkWindow::readMaterials(QString matfile)
 {
     std::ifstream in(matfile.toStdString());
     if(!in)return false;
-    std::cout<<"reading mat"<<std::endl;
     material mat;
     while(in>>mat){
         materials.push_back(mat);
@@ -272,7 +397,6 @@ bool WorkWindow::readHardfuels(QString hfuelsfile)
     std::ifstream in(hfuelsfile.toStdString());
     if(!in)return false;
     fuel fl;
-    std::cout<<"reading fuel"<<std::endl;
     while(in>>fl)
         if(in)hardfuels.push_back(fl);
     if(in.eof())return true;

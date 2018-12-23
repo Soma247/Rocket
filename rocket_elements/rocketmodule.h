@@ -7,11 +7,12 @@ struct coneparam{
     double dend=0;
     double len=0;
     double delt=0;
+    double mass=0;
 };
 
 class Module:public abstractRocketElement{
 public:
-    virtual double S()const override=0;//S площадь миделя элемента
+    virtual double Smid()const override=0;//S площадь миделя элемента
     virtual double mass()const override=0;
     virtual double massCenter()const override=0;
     virtual double getX0()const override=0;
