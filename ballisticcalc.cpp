@@ -1,6 +1,7 @@
 #include "ballisticcalc.h"
 #include <iomanip>
-
+#include <fstream>
+const std::string indatheader="input_data";
 ballisticCalculator::ballisticCalculator(AbstractAtmosphere *atm):atmo{atm}
 {
 }
@@ -113,7 +114,17 @@ void ballisticCalculator::ejectTailStab()
 
 void ballisticCalculator::openProject(std::string proFile)
 {
-
+    std::ifstream in(proFile);
+    if(!in)throw error_reading_file(std::string("file ")+=proFile+=" is corrupted");
+    RocketModel* rm=new RocketModel();
+    InputData idat;
+    char delim{0};
+    in>>idat>>delim>>*rm;
+    if(!idat.iscorrect()||
+            delim!=','||(
+            !in&&!in.eof()))throw error_reading_file(std::string("file ")+=proFile+=" is corrupted");
+    setInputData(idat);
+    setModel(rm);
 }
 
 OutputData ballisticCalculator::calculate(){
@@ -137,7 +148,7 @@ OutputData ballisticCalculator::calculate(){
 
         engineparameters enpar=model->getEngineParams();
         std::vector<baldat> ballisticData;
-        ballisticData.reserve(static_cast<size_t>(indat.Taverage)*2);
+        ballisticData.reserve(static_cast<size_t>(indat.TaverageC)*2);
         double V=15;//скорость
         double H=y0;//высота
         double X=x0;//горизонт дальность
@@ -147,7 +158,7 @@ OutputData ballisticCalculator::calculate(){
         double q{0};
         double P{0};
         std::pair<double,double>cyacx;
-        for(double t=0;t<indat.Taverage;t+=0.5){//одна траектория по времени полета
+        for(double t=0;t<indat.TaverageC;t+=0.5){//одна траектория по времени полета
             V+=dV;
             H+=dH;
             X+=dX;
@@ -250,12 +261,91 @@ InputData::InputData(double Hmaximum, double Hminimum, double Xmaximum, double V
     enPa{Pa},
     mstone{milestone}{
     if(!iscorrect())throw IDexception("incorrect input parameter");//заменить на подходящую
-    Taverage=(Xmax-mstone)/Vtar;
-    Lmax=sqrt(Hmax*Hmax+mstone*mstone)/(Taverage+7);
-    Vavg=Lmax/Taverage;
+    TaverageC=(Xmax-mstone)/Vtar;
+    LmaxC=sqrt(Hmax*Hmax+mstone*mstone)/(TaverageC+7);
+    VavgC=LmaxC/TaverageC;
 }
 
 void ballisticCalculator::saveProject(std::string proFile) const
 {
-
+    if(indat.iscorrect()&&model){
+       std::ofstream out(proFile);
+       if(!out)throw error_reading_file(std::string("file ")+=proFile+=" is corrupted");
+       out<<indat<<","<<*model;
+    }
 }
+
+
+
+std::ostream &operator<<(std::ostream &os, const InputData &indat){
+    return os<<indatheader<<'{'
+            <<indat.Hmax<<','
+           <<indat.Hmin<<','
+            <<indat.Vtar<<','
+           <<indat.Xmax<<','
+          <<indat.enPa<<','
+         <<indat.enPk<<','
+        <<indat.mstone<<','
+       <<indat.teth0<<','
+      <<indat.enmatShell<<','
+     <<indat.enmatTz<<','
+    <<indat.enmatbr<<','
+    <<indat.enmatnozzle<<','
+    <<indat.enPa<<','
+    <<indat.enPk<<','
+    <<indat.enfl<<'}';
+}
+
+std::istream &operator>>(std::istream &in, InputData &input){
+    std::string name,header;
+    char delim1{0},delim2{0},delim3{0},delim4{0},delim5{0},delim6{0},
+         delim7{0},delim8{0},delim9{0},delim10{0},delim11{0},delim12{0},delim13{0},delim14{0},footer{0};
+    int tmp{0};
+    InputData indat;
+    while((tmp=in.get())!=EOF && isspace(tmp));
+    in.unget();
+    while((tmp=in.get())!=EOF && tmp!='{')
+        header.push_back(static_cast<char>(tmp));
+
+    if(tmp==EOF)return in;
+    if(header!=indatheader){
+        in.clear(std::ios::failbit);
+        return in;
+    }
+    in>>indat.Hmax>>delim1
+       >>indat.Hmin>>delim2
+        >>indat.Vtar>>delim3
+       >>indat.Xmax>>delim4
+      >>indat.enPa>>delim5
+     >>indat.enPk>>delim6
+    >>indat.mstone>>delim7
+   >>indat.teth0>>delim8
+  >>indat.enmatShell>>delim9
+ >>indat.enmatTz>>delim10
+>>indat.enmatbr>>delim11
+>>indat.enmatnozzle>>delim12
+>>indat.enPa>>delim13
+>>indat.enPk>>delim14
+>>indat.enfl>>footer;
+    if(!in)return in;
+    if(delim1!=delim2||
+            delim2!=delim3||
+            delim3!=delim4||
+            delim4!=delim5||
+            delim5!=delim6||
+            delim6!=delim7||
+            delim7!=delim8||
+            delim8!=delim9||
+            delim9!=delim10||
+            delim10!=delim11||
+            delim11!=delim12||
+            delim12!=delim13||
+            delim13!=delim14||
+            delim14!=',' || footer!='}'|| !indat.iscorrect()){
+        in.clear(std::ios::failbit);
+        return in;
+    }
+    input=indat;
+    return in;
+}
+

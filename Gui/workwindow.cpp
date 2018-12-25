@@ -6,30 +6,19 @@
 #include <fstream>
 #include "Dialogs/errordialog.h"
 #include <QMessageBox>
+#include <sstream>
+#include <QFileDialog>
+#include <QStringList>
+constexpr int MAX_lastprojects=10;
 
-
-WorkWindow::WorkWindow(QString matfile, QString hfuelsfile, QWidget *parent) :
-    QMainWindow(parent),
+WorkWindow::WorkWindow(QString matfile, QString hfuelsfile, QString lastprojectsfile, QWidget *parent) :
+    QMainWindow(parent),profile{lastprojectsfile.toStdString()},
     ui(new Ui::WorkWindow)
 {
     ui->setupUi(this);
 
-
-    material corp("orpl",7810,1860);
-    material tzp("tzp",1600,1600);
-    material nozzle("steel",4700,4700);
-    material br("br",1300,1300);
-    fuel fl("fuel",15,2460,1800,3300,290,1.16,5.75,0.4);
-    InputData indat(40000,1000,120000,350,1500,corp,nozzle,br,tzp,fl,10,0.06);
-    ballisticCalculator* rc=new ballisticCalculator(
-                indat,
-                std::make_unique<RocketModel>(true),
-                std::make_unique<fInterpAtmosphere>("1.txt")
-                );
-
-
     //register the model
-    auto bc=new balcalcItemModel(std::unique_ptr<ballisticCalculator>(rc));
+    auto bc=new balcalcItemModel(std::make_unique<ballisticCalculator>(new fInterpAtmosphere("1.txt")));
     ui->treeView->setModel(bc);
     updateActions();
     ui->treeView->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -37,17 +26,47 @@ WorkWindow::WorkWindow(QString matfile, QString hfuelsfile, QWidget *parent) :
     connect(bc,SIGNAL(updated()),ui->treeView,SLOT(expandAll()));
     connect(bc,SIGNAL(updated()),this,SLOT(updateActions()));
 
+    try{
+        std::ifstream in(lastprojectsfile.toStdString());
+        std::string temp;
+        QString tempq;
+        QStringList lst;
+        while(in){
+            in>>temp;
+            bool dup=false;
+            for(const auto& fn:fnames){
+                std::cerr<<temp<<std::endl<<" !!! "<<fn.second.toStdString()<<std::endl<<std::endl;
+                if(fn.second.toStdString()==temp){dup=true;break;}
+            }
+            if(!dup){
+                lst=QString::fromStdString(temp).split("/");
+                if(!temp.size()||!lst.size())break;
+                fnames.push_front(std::pair<QString,QString>(lst.back(),QString::fromStdString(temp)));
+            }
+        }
 
-    //проверка
-    bc->setNosecone(br,0.19,0.5,0.05);
-    bc->addConoid(nozzle,0.2,0.22,0.5,0.05);
-    bc->addConoid(nozzle,0.22,0.24,0.7,0.05);
-    bc->addConoid(corp,0.24,0.255,0.1,0.05);
-    bc->addEquipment("gc",1.0,25);
-    bc->addEquipment("bch",1.6,45);
-    bc->addplane(nozzle,1.05,0.25,0.15,0.03,0.01,0.1,0.01,0.01,0.01,0.01,0.15);
-    bc->setTailStab(nozzle,0.45,0.25,0.05,0.02,0.15,0.05,0.05,0.05,0.05,0.35);
+        while(fnames.size()>MAX_lastprojects)
+            fnames.pop_back();
 
+    //  bc->openProject("D:/Qt/projects/Rocket/projext.txt");
+        addconedial=new addConoidDialog(&materials,bc,this);
+        ncdial=new SetNoseConeDialog(&materials,bc,this);
+        addplane=new addPlaneDialog(&materials,bc,this);
+        addeqdial=new addequipmentDialog(bc,this);
+        setflytaskdial=new SetFlyTask(&materials,&hardfuels,bc,this);
+        choosedial=new chooseWindow(&fnames,this);
+        connect(choosedial, SIGNAL(openfile(std::string)), this, SLOT(openFile(std::string)));
+        connect(choosedial, SIGNAL(openfileD()), this, SLOT(openFile()));
+        choosedial->show();
+    }
+    catch(std::exception& e){
+        errorDialog* err=new errorDialog(e.what(),this);
+        err->show();
+    }
+    catch(...){
+        errorDialog* err=new errorDialog("sorry",this);
+        err->show();
+    }
 
     if(!readMaterials(matfile)){
         errd= new errorDialog(QString("Ошибка: Файл %1 %2").arg(matfile).arg(" поврежден."),this);
@@ -58,11 +77,17 @@ WorkWindow::WorkWindow(QString matfile, QString hfuelsfile, QWidget *parent) :
         errd->show();
     }
 
-    addconedial=new addConoidDialog(&materials,bc,this);
-    ncdial=new SetNoseConeDialog(&materials,bc,this);
-    addplane=new addPlaneDialog(&materials,bc,this);
-    addeqdial=new addequipmentDialog(bc,this);
-    setflytaskdial=new SetFlyTask(&materials,&hardfuels,bc,this);
+
+
+
+
+
+
+
+
+
+
+
 }
 
 WorkWindow::~WorkWindow()
@@ -71,7 +96,6 @@ WorkWindow::~WorkWindow()
     delete addconedial;
     delete errd;
 }
-
 
 
 void WorkWindow::on_pushButton_clicked()
@@ -338,6 +362,82 @@ void WorkWindow::setFlyTaskDialog()
     setflytaskdial->setdata(!isfirstSetInputData);
     if(isfirstSetInputData)isfirstSetInputData=false;
     setflytaskdial->show();
+}
+
+void WorkWindow::openFile()
+{
+  QString str = QFileDialog::getOpenFileName(this, tr("Загрузить проект"), "D:/Qt/projects/Rocket", tr("BC Project Files (*.bcpr)"));
+
+  openFile(str.toStdString());
+}
+
+void WorkWindow::saveFile()
+{
+    balcalcItemModel* bc=dynamic_cast<balcalcItemModel*>(ui->treeView->model());
+    if(bc){
+        std::cerr<<"savefile"<<std::endl;
+        QString str = QFileDialog::getSaveFileName(nullptr, "Сохранить проект", "", "*.bcpr");
+        try{
+            bc->saveProject(str.toStdString());
+            fnames.push_front(std::pair<QString,QString>(str.split("/").back(),str));
+            savefnames();
+        }
+        catch(ballisticCalculator::error_reading_file& erf){
+            errd->setdata(QString("Файл %1 недоступен").arg(str),false);
+            std::cerr<<erf.what()<<std::endl;
+            errd->show();
+        }
+        catch(...){
+            errd->setdata(QString("неизвестная ошибка при сохранении проекта в файл \n%1").arg(str),false);
+            errd->show();
+        }
+
+    }
+}
+
+void WorkWindow::openFile(std::string filename)
+{
+    std::cerr<<"ww:openfile "<<filename<<std::endl;
+    balcalcItemModel* bc=dynamic_cast<balcalcItemModel*>(ui->treeView->model());
+    if(bc)
+        try{
+            bc->openProject(filename);
+            if(filename.size())
+                fnames.push_front(std::pair<QString,QString>(
+                                          QString::fromStdString(filename).split("/").back(),
+                                      QString::fromStdString(filename)));
+               std::cerr<<QString::fromStdString(filename).split("/").back().toStdString()<<std::endl<<" openfile push"  <<filename<<std::endl<<std::endl;
+            savefnames();
+            choosedial->hide();
+            this->show();
+        }
+        catch(ballisticCalculator::error_reading_file& erf){
+            errd->setdata(QString("Файл %1 поврежден").arg(QString::fromStdString(filename)),false);
+            std::cerr<<erf.what()<<std::endl;
+            errd->show();
+        }
+        catch(...){
+            errd->setdata(QString("неизвестная ошибка").arg(QString::fromStdString(filename)),false);
+            errd->show();
+    }
+}
+
+void WorkWindow::savefnames()
+{
+
+    std::cerr<<"savefnames:"<<fnames.size()<<std::endl;
+    try {
+        while(fnames.size()>MAX_lastprojects)
+            fnames.pop_back();
+        std::ofstream out (profile,std::ios_base::out);
+        if(!out)throw std::exception();
+        for(auto&fn:fnames){
+            std::cerr<<fn.second.toStdString()<<std::endl;
+            out<<fn.second.toStdString()<<std::endl;
+        }
+    } catch (...) {
+        std::cerr<<"filename file write error"<<std::endl;
+    }
 }
 
 void WorkWindow::updateActions() {

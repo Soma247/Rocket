@@ -12,13 +12,16 @@ class errorDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit errorDialog(QString text=QString("some error"),QWidget *parent = nullptr);
+    explicit errorDialog(QString text=QString("some error"),bool critical=true,QWidget *parent = nullptr);
     ~errorDialog();
+    void setdata(QString text=QString("some error"),bool critical=true);
 
 private slots:
     void on_pushButton_clicked();
 
 private:
+    bool crit;
+    QString mes;
     Ui::errorDialog *ui;
 };
 

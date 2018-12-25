@@ -1,4 +1,96 @@
 
+/*
+    material corp("orpl",7810,1860);
+    material tzp("tzp",1600,1600);
+    material nozzle("steel",4700,4700);
+    material br("br",1300,1300);
+    fuel fl("fuel",15,2460,1800,3300,290,1.16,5.75,0.4);
+    InputData indat(40000,1000,120000,350,1500,corp,nozzle,br,tzp,fl,10,0.06);*/
+/*
+    std::stringstream str1("input_data{220000,1000,350,120000,0.06,10,1500,0.392699,material{orpl,7810,1860},material{tzp,1600,1600},material{br,1300,1300},material{steel,4700,4700},0.06,10,Hfuel{fuel,15,2460,1800,3300,290,1.16,5.75,0.4}}");
+
+    std::cerr<<indat<<std::endl;
+   str1>>indat;
+    std::cout<<std::endl;
+*/
+  //  ballisticCalculator* rc=new ballisticCalculator(new fInterpAtmosphere("1.txt"));
+ /*   ballisticCalculator* rc=new ballisticCalculator(
+                indat,
+                std::make_unique<RocketModel>(true),
+                std::make_unique<fInterpAtmosphere>("1.txt")
+                );
+
+*/
+    //register the model
+    auto bc=new balcalcItemModel(std::make_unique<ballisticCalculator>(new fInterpAtmosphere("1.txt")));
+    ui->treeView->setModel(bc);
+    updateActions();
+    ui->treeView->setContextMenuPolicy(Qt::CustomContextMenu);
+    ui->treeView->setAutoExpandDelay(0);
+    connect(bc,SIGNAL(updated()),ui->treeView,SLOT(expandAll()));
+    connect(bc,SIGNAL(updated()),this,SLOT(updateActions()));
+
+
+    try{
+      bc->openProject("D:/Qt/projects/Rocket/projext.txt");
+    }
+    catch(std::exception& e){
+        errorDialog* err=new errorDialog(e.what(),this);
+        err->show();
+    }
+    if(!readMaterials(matfile)){
+        errd= new errorDialog(QString("Ошибка: Файл %1 %2").arg(matfile).arg(" поврежден."),this);
+        errd->show();
+    }
+    if(!readHardfuels(hfuelsfile)){
+        errd=new errorDialog(QString("Ошибка: Файл %1 %2").arg(hfuelsfile).arg(" поврежден."),this);
+        errd->show();
+    }
+
+    addconedial=new addConoidDialog(&materials,bc,this);
+    ncdial=new SetNoseConeDialog(&materials,bc,this);
+    addplane=new addPlaneDialog(&materials,bc,this);
+    addeqdial=new addequipmentDialog(bc,this);
+    setflytaskdial=new SetFlyTask(&materials,&hardfuels,bc,this);
+}
+
+WorkWindow::~WorkWindow()
+{
+    delete ui;
+    delete addconedial;
+    delete errd;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // unique push_back to vector
 struct a{
     std::vector<std::unique_ptr<std::string>> str;

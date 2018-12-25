@@ -29,12 +29,12 @@ struct InputData{
     double Hmax=0;//максимальная высота цели
     double Hmin=0;//минимальная высота полета ракеты
     double Xmax=0;//дальняя граница зоны поражения
-    double Lmax=0;//наклонная дальность
+    double LmaxC=0;//наклонная дальность
     double Vtar=0;//скорость цели
     double mstone=0;//Рубеж выполнения задания (минимальная дальность от точки старта)
     double teth0=M_PI/8;//угол наклона траектории к линии визирования на старте(dy/dx,x=x0)
-    double Taverage;//среднее время полета к цели
-    double Vavg;//средняя скорость полета к цели на наибольшее расстояние
+    double TaverageC;//среднее время полета к цели
+    double VavgC;//средняя скорость полета к цели на наибольшее расстояние
     material enmatShell;
     material enmatnozzle;
     material enmatbr;
@@ -45,10 +45,12 @@ struct InputData{
     InputData(){}
     InputData(double Hmaximum, double Hminimum, double Xmaximum, double Vtarget,  double milestone,
               material enmatShell, material enmatnozzle, material enmatbr,  material enmatTz, fuel enfl, double enPk,
-    double enPa);
+              double enPa);
     bool iscorrect()const;
-
+    friend std::ostream& operator<<(std::ostream &os, const InputData& idat);
+    friend std::istream& operator>>(std::istream &in, InputData& idat);
 };
+
 
 struct OutputData{
     std::vector<baldat>traect;
@@ -73,6 +75,16 @@ public:
     ballisticCalculator(const InputData& data, std::unique_ptr<AbstractAtmosphere>atm);
     ballisticCalculator(const InputData& data, std::unique_ptr<RocketModel> rm,
                                                std::unique_ptr<AbstractAtmosphere>atm);
+
+    class error_reading_file:public std::exception{
+        std::string str;
+    public :
+        virtual const char* what() const _GLIBCXX_USE_NOEXCEPT{return str.c_str();}
+        explicit error_reading_file(std::string mes):str{mes}{}
+    };
+
+
+
     bool iscorrect();
     void setModel(std::unique_ptr<RocketModel> rm);
     void setModel(RocketModel* rm);

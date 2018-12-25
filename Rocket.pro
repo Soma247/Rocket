@@ -28,7 +28,8 @@ SOURCES += \
     Gui/Dialogs/errordialog.cpp \
     Gui/Dialogs/addplanedialog.cpp \
     Gui/Dialogs/addequipmentdialog.cpp \
-    Gui/Dialogs/setflytask.cpp
+    Gui/Dialogs/setflytask.cpp \
+    Gui/Dialogs/choosewindow.cpp
 
 
 HEADERS += \
@@ -55,7 +56,8 @@ HEADERS += \
     Gui/Dialogs/errordialog.h \
     Gui/Dialogs/addplanedialog.h \
     Gui/Dialogs/addequipmentdialog.h \
-    Gui/Dialogs/setflytask.h
+    Gui/Dialogs/setflytask.h \
+    Gui/Dialogs/choosewindow.h
 
 DISTFILES += \
     garbage.txt \
@@ -70,4 +72,5 @@ FORMS += \
     Gui/Dialogs/errordialog.ui \
     Gui/Dialogs/addplanedialog.ui \
     Gui/Dialogs/addequipmentdialog.ui \
-    Gui/Dialogs/setflytask.ui
+    Gui/Dialogs/setflytask.ui \
+    Gui/Dialogs/choosewindow.ui

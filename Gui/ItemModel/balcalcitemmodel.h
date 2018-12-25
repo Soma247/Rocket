@@ -80,6 +80,7 @@ public:
 
     void openProject(std::string proFile){
        balcal->openProject(proFile);
+       update();
     }
     void saveProject(std::string proFile)const{
         balcal->saveProject(proFile);
