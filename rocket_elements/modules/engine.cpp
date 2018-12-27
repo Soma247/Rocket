@@ -22,8 +22,8 @@ engineparameters engine::getparams() const{return params;}//
 
 engine::engine(material mathShell, material mathbr, material mathnozzle, material mathtz,
                fuel fuel, double Dmid, double mfuel, double Pk, double Pa){//pk/pa~40, pk,pa в мегапаскалях
-    constexpr double beth=18*M_PI/180;//угол полураствора
-    constexpr double fi=0.3;//коэффициент степени утопленности сопла
+    constexpr double beth=13*M_PI/180;//угол полураствора
+    constexpr double fi=0.15;//коэффициент степени утопленности сопла
     const double atz=7E-7;//коэфф. теплопроводности тзп
 
     params.matShell=mathShell;
@@ -41,12 +41,14 @@ engine::engine(material mathShell, material mathbr, material mathnozzle, materia
     params.PpUdVoid=params.PpUd+params.fl.rst*params.Tk*pow(Pa/Pk,(params.fl.kst-1)/params.fl.kst)/params.PpUd;
     //удельный импульс тяги в пустоте
 
-    params.Dfuel=0.99*Dmid;
-    params.Dv=0.32*params.Dfuel;
+    params.Dfuel=Dmid-0.012;
+    params.Dv=0.1*params.Dfuel;
     params.Dcyl=Dmid;
     double e0=0.5*(params.Dfuel-params.Dv);//толщина горящего свода при стартe
+
     params.t=e0/params.fl.U(Pk);//время работы двигателя 0.4D/u,
-    params.masspsec=0.98*mfuel/params.t;
+
+    params.masspsec=mfuel/params.t;
     params.Pvacuum=params.masspsec*params.PpUdVoid;//потребная тяга в пустоте(H)
     double a=pow(2/(params.fl.kst+1),0.5*(params.fl.kst+1)/(params.fl.kst-1))*sqrt(params.fl.kst);//термодинамический комплекс
     double Fcr=params.masspsec*sqrt(0.98*params.fl.rst*params.Tk)/(0.99*a*Pk*1E6);
@@ -64,16 +66,21 @@ engine::engine(material mathShell, material mathbr, material mathnozzle, materia
     double Fa=fa*Fcr;//площадь выходного сечения сопла
     params.Da=2*sqrt(Fa/M_PI);//диаметр выходного сечения сопла
     if(params.Da>=Dmid)params.Da=Dmid-0.01;
-    params.La=0.5*(params.Da-params.Dcr)/tan(beth);//полная длина сопла
+    params.La=(params.Da-params.Dcr)/tan(beth);//полная длина сопла
+
     params.Ly=fi*params.La;//длина утопленной части сопла
     params.Lc=params.La-params.Ly;//длина выступающей части сопла
+
+        std::cout<<"LA"<<params.La<<" "<<"Lc"<<params.Lc<<std::endl;
     params.Dc=params.Dcr*(1.5+fi*((params.Da/params.Dcr)-1.5));//диаметр сопла в месте выхода из камеры сгорания
     params.LforwardBottom=0.3*Dmid+0.05*params.Dv;//длины переднего и заднего днищ
     params.LbackwardBottom=0.3*Dmid+0.05*params.Dc;
     double eotn=e0/params.Dfuel;
     double nuc=0.96*4*eotn*(1-eotn);
     double nudn=0.73*(1-1.5*(1-4*eotn*(1-eotn)));
-    params.Lcyl=(4*mfuel/(M_PI*Dmid*Dmid*params.fl.rot) -2*(params.LforwardBottom+params.LbackwardBottom)*nudn/3)/nuc;
+
+    params.Lcyl=(mfuel/(params.fl.rot*0.25*(params.Dfuel-params.Dv)*(params.Dfuel-params.Dv)*M_PI));
+   // params.Lcyl=(4*mfuel/(M_PI*Dmid*Dmid*params.fl.rot) -2*(params.LforwardBottom+params.LbackwardBottom)*nudn/3)/nuc;
     params.Leng=params.Lcyl+params.LforwardBottom+params.LbackwardBottom+params.Lc;//полная длина двигателя
     double lambdafuel=(params.LforwardBottom+params.LbackwardBottom+params.Lcyl)/params.Dfuel;//удлинение заряда
     const double f=1.15;//коэффициент безопасности

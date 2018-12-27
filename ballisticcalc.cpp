@@ -127,44 +127,52 @@ void ballisticCalculator::openProject(std::string proFile)
     setModel(rm);
 }
 
-OutputData ballisticCalculator::calculate(){
-    std::cout<<"calc started"<<std::endl;
-    if(!iscorrect())throw std::runtime_error("bc:1");
+OutputData ballisticCalculator::calculate(double Vend,double dt){
 
-    for(double i=0.25;i<0.8;i+=0.01){//подбор относительной массы топлива
+    std::cout<<"calc started"<<std::endl;
+    if(!model||!iscorrect()||dt<=0)throw std::runtime_error("bc:1");
+
+    double y0=15;
+    double x0=0;
+    double alpha=5*M_PI/180;//угол атаки
+    double teth0=indat.teth0+atan((indat.Hmax-y0)/(indat.mstone));
+        if(teth0>M_PI/2)teth0=atan((indat.Hmax-y0)/indat.mstone);
+
+    for(double i=0.3;i<0.95;i+=0.01){//подбор относительной массы топлива
 
         model->setEngine(indat.enmatShell,indat.enmatbr,
                          indat.enmatnozzle,indat.enmatTz,indat.enfl,
                          i*model->getheadmass()/(1-i),indat.enPk,indat.enPa);
 
-        double y0=15;
-        double x0=0;
-        std::cout<<"teth0="<<indat.teth0*180/M_PI<<std::endl;
         double M0=model->getmass();//масса
-        double A=(indat.Hmax-tan(indat.teth0)*indat.Xmax-y0)/(indat.Xmax*indat.Xmax);
-        double B=tan(indat.teth0+6*M_PI/180);
-        //double C=y0;
-        double alpha=5*M_PI/180;
-
+        double A=(indat.Hmax-tan(teth0)*indat.mstone-y0)/(indat.mstone*indat.mstone);
+        double B=tan(teth0);
+      //  double C=y0;
+     //   std::cout<<"A="<<A<<" B="<<B<<std::endl;
+        std::cout<<"massfuel"<< i*model->getheadmass()/(1-i)<<std::endl;
         engineparameters enpar=model->getEngineParams();
         std::vector<baldat> ballisticData;
-        ballisticData.reserve(static_cast<size_t>(indat.TaverageC)*2);
-        double V=15;//скорость
+        ballisticData.reserve(static_cast<size_t>(indat.TaverageC()/dt));
+        std::cout<<ballisticData.size()<<std::endl;
+        double V=35;//скорость
         double H=y0;//высота
         double X=x0;//горизонт дальность
-        double teth=B;//угол наклона
+        double teth=teth0;//угол наклона
         double mass=M0;
-        double dV{0},dteth{0},dH{0},dX{0};
+        double massend=model->getmassend();
+        double dV{0},dH{0},dX{0};
         double q{0};
         double P{0};
+        double masscenter=model->getmasscenter();
+        double massendcenter=model->getmasscenterend();
         std::pair<double,double>cyacx;
-        for(double t=0;t<indat.TaverageC;t+=0.5){//одна траектория по времени полета
+        double dmasscenter=(model->getmasscenterend()-model->getmasscenter())/indat.TaverageC();
+        for(double t=0;t<=indat.TaverageC();t+=1){//одна траектория по времени полета
             V+=dV;
             H+=dH;
             X+=dX;
-            teth+=dteth;
-            if(t<enpar.t)mass-=enpar.masspsec;
-            else mass=model->getmassend();
+          //  teth+=dteth;
+
             q=atmo->get_density(H)*V*V/2;
             cyacx= model->getCyaaCx(
                         V/atmo->get_sound_sp(H),
@@ -175,24 +183,53 @@ OutputData ballisticCalculator::calculate(){
                         );
 
             P=(t<enpar.t)?enpar.Pvacuum:0.0;
-            dV=(P*cos(alpha)-
-                cyacx.second*q*model->getS()-
+            dV=(P*cos(alpha)-cyacx.second*q*model->getS()-
                 mass*9.81*sin(teth))/mass;
-            teth=atan(A*X+B);//dteth=(P*sin(alpha)+    cyacx.first*(alpha)*q*model->getS()-   mass*9.81*cos(teth))/(mass*V);
+            teth=atan(2*A*X+B);//dteth=(P*sin(alpha)+    cyacx.first*(alpha)*q*model->getS()-   mass*9.81*cos(teth))/(mass*V);
             dH=V*sin(teth);
             dX=V*cos(teth);
-            if(V<0||H<0||X>=indat.Xmax)break;
-            ballisticData.push_back(baldat{t,V,H,X,teth,mass});
+std::cout<<"dv="<<dV<<" P="<<P<<" 2="<<cyacx.second*q*model->getS()<<" 3="<<mass*9.81*sin(teth)<<std::endl;
+            if(V<0||H<0||(H>=indat.Hmax&&X>=indat.mstone))break;
+            ballisticData.push_back(baldat(t,V,H,X,teth,mass,cyacx.second,cyacx.first,
+                                               (masscenter-model->getXp(V/atmo->get_sound_sp(H),
+                                               atmo->get_sound_sp(H),
+                                               atmo->get_cinem_viscidity(H)))/model->getLength()
+                                           ));
+            if(t<enpar.t){
+                mass-=enpar.masspsec;
+                if(mass<massend)mass=massend;
+                masscenter+=dmasscenter;
+            }
+            else {
+                mass=massend;
+                masscenter=massendcenter;
+            }
+
+            std::cout<<std::setw(3)<<"Fm= "
+                     <<std::setw(4)<<9.81*sin(teth)<<std::endl<<"T"
+                    <<std::setw(4)<<ballisticData.back().t
+                   <<std::setw(6)<<" V= "<<ballisticData.back().V
+                  <<std::setw(5)<<" m= "<<ballisticData.back().mass
+                  <<std::setw(6)<<" st= "<<ballisticData.back().stability
+                 <<std::setw(5)<<" teth= "<<ballisticData.back().teth*180/M_PI
+                <<std::setw(6)<<" H= "<<ballisticData.back().H
+               <<std::setw(6)<<" X= "<<ballisticData.back().X<<std::endl
+                 <<std::setw(6)<<" mc= "<<masscenter<<std::endl;
+            std::cout<<"cy="<<cyacx.first<<" cx="<<cyacx.second<<std::endl;
         }
-        if(X>=indat.Xmax && H>=indat.Hmax && V>=2*indat.Vtar){
+        std::cout<<"Xend="<<X<<" Hend="<<H<<" Vend="<<V<<std::endl<<std::endl;
+        if(X>=indat.mstone && H>=indat.Hmax && V>=Vend){
             for(const auto& dat:ballisticData)
-                std::cout<<std::setw(3)<<"t= "
-                        <<std::setw(4)<<dat.t
+                std::cout<<"t= "<<std::setw(4)<<dat.t
                        <<std::setw(6)<<" V= "<<dat.V
                       <<std::setw(5)<<" m= "<<dat.mass
+                      <<std::setw(6)<<" st= "<<std::setw(6)<<dat.stability
+                                <<std::setw(5)<<" cya= "<<dat.cy
+                                           <<std::setw(5)<<" cx= "<<dat.cx
                      <<std::setw(5)<<" teth= "<<dat.teth*180/M_PI
                     <<std::setw(6)<<" H= "<<dat.H
                    <<std::setw(6)<<" X= "<<dat.X<<std::endl;
+
             std::cout<<std::endl<<"length="<<model->getLength()<<std::endl
                     <<" englen="<<model->getEngineParams().Leng<<std::endl
                    <<" mass0="<<model->getmass()<<std::endl
@@ -214,6 +251,7 @@ OutputData ballisticCalculator::calculate(){
         ballisticData.clear();
 
     }
+    return OutputData();//не найден
 }
 
 RocketHeadData ballisticCalculator::getheadData(){
@@ -228,7 +266,7 @@ std::vector<size_t> ballisticCalculator::state() const{
     temp.push_back(indat.iscorrect());
    }
 
-   std::cout<<"bcal state is: ";
+   std::cout<<bool(model)<<" bcal state is: ";
    for(auto&s:temp)
        std::cout<<s<<" ";
    std::cout<<std::endl;
@@ -246,7 +284,19 @@ bool InputData::iscorrect()const{
     return /*Dmid>0 && */Hmax>Hmin && Hmin>0 && Xmax>mstone && mstone>0 && Vtar>0;
 }
 
-InputData::InputData(double Hmaximum, double Hminimum, double Xmaximum, double Vtarget, double milestone, material enMatShell, material enMatnozzle, material enMatbr, material enMatTz, fuel enFl, double Pk, double Pa):
+double InputData::LmaxC() const{
+    return sqrt(Hmax*Hmax+mstone*mstone);
+}
+
+double InputData::TaverageC() const{
+    return (Xmax-mstone)/Vtar;
+}
+
+double InputData::VavgC() const{
+    return LmaxC()/TaverageC();
+}
+
+InputData::InputData(double Hmaximum, double Hminimum, double Xmaximum, double Vtarget, double milestone, material enMatShell, material enMatnozzle, material enMatbr, material enMatTz, fuel enFl, double dteth, double Pk, double Pa):
  //   Dmid{DmidMax},
     Hmax{Hmaximum},
     Hmin{Hminimum},
@@ -257,13 +307,11 @@ InputData::InputData(double Hmaximum, double Hminimum, double Xmaximum, double V
     enmatbr{enMatbr},
     enmatTz{enMatTz},
     enfl{enFl},
+    mstone{milestone},
+    teth0{dteth},
     enPk{Pk},
-    enPa{Pa},
-    mstone{milestone}{
+    enPa{Pa}{
     if(!iscorrect())throw IDexception("incorrect input parameter");//заменить на подходящую
-    TaverageC=(Xmax-mstone)/Vtar;
-    LmaxC=sqrt(Hmax*Hmax+mstone*mstone)/(TaverageC+7);
-    VavgC=LmaxC/TaverageC;
 }
 
 void ballisticCalculator::saveProject(std::string proFile) const
@@ -273,6 +321,12 @@ void ballisticCalculator::saveProject(std::string proFile) const
        if(!out)throw error_reading_file(std::string("file ")+=proFile+=" is corrupted");
        out<<indat<<","<<*model;
     }
+}
+
+void ballisticCalculator::clear(bool isxplane)
+{
+    indat=InputData();
+    model.reset(new RocketModel(isxplane));
 }
 
 
@@ -348,4 +402,9 @@ std::istream &operator>>(std::istream &in, InputData &input){
     input=indat;
     return in;
 }
+
+
+const char *InputData::IDexception::what() const _GLIBCXX_USE_NOEXCEPT{
+    return msg.c_str();
+};
 

@@ -29,7 +29,7 @@ private:
 signals:
     void openfile(std::string fname);
     void openfileD();
-
+    void newproject();
 };
 
 #endif // CHOOSEWINDOW_H

@@ -1,7 +1,10 @@
 TEMPLATE = app
-#CONFIG -= app_bundle
-QT += widgets
-CONFIG +=  c++14
+
+QT += \
+    widgets \
+    charts
+CONFIG += \
+    c++14
 
 SOURCES += \
     main.cpp \
@@ -29,7 +32,9 @@ SOURCES += \
     Gui/Dialogs/addplanedialog.cpp \
     Gui/Dialogs/addequipmentdialog.cpp \
     Gui/Dialogs/setflytask.cpp \
-    Gui/Dialogs/choosewindow.cpp
+    Gui/Dialogs/choosewindow.cpp \
+    Gui/Dialogs/about.cpp \
+    Gui/resultwindow.cpp
 
 
 HEADERS += \
@@ -57,7 +62,9 @@ HEADERS += \
     Gui/Dialogs/addplanedialog.h \
     Gui/Dialogs/addequipmentdialog.h \
     Gui/Dialogs/setflytask.h \
-    Gui/Dialogs/choosewindow.h
+    Gui/Dialogs/choosewindow.h \
+    Gui/Dialogs/about.h \
+    Gui/resultwindow.h
 
 DISTFILES += \
     garbage.txt \
@@ -73,4 +80,6 @@ FORMS += \
     Gui/Dialogs/addplanedialog.ui \
     Gui/Dialogs/addequipmentdialog.ui \
     Gui/Dialogs/setflytask.ui \
-    Gui/Dialogs/choosewindow.ui
+    Gui/Dialogs/choosewindow.ui \
+    Gui/Dialogs/about.ui \
+    Gui/resultwindow.ui

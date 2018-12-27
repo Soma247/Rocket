@@ -10,7 +10,9 @@ double conoid::Smid() const{
 }
 
 double conoid::mass() const{
-    return mat.Ro* 0.25*M_PI*pow(0.5*(dend+dbegin-4*delt),2);
+    double rav=0.25*(dend+dbegin);
+    double ravd=rav-delt;
+    return mat.Ro*len*M_PI*(rav*rav-ravd*ravd);
 }
 
 double conoid::massCenter() const{

@@ -126,7 +126,9 @@ void addConoidDialog::checkL(){
 void addConoidDialog::checkdelt(){
     isdeltvalid=true;
     double delt{0};
-    if(ui->le_delt->text().isEmpty()|| (delt=ui->le_delt->text().toDouble())<=0){
+    if(ui->le_delt->text().isEmpty()|| (delt=ui->le_delt->text().toDouble())<=0||
+           ui->le_delt->text().toDouble()>0.5*ui->le_D1->text().toDouble()||
+           ui->le_delt->text().toDouble()>0.5*ui->le_D2->text().toDouble()){
         ui->label_warning->setText("параметр delt введен неверно.");
         ui->label_warning->show();
         isdeltvalid=false;

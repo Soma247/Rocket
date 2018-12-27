@@ -214,23 +214,37 @@ void SetFlyTask::on_buttonBox_accepted()
                 mat_tzp!=mats->end()&&
                 mat_nozzle!=mats->end()&&
                 fuel_iterator!=fls->end()){
-            bcmodel->setInputData(
-                        InputData(
-                            ui->le_Hmax->text().toDouble(),
-                            ui->le_Hmin->text().toDouble(),
-                            ui->le_Xmax->text().toDouble(),
-                            ui->le_Vtar->text().toDouble(),
-                            ui->le_mstone->text().toDouble(),
-                            *mat_cyl,*mat_nozzle,*mat_br,*mat_tzp,
-                            *fuel_iterator,
-                            ui->le_Pk->text().toDouble(),
-                            ui->le_Pa->text().toDouble()
-                            ));
-
+            try{
+                bcmodel->setInputData(
+                            InputData(
+                                ui->le_Hmax->text().toDouble(),
+                                ui->le_Hmin->text().toDouble(),
+                                ui->le_Xmax->text().toDouble(),
+                                ui->le_Vtar->text().toDouble(),
+                                ui->le_mstone->text().toDouble(),
+                                *mat_cyl,*mat_nozzle,*mat_br,*mat_tzp,
+                                *fuel_iterator,
+                                ui->le_teth->text().toDouble(),
+                                ui->le_Pk->text().toDouble(),
+                                ui->le_Pa->text().toDouble()
+                                ));
+                accept();
+            }
+            catch(const InputData::IDexception& idex){
+                ui->label_warning->setText("Введенные данные некорректны.");
+                ui->label_warning->show();
+            }
+            catch(std::exception& e){
+                ui->label_warning->setText(QString::fromStdString(e.what())+=" /input data exception");
+                ui->label_warning->show();
+            }
+            catch(...){
+                ui->label_warning->setText("some input data exception");
+                ui->label_warning->show();
+            }
 
         }
         else throw std::logic_error("setflytask:combobox_error");
-        accept();
     }
 
 

@@ -10,7 +10,8 @@ chooseWindow::chooseWindow(std::list<std::pair<QString,QString>>* filenames, QWi
 {
     ui->setupUi(this);
     for(auto& n:*fnames)
-        ui->listWidget->addItem(n.first);
+        ui->listWidget->addItem(new QListWidgetItem(
+                                    QIcon("resources/cont_red_circle.png"),n.first));
 }
 
 
@@ -41,4 +42,5 @@ void chooseWindow::on_pushButton_clicked()//open
 
 void chooseWindow::on_btn_new_clicked()
 {
+    emit newproject();
 }

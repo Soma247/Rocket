@@ -65,7 +65,8 @@ void SetNoseConeDialog::checkL(){
 void SetNoseConeDialog::checkdelt(){
     isdeltvalid=true;
     double delt{0};
-    if(ui->le_delt->text().isEmpty()|| (delt=ui->le_delt->text().toDouble())<=0){
+    if(ui->le_delt->text().isEmpty()|| (delt=ui->le_delt->text().toDouble())<=0||
+             ui->le_delt->text().toDouble()>0.5*ui->le_D->text().toDouble()){
         ui->label_warning->setText("параметр delt введен неверно.");
         ui->label_warning->show();
         isdeltvalid=false;

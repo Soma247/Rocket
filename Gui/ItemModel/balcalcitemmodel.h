@@ -49,7 +49,7 @@ public:
       //вставка и удаление столбцов и строк
 
     balcalcItem* getItem(const QModelIndex &index) const;
-
+    void clear();
     void setInputData(const InputData& indat);
     InputData getInputData();
     void setNosecone(material math,double Dend, double len, double delta);
@@ -67,6 +67,10 @@ public:
                   double Xtip, double Xrf,
                   double Xrr, double Xtf,
                   double Xtr, double H);
+    OutputData calculate(double Vend,double dt){
+        if(!balcal)throw std::exception();
+        return balcal->calculate(Vend,dt);
+    }
 
     void addEquipment(std::string eqname, double X, double mass);
 

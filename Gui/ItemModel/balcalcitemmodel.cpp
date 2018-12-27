@@ -25,7 +25,7 @@ balcalcItemModel::balcalcItemModel(std::unique_ptr<ballisticCalculator> bc, QObj
 }
 
 balcalcItemModel::~balcalcItemModel(){
-    delete rootItem;
+    //delete rootItem;
 }
 
 
@@ -46,6 +46,14 @@ balcalcItem *balcalcItemModel::getItem(const QModelIndex &index) const {
   if (item) return item;
  }
  return rootItem;
+}
+
+void balcalcItemModel::clear()
+{
+    if(balcal){
+        balcal->clear(true);
+    }
+    update();
 }
 
 void balcalcItemModel::setInputData(const InputData &indat){
@@ -85,6 +93,7 @@ void balcalcItemModel::addplane(material math, double Xfromnose, double Broot, d
 
 void balcalcItemModel::addEquipment(std::string eqname, double X, double mass)
 {
+    std::cerr<<"addeq"<<std::endl;
     if(balcal)
         balcal->addEquipment(eqname,X,mass);
     update();

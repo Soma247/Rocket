@@ -2,15 +2,7 @@
 #define ROCKETCALCEXCEPTIONS_H
 #include <exception>
 #include <string>
-class IDexception:public std::exception{
-  std::string msg;
-public:
-  IDexception(){}
-  IDexception(const std::string& str):msg{str}{}
-  virtual const char* what() const _GLIBCXX_USE_NOEXCEPT{
-      return msg.c_str();
-  }
-};
+
 
 
 class InvalidIALparameter:public std::exception{

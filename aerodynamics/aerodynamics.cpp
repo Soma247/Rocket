@@ -94,12 +94,22 @@ double Aerodynamics::CxpConoid(double len, double d1, double d2, double Dmid, do
 
 double Aerodynamics::CxpSternBottom(double len, double Dmid, double DStern, double Dnozzle, double M, bool isEnActive){
     double nuk=DStern/Dmid;
-    return newtonInterp::interp4d(aerodynamics_tables::get_5_5_CxpStern(),M,len/Dmid,DStern/Dmid,3,3,3)*
+    double cx=newtonInterp::interp4d(aerodynamics_tables::get_5_5_CxpStern(),M,len/Dmid,DStern/Dmid,2,2,2)*
             DStern*DStern/(Dmid*Dmid)+
-             newtonInterp::interp2d(aerodynamics_tables::get_5_8_CpSternNu1(),M,3)*
-              newtonInterp::interp3d(aerodynamics_tables::get_5_9_knu(),(1-nuk)/(2*len/Dmid-nuk*nuk),M,3,3)*
+             newtonInterp::interp2d(aerodynamics_tables::get_5_8_CpSternNu1(),M,2)*
+              newtonInterp::interp3d(aerodynamics_tables::get_5_9_knu(),(1-nuk)/(2*len/Dmid-nuk*nuk),M,2,2)*
               (DStern*DStern-isEnActive*Dnozzle*Dnozzle)/
                (Dmid*Dmid);//к миделю корпуса
+    while(cx<0){
+        M--;
+        cx=newtonInterp::interp4d(aerodynamics_tables::get_5_5_CxpStern(),M,len/Dmid,DStern/Dmid,2,2,2)*
+                DStern*DStern/(Dmid*Dmid)+
+                 newtonInterp::interp2d(aerodynamics_tables::get_5_8_CpSternNu1(),M,2)*
+                  newtonInterp::interp3d(aerodynamics_tables::get_5_9_knu(),(1-nuk)/(2*len/Dmid-nuk*nuk),M,2,2)*
+                  (DStern*DStern-isEnActive*Dnozzle*Dnozzle)/
+                   (Dmid*Dmid);//к миделю корпуса
+    }
+    return cx;
 }
 
 double Aerodynamics::CxWavPlaneOneConsole(double SmidLA, double broot, double btip,double k, double croot, double ctip,double h,  double anglecmax, double M){
@@ -110,10 +120,19 @@ double Aerodynamics::CxWavPlaneOneConsole(double SmidLA, double broot, double bt
     M0=1-0.7*sqrt(c),
     Mcr=M0+(0.9*pow(tan(anglecmax),1.2)+0.3*pow(lambdakr,-1.5))*(1-M0)*(M0-0.4);//критическое число маха
     if(M<Mcr)return 0;
-    return  (0.5*(broot+btip)*h/SmidLA)*
-            newtonInterp::interp4d(aerodynamics_tables::get_5_10_CxWavePlane(),lambdakr*sqrt(M*M-1),lambdakr*tan(anglecmax),nkr,3,3,3)*
-             (1+newtonInterp::interp2d(aerodynamics_tables::get_5_13_fi_CxWavePlane(),sqrt(M*M-1)*tan(anglecmax),3)*(k-1)
+    double cx= (0.5*(croot+ctip)*h/SmidLA)*
+            newtonInterp::interp4d(aerodynamics_tables::get_5_10_CxWavePlane(),lambdakr*sqrt(M*M-1),lambdakr*tan(anglecmax),nkr,2,2,2)*
+             (1+newtonInterp::interp2d(aerodynamics_tables::get_5_13_fi_CxWavePlane(),sqrt(M*M-1)*tan(anglecmax),2)*(k-1)
              )*(lambdakr*c*c);//уже отнесен к площади ла, 1 крыло(половина консоли)
+    while(cx<0){
+        M--;
+        if(M<Mcr)return 0;
+        cx=(0.5*(croot+ctip)*h/SmidLA)*
+                newtonInterp::interp4d(aerodynamics_tables::get_5_10_CxWavePlane(),lambdakr*sqrt(M*M-1),lambdakr*tan(anglecmax),nkr,2,2,2)*
+                 (1+newtonInterp::interp2d(aerodynamics_tables::get_5_13_fi_CxWavePlane(),sqrt(M*M-1)*tan(anglecmax),2)*(k-1)
+                 )*(lambdakr*c*c);//уже отнесен к площади ла, 1 крыло(половина консоли)
+    }
+    return cx;
 }
 
 double Aerodynamics::CyaNoseCyll(double Dmid, double SmidLA, double Lnose, double Lcyl, double M){

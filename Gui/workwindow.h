@@ -10,6 +10,7 @@
 #include "Dialogs/addequipmentdialog.h"
 #include "Dialogs/setflytask.h"
 #include "Dialogs/choosewindow.h"
+#include "Dialogs/about.h"
 
 namespace Ui {
 class WorkWindow;
@@ -32,7 +33,18 @@ private slots:
     void on_pushButton_clicked();
     void selectionChangedSlot(const QItemSelection &, const QItemSelection &);
     void on_treeView_customContextMenuRequested(const QPoint &pos);
-    void insertChild();
+
+    void on_action_open_triggered();
+
+    void on_action_save_as_triggered();
+
+    void on_action_save_triggered();
+
+    void on_action_new_triggered();
+
+    void on_about_triggered();
+
+    void on_btn_balcalculate_clicked();
 
 public slots: //для реализации сигнала selectionChanged у QTreeView::selectionModel
     void updateActions(const QItemSelection &,const QItemSelection &);
@@ -56,6 +68,8 @@ public slots: //для реализации сигнала selectionChanged у Q
     void saveFile();
     void openFile(std::string filename);
     void savefnames();
+    void saveFile(std::string filename);
+    void newProject();
 
 private:
     Ui::WorkWindow *ui;
@@ -70,6 +84,7 @@ private:
     errorDialog* errd;
     SetFlyTask* setflytaskdial;
     chooseWindow* choosedial;
+    about* aboutdial;
 
     size_t curindex=0;
     bool isfirstSetInputData=true;

@@ -23,18 +23,30 @@ struct baldat{
     double mass=0;
     double cx=0;
     double cy=0;
+    double stability=0;
+    baldat(){}
+    baldat(double time, double Vel, double High, double Xi, double tetha, double massi, double cxi, double cyi, double stabi):
+    t{time},V{Vel},H{High},X{Xi},teth{tetha},mass{massi},cx{cxi},cy{cyi},stability{stabi}{
+
+    }
 };
 
 struct InputData{
+    class IDexception:public std::exception{
+      std::string msg;
+    public:
+      IDexception(){}
+      IDexception(const std::string& str):msg{str}{}
+      virtual const char* what() const _GLIBCXX_USE_NOEXCEPT;
+    };
     double Hmax=0;//максимальная высота цели
     double Hmin=0;//минимальная высота полета ракеты
     double Xmax=0;//дальняя граница зоны поражения
-    double LmaxC=0;//наклонная дальность
+
     double Vtar=0;//скорость цели
     double mstone=0;//Рубеж выполнения задания (минимальная дальность от точки старта)
     double teth0=M_PI/8;//угол наклона траектории к линии визирования на старте(dy/dx,x=x0)
-    double TaverageC;//среднее время полета к цели
-    double VavgC;//средняя скорость полета к цели на наибольшее расстояние
+
     material enmatShell;
     material enmatnozzle;
     material enmatbr;
@@ -44,9 +56,12 @@ struct InputData{
     double enPa=0.06;
     InputData(){}
     InputData(double Hmaximum, double Hminimum, double Xmaximum, double Vtarget,  double milestone,
-              material enmatShell, material enmatnozzle, material enmatbr,  material enmatTz, fuel enfl, double enPk,
+              material enmatShell, material enmatnozzle, material enmatbr,  material enmatTz, fuel enfl,double dteth, double enPk,
               double enPa);
     bool iscorrect()const;
+    double LmaxC()const;//наклонная дальность
+    double TaverageC()const;//среднее время полета к цели
+    double VavgC()const;//средняя скорость полета к цели на наибольшее расстояние
     friend std::ostream& operator<<(std::ostream &os, const InputData& idat);
     friend std::istream& operator>>(std::istream &in, InputData& idat);
 };
@@ -121,7 +136,8 @@ public:
     void ejectTailStab();
     void openProject(std::string proFile);
     void saveProject(std::string proFile)const;
-    OutputData calculate();
+    void clear(bool isxplane);
+    OutputData calculate(double Vend, double dt=1);
     std::vector<size_t>state()const;
     RocketHeadData getheadData();
 

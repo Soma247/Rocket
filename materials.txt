@@ -1,8 +1,10 @@
 material{air,1,1}
-material{ert,2,2}
-material{orpl,7810,1860}
+
+material{orpl,1400,1400}
 material{tzp,1600,1600}
 material{steel,4700,4700}
 material{br,1300,1300}
+material{ml9,1760,250}
+
 
 

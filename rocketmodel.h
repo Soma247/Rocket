@@ -26,6 +26,9 @@ struct RocketHeadData{
     double headLen=0;
     double headDend=0;
     double headDmax=0;
+    bool iscorrect(){
+        return nconepar.mass>0&&headMass>0&&headLen>0&&headDend>0&&headDmax>0&&nconepar.dend>0&&nconepar.len>0;
+    }
 };
 
 
@@ -109,7 +112,6 @@ protected:
     double getCxai(double cyala,double M,double alphagrad,double sound_sp, double cin_visc)const;
 
     void update();
-
     double Dengine=0;
     double Dmax=0;
     double SmidLA=0;

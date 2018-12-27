@@ -24,10 +24,10 @@
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: qconicalgradient(cx:0, cy:0.011, angle:135.7, stop:0 rgba(255, 64, 0, 69), stop:0.252809 rgba(255, 96, 0, 85), stop:0.45 rgba(255, 117, 0, 200), stop:0.488764 rgba(255, 159, 0, 101), stop:0.606742 rgba(255, 106, 0, 179));</string>
+     <string notr="true">background-color: qconicalgradient(cx:0, cy:0.972, angle:170.1, stop:0 rgba(81, 81, 73, 69), stop:0.0224719 rgba(49, 49, 49, 255), stop:0.179775 rgba(19, 19, 17, 231), stop:0.258427 rgba(33, 33, 31, 222), stop:0.365169 rgba(24, 24, 24, 235), stop:0.483146 rgba(51, 51, 51, 250), stop:0.617978 rgba(21, 21, 19, 248), stop:0.724719 rgba(12, 12, 10, 252), stop:0.842697 rgba(5, 5, 4, 215), stop:0.921348 rgba(26, 22, 19, 234), stop:0.949438 rgba(58, 58, 51, 69), stop:1 rgba(74, 74, 57, 255));</string>
     </property>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>100</x>
@@ -47,20 +47,38 @@
          <bold>true</bold>
         </font>
        </property>
+       <property name="tabletTracking">
+        <bool>false</bool>
+       </property>
        <property name="autoFillBackground">
         <bool>true</bool>
        </property>
        <property name="styleSheet">
-        <string notr="true">background:qradialgradient(spread:pad, cx:0.022, cy:0, radius:0.5, fx:0.386689, fy:0.341325, stop:0 rgba(255, 83, 83, 133))</string>
+        <string notr="true">background-color: qconicalgradient(cx:0, cy:1, angle:281.613, stop:0.0224719 rgba(130, 15, 15, 213), stop:0.162011 rgba(147, 42, 32, 231), stop:0.258427 rgba(206, 29, 4, 174), stop:0.365169 rgba(128, 26, 26, 199), stop:0.47486 rgba(185, 45, 38, 181), stop:0.483146 rgba(126, 58, 44, 209), stop:0.625698 rgba(124, 25, 0, 211), stop:0.724719 rgba(152, 19, 0, 159), stop:0.842697 rgba(193, 37, 37, 215), stop:0.921348 rgba(209, 26, 0, 234), stop:0.949438 rgba(199, 35, 35, 206), stop:1 rgba(74, 74, 57, 255));</string>
        </property>
        <property name="frameShape">
-        <enum>QFrame::Panel</enum>
+        <enum>QFrame::StyledPanel</enum>
        </property>
        <property name="frameShadow">
         <enum>QFrame::Plain</enum>
        </property>
+       <property name="lineWidth">
+        <number>5</number>
+       </property>
        <property name="midLineWidth">
-        <number>1</number>
+        <number>5</number>
+       </property>
+       <property name="editTriggers">
+        <set>QAbstractItemView::NoEditTriggers</set>
+       </property>
+       <property name="layoutMode">
+        <enum>QListView::SinglePass</enum>
+       </property>
+       <property name="viewMode">
+        <enum>QListView::ListMode</enum>
+       </property>
+       <property name="uniformItemSizes">
+        <bool>false</bool>
        </property>
       </widget>
      </item>
@@ -68,6 +86,10 @@
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
         <widget class="QPushButton" name="btn_new">
+         <property name="styleSheet">
+          <string notr="true">background-color: qconicalgradient(cx:0, cy:0, angle:170.1, stop:0 rgba(81, 81, 73, 69), stop:0.235955 rgba(92, 92, 83, 231), stop:0.353933 rgba(51, 51, 51, 250), stop:0.423533 rgba(49, 49, 49, 255), stop:0.477581 rgba(58, 58, 53, 248), stop:0.55 rgba(51, 51, 40, 255), stop:0.57754 rgba(58, 54, 37, 130), stop:0.625 rgba(58, 58, 51, 69), stop:0.921348 rgba(26, 22, 19, 234), stop:1 rgba(74, 74, 57, 255));
+</string>
+         </property>
          <property name="text">
           <string>Новый</string>
          </property>
@@ -75,6 +97,10 @@
        </item>
        <item>
         <widget class="QPushButton" name="pushButton">
+         <property name="styleSheet">
+          <string notr="true">background-color: qconicalgradient(cx:0, cy:0, angle:170.1, stop:0 rgba(81, 81, 73, 69), stop:0.235955 rgba(92, 92, 83, 231), stop:0.353933 rgba(51, 51, 51, 250), stop:0.423533 rgba(49, 49, 49, 255), stop:0.477581 rgba(58, 58, 53, 248), stop:0.55 rgba(51, 51, 40, 255), stop:0.57754 rgba(58, 54, 37, 130), stop:0.625 rgba(58, 58, 51, 69), stop:0.921348 rgba(26, 22, 19, 234), stop:1 rgba(74, 74, 57, 255));
+</string>
+         </property>
          <property name="text">
           <string>Открыть </string>
          </property>
