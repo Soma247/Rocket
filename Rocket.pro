@@ -34,7 +34,8 @@ SOURCES += \
     Gui/Dialogs/setflytask.cpp \
     Gui/Dialogs/choosewindow.cpp \
     Gui/Dialogs/about.cpp \
-    Gui/resultwindow.cpp
+    Gui/resultwindow.cpp \
+    Gui/Dialogs/editfuels.cpp
 
 
 HEADERS += \
@@ -64,13 +65,15 @@ HEADERS += \
     Gui/Dialogs/setflytask.h \
     Gui/Dialogs/choosewindow.h \
     Gui/Dialogs/about.h \
-    Gui/resultwindow.h
+    Gui/resultwindow.h \
+    Gui/Dialogs/editfuels.h
 
 DISTFILES += \
     garbage.txt \
     resources/cont_red_circle.png \
     hardfuels.txt \
-    materials.txt
+    materials.txt \
+    1.txt
 
 FORMS += \
     Gui/workwindow.ui \
@@ -82,4 +85,5 @@ FORMS += \
     Gui/Dialogs/setflytask.ui \
     Gui/Dialogs/choosewindow.ui \
     Gui/Dialogs/about.ui \
-    Gui/resultwindow.ui
+    Gui/resultwindow.ui \
+    Gui/Dialogs/editfuels.ui

@@ -11,8 +11,9 @@
 #include <QStringList>
 constexpr int MAX_lastprojects=10;
 
-WorkWindow::WorkWindow(QString matfile, QString hfuelsfile, QString lastprojectsfile, QWidget *parent) :
-    QMainWindow(parent),ui(new Ui::WorkWindow),profile{lastprojectsfile.toStdString()}
+WorkWindow::WorkWindow(QString materialsfile, QString hfuelsfile, QString lastprojectsfile, QWidget *parent) :
+    QMainWindow(parent),ui(new Ui::WorkWindow),profile{lastprojectsfile.toStdString()},matfile{materialsfile.toStdString()},
+    flfile{hfuelsfile.toStdString()}
 {
     ui->setupUi(this);
 
@@ -71,14 +72,17 @@ WorkWindow::WorkWindow(QString matfile, QString hfuelsfile, QString lastprojects
         errd->show();
     }
 
-    if(!readMaterials(matfile)){
-        errd->setdata(QString("Ошибка: Файл %1 %2").arg(matfile).arg(" поврежден."),true);
+    if(!readMaterials(materialsfile)){
+        errd->setdata(QString("Ошибка: Файл %1 %2").arg(materialsfile).arg(" поврежден."),true);
         errd->show();
     }
     if(!readHardfuels(hfuelsfile)){
         errd->setdata(QString("Ошибка: Файл %1 %2").arg(hfuelsfile).arg(" поврежден."),true);
         errd->show();
     }
+    editfuelmatdial=new EditFuels(&materials,&hardfuels,this);
+    connect(editfuelmatdial,SIGNAL(matupdated()),this,SLOT(savemats()));
+    connect(editfuelmatdial,SIGNAL(flupdated()),this,SLOT(savefuels()));
 
 }
 
@@ -422,6 +426,31 @@ void WorkWindow::newProject(){
     }
 }
 
+void WorkWindow::savemats()
+{
+    std::ofstream out(this->matfile);
+    if(!out){
+        errd->setdata(QString("файл материалов недоступен"),false);
+        errd->show();
+        return;
+    }
+
+    for(auto&m:materials)
+        out<<m<<std::endl;
+}
+
+void WorkWindow::savefuels()
+{
+    std::ofstream out(this->flfile);
+    if(!out){
+        errd->setdata(QString("файл топлив недоступен"),false);
+        errd->show();
+        return;
+    }
+    for(auto&f:hardfuels)
+        out<<f<<std::endl;
+}
+
 void WorkWindow::openFile(std::string filename)
 {
     std::cerr<<"ww:openfile "<<filename<<std::endl;
@@ -561,5 +590,12 @@ void WorkWindow::on_about_triggered()
 void WorkWindow::on_btn_balcalculate_clicked()
 {
      balcalcItemModel* bc=dynamic_cast<balcalcItemModel*>(ui->treeView->model());
-     bc->calculate(350,0.5);
+     resultw=new resultWindow(bc->calculate(450,1),this);
+     std::cerr<<"created"<<std::endl;
+     resultw->show();
+}
+
+void WorkWindow::on_flmatedit_triggered()
+{
+    editfuelmatdial->show();
 }

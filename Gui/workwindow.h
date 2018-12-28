@@ -11,6 +11,8 @@
 #include "Dialogs/setflytask.h"
 #include "Dialogs/choosewindow.h"
 #include "Dialogs/about.h"
+#include "Dialogs/editfuels.h"
+#include "resultwindow.h"
 
 namespace Ui {
 class WorkWindow;
@@ -46,6 +48,8 @@ private slots:
 
     void on_btn_balcalculate_clicked();
 
+    void on_flmatedit_triggered();
+
 public slots: //для реализации сигнала selectionChanged у QTreeView::selectionModel
     void updateActions(const QItemSelection &,const QItemSelection &);
     void AddConDialog();
@@ -70,6 +74,8 @@ public slots: //для реализации сигнала selectionChanged у Q
     void savefnames();
     void saveFile(std::string filename);
     void newProject();
+    void savemats();
+    void savefuels();
 
 private:
     Ui::WorkWindow *ui;
@@ -81,10 +87,14 @@ private:
     std::vector<material>materials;
     std::list<std::pair<QString,QString>> fnames;
     std::string profile;
+    std::string matfile;
+    std::string flfile;
     errorDialog* errd;
     SetFlyTask* setflytaskdial;
     chooseWindow* choosedial;
     about* aboutdial;
+    EditFuels* editfuelmatdial;
+    resultWindow* resultw;
 
     size_t curindex=0;
     bool isfirstSetInputData=true;

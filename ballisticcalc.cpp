@@ -1,6 +1,8 @@
 #include "ballisticcalc.h"
 #include <iomanip>
 #include <fstream>
+
+
 const std::string indatheader="input_data";
 ballisticCalculator::ballisticCalculator(AbstractAtmosphere *atm):atmo{atm}
 {
@@ -19,10 +21,11 @@ ballisticCalculator::ballisticCalculator(const InputData &data, std::unique_ptr<
     atmo.reset(atm.release());
 }
 
-bool ballisticCalculator::iscorrect(){return model&&
-            atmo&&
-            model->isheadcorrect()&&indat.iscorrect();
-                                  }
+bool ballisticCalculator::iscorrect(){
+    return model&&atmo&&
+            model->isheadcorrect()&&
+            indat.iscorrect();
+}
 
 void ballisticCalculator::setModel(std::unique_ptr<RocketModel> rm){
     model.reset(rm.release());
@@ -129,7 +132,7 @@ void ballisticCalculator::openProject(std::string proFile)
 
 OutputData ballisticCalculator::calculate(double Vend,double dt){
 
-    std::cout<<"calc started"<<std::endl;
+ //   std::cout<<"calc started"<<std::endl;
     if(!model||!iscorrect()||dt<=0)throw std::runtime_error("bc:1");
 
     double y0=15;
@@ -149,11 +152,10 @@ OutputData ballisticCalculator::calculate(double Vend,double dt){
         double B=tan(teth0);
       //  double C=y0;
      //   std::cout<<"A="<<A<<" B="<<B<<std::endl;
-        std::cout<<"massfuel"<< i*model->getheadmass()/(1-i)<<std::endl;
+  //      std::cout<<"massfuel"<< i*model->getheadmass()/(1-i)<<std::endl;
         engineparameters enpar=model->getEngineParams();
         std::vector<baldat> ballisticData;
         ballisticData.reserve(static_cast<size_t>(indat.TaverageC()/dt));
-        std::cout<<ballisticData.size()<<std::endl;
         double V=35;//скорость
         double H=y0;//высота
         double X=x0;//горизонт дальность
@@ -188,7 +190,7 @@ OutputData ballisticCalculator::calculate(double Vend,double dt){
             teth=atan(2*A*X+B);//dteth=(P*sin(alpha)+    cyacx.first*(alpha)*q*model->getS()-   mass*9.81*cos(teth))/(mass*V);
             dH=V*sin(teth);
             dX=V*cos(teth);
-std::cout<<"dv="<<dV<<" P="<<P<<" 2="<<cyacx.second*q*model->getS()<<" 3="<<mass*9.81*sin(teth)<<std::endl;
+//std::cout<<"dv="<<dV<<" P="<<P<<" 2="<<cyacx.second*q*model->getS()<<" 3="<<mass*9.81*sin(teth)<<std::endl;
             if(V<0||H<0||(H>=indat.Hmax&&X>=indat.mstone))break;
             ballisticData.push_back(baldat(t,V,H,X,teth,mass,cyacx.second,cyacx.first,
                                                (masscenter-model->getXp(V/atmo->get_sound_sp(H),
@@ -204,7 +206,7 @@ std::cout<<"dv="<<dV<<" P="<<P<<" 2="<<cyacx.second*q*model->getS()<<" 3="<<mass
                 mass=massend;
                 masscenter=massendcenter;
             }
-
+/*
             std::cout<<std::setw(3)<<"Fm= "
                      <<std::setw(4)<<9.81*sin(teth)<<std::endl<<"T"
                     <<std::setw(4)<<ballisticData.back().t
@@ -215,7 +217,7 @@ std::cout<<"dv="<<dV<<" P="<<P<<" 2="<<cyacx.second*q*model->getS()<<" 3="<<mass
                 <<std::setw(6)<<" H= "<<ballisticData.back().H
                <<std::setw(6)<<" X= "<<ballisticData.back().X<<std::endl
                  <<std::setw(6)<<" mc= "<<masscenter<<std::endl;
-            std::cout<<"cy="<<cyacx.first<<" cx="<<cyacx.second<<std::endl;
+            std::cout<<"cy="<<cyacx.first<<" cx="<<cyacx.second<<std::endl;*/
         }
         std::cout<<"Xend="<<X<<" Hend="<<H<<" Vend="<<V<<std::endl<<std::endl;
         if(X>=indat.mstone && H>=indat.Hmax && V>=Vend){
@@ -243,10 +245,73 @@ std::cout<<"dv="<<dV<<" P="<<P<<" 2="<<cyacx.second*q*model->getS()<<" 3="<<mass
                                   atmo->get_sound_sp(ballisticData[ballisticData.size()-1].H),
                                atmo->get_sound_sp(ballisticData[ballisticData.size()-1].H),
                                atmo->get_cinem_viscidity(ballisticData[ballisticData.size()-1].H));
-            // std::cout<<std::endl<<*model<<std::endl;
-            return OutputData{
 
-            };
+            zones zns;
+
+            for(double teth=5*M_PI/180;teth<M_PI/2;teth+=5*M_PI/180){
+                double M0=model->getmass();//масса
+                engineparameters enpar=model->getEngineParams();
+                double Vmax=0;
+                V=35;//скорость
+                H=y0;//высота
+                X=0;//горизонт дальность
+                double mass=M0;
+                massend=model->getmassend();
+                dV=0;dH=0;dX=0;
+                for(double t=0;H>0;t+=1){//одна траектория по времени полета
+                    V+=dV;
+                    H+=dH;
+                    X+=dX;
+                    if(Vmax<V)Vmax=V;
+                    else{
+                        if(V>1500&&(V+dV)<1500){
+                            zns[1500].push_back(point(X,H));
+                        }
+                        else if(V>1000&&(V+dV)<1000){
+                            zns[1000].push_back(point(X,H));
+                        }
+                        else if(V>750&&(V+dV)<750){
+                            zns[750].push_back(point(X,H));
+                        }
+                        else if(V>500&&(V+dV)<500){
+                            zns[500].push_back(point(X,H));
+                        }
+                        else if(V>250&&(V+dV)<250){
+                            zns[250].push_back(point(X,H));
+                        }
+                        else if(V<250)break;
+                    }
+                    q=atmo->get_density(H)*V*V/2;
+                    cyacx= model->getCyaaCx(
+                                V/atmo->get_sound_sp(H),
+                                alpha*180/M_PI,
+                                atmo->get_sound_sp(H),
+                                atmo->get_cinem_viscidity(H),
+                                t<enpar.t
+                                );
+
+                    P=(t<enpar.t)?enpar.Pvacuum:0.0;
+                    dV=(P*cos(alpha)-cyacx.second*q*model->getS()-
+                        mass*9.81*sin(teth))/mass;
+                    dH=V*sin(teth);
+                    dX=V*cos(teth);
+                }
+            }
+            for(auto& z:zns){
+                std::cerr<<z.first<<':'<<std::endl;
+                for(auto&p:z.second)
+                    std::cerr<<p.first<<' '<<p.second<<std::endl;
+            }
+
+            return OutputData{
+                ballisticData,
+                model->getheadData(),
+                model->getEngineParams(),
+                model->getmass(),
+                model->getmassend(),
+                model->getmasscenter(),
+                model->getmasscenterend(),
+                zns};
         }
         ballisticData.clear();
 
@@ -265,12 +330,6 @@ std::vector<size_t> ballisticCalculator::state() const{
     temp=model->state();
     temp.push_back(indat.iscorrect());
    }
-
-   std::cout<<bool(model)<<" bcal state is: ";
-   for(auto&s:temp)
-       std::cout<<s<<" ";
-   std::cout<<std::endl;
-
     return temp;
 }
 

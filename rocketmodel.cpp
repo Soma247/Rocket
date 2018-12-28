@@ -325,14 +325,7 @@ double RocketModel::getbalanceStart(double M, double sound_sp, double cin_visc){
     return (getmasscenter()-getXp(M,sound_sp,cin_visc))/getLength();
 }
 
-std::vector<size_t> RocketModel::state() const{/*
-    std::cout<<"rm:conoids ";
-    for(auto&c:pconoids)
-        std::cout<<c.getL()<<" ";
-    std::cout<<std::endl;
-*/
-
-
+std::vector<size_t> RocketModel::state() const{
     return {
              bool(pnosecone),
              bool(ptailplane),

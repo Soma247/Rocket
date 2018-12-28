@@ -71,7 +71,7 @@ engine::engine(material mathShell, material mathbr, material mathnozzle, materia
     params.Ly=fi*params.La;//длина утопленной части сопла
     params.Lc=params.La-params.Ly;//длина выступающей части сопла
 
-        std::cout<<"LA"<<params.La<<" "<<"Lc"<<params.Lc<<std::endl;
+//        std::cout<<"LA"<<params.La<<" "<<"Lc"<<params.Lc<<std::endl;
     params.Dc=params.Dcr*(1.5+fi*((params.Da/params.Dcr)-1.5));//диаметр сопла в месте выхода из камеры сгорания
     params.LforwardBottom=0.3*Dmid+0.05*params.Dv;//длины переднего и заднего днищ
     params.LbackwardBottom=0.3*Dmid+0.05*params.Dc;
@@ -86,8 +86,8 @@ engine::engine(material mathShell, material mathbr, material mathnozzle, materia
     const double f=1.15;//коэффициент безопасности
     params.mbottoms=params.matShell.Ro*f*Pk*pow(Dmid,3)/params.matShell.SigmaV;
     params.mcyl=0.5*M_PI*lambdafuel*params.mbottoms;
-    const double abr=0.07E-3;//коэффициент бронирующего покрытия
-    const double ks=2.7;//коэффициент формы заряда и канала
+    const double abr=0.05E-3;//коэффициент бронирующего покрытия
+    const double ks=2.2;//коэффициент формы заряда и канала
     const double ac=0.006;//коэффициент пропорциональности средней толщины стенки сопла к диаметру камеры сгорания
     params.mbr=0.5*M_PI*params.matbr.Ro*pow(Dmid,3)*(0.5*abr*(1-pow(params.Dv/Dmid,2))/(2*params.fl.U(Pk))+lambdafuel*(1-params.Dfuel/Dmid));
     params.mnozzle=ks*params.fl.U(Pk)*params.fl.rot*0.45*(params.matnozzle.Ro+mathtz.Ro)*
@@ -95,8 +95,8 @@ engine::engine(material mathShell, material mathbr, material mathnozzle, materia
                                                                                    (a*Pk*1E6*sin(beth));
     double Tcam0{293},TcamMax{473};
     double deltaTZ=0.8*sqrt(atz*Dmid*(1-params.Dv/Dmid)/(2*params.fl.U(Pk)*(0.1-0.8*log10((params.Tk-TcamMax)/(params.Tk-Tcam0)))));
-    params.mtz=deltaTZ*Dmid*Dmid*params.matTz.Ro*(2+M_PI*(0.37*lambdafuel-0.3));
-    params.muk=0.2*params.mbottoms*sqrt(1.2*Pk);
+    params.mtz=deltaTZ*Dmid*Dmid*params.matTz.Ro*(2+M_PI*(0.3*lambdafuel-0.3));
+    params.muk=0.15*params.mbottoms*sqrt(1.2*Pk);
     params.mengine=params.mcyl+params.mbottoms+params.mbr+params.mnozzle+params.mtz+params.muk;
     params.Xnozzle=params.Leng-params.La*2/3;
     params.Xmfuel=params.LforwardBottom+params.Lcyl/2;

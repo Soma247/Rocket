@@ -5,6 +5,7 @@
 #include "memory"
 #include <math.h>
 #include "rocketcalcexceptions.h"
+#include <map>
 
 /*    double Hmax=600,tet0=M_PI/4,Xmax=1000,y0=15,x0=0,
      A=(Hmax-tan(tet0)*Xmax-y0)/(Xmax*Xmax),
@@ -14,6 +15,10 @@
        teth(t)=atan((Hmax-y0)/Xmax+2*A*x(t)+B)
 
 */
+using point=std::pair<double,double>;
+using traectory=std::vector<point>;
+using zones=std::map<double,traectory>;
+
 struct baldat{
     double t=0;
     double V=0;//скорость
@@ -75,7 +80,7 @@ struct OutputData{
     double massempty;
     double xmfull;
     double xmempty;
-    double xdaverage;
+    zones zns;
 };
 
 
