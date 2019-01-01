@@ -1,5 +1,6 @@
 #include "rocketmodel.h"
 #include <sstream>
+#include <iostream>
 const std::string rocketmodelheader{"RocketModel"};
 
 RocketHeadData RocketModel::getheadData(){
@@ -51,8 +52,13 @@ void RocketModel::setNosecone(material math, double Dend, double len, double del
 void RocketModel::setTailStab(material math, double Xfromnose, double Broot, double Btip, double Croot, double Ctip, double Xtip, double Xrf, double Xrr, double Xtf, double Xtr, double H)
 {
     ptailplane.reset(new plane(math,Xfromnose,Broot,Btip,Croot,Ctip,
-                                     Xtip,Xrf,Xrr,Xtf,Xtr,H));
+                               Xtip,Xrf,Xrr,Xtf,Xtr,H));
     update();
+}
+
+void RocketModel::ejectTailStab(){
+    if(ptailplane)
+        ptailplane.reset(nullptr);
 }
 void RocketModel::setEngine(material mathShell, material mathbr,
                             material mathnozzle, material mathtzp,
@@ -61,7 +67,7 @@ void RocketModel::setEngine(material mathShell, material mathbr,
                              mathtzp,fuel, Dengine, fuelmass, Pk, Pa));
     engineparameters par=pengine->getparams();
     ptailcone.reset(new conoid(mathShell,Dengine,par.Da,
-                               par.Leng-par.LforwardBottom-par.Lcyl,0.08));
+                               par.Leng-par.LforwardBottom-par.Lcyl,0.007));
     //конус обратный от сопла до миделя по длине сопла
     update();
 }
@@ -85,18 +91,18 @@ void RocketModel::addplane(material math, double Xfromnose,
                            double Xtip, double Xrf, double Xrr, double Xtf,
                            double Xtr, double H){
     pplanes.push_back(plane(math,Xfromnose,Broot,Btip,Croot,Ctip,
-                                                 Xtip,Xrf,Xrr,Xtf,Xtr,H));
+                            Xtip,Xrf,Xrr,Xtf,Xtr,H));
     update();
 }
 void RocketModel::addEquipment(std::string eqname, double X, double mass){
-   // std::cout<<"romodel:add eq"<<std::endl;
+    // std::cout<<"romodel:add eq"<<std::endl;
     pequipments.push_back(equipment(eqname,X,mass));
     update();
 }
 
 
 void RocketModel::ejectConoid(size_t num){
-  //  std::cerr<<"RM:eject "<<num<<std::endl;
+    //  std::cerr<<"RM:eject "<<num<<std::endl;
     if(num>pconoids.size())throw std::out_of_range("conoid num is out of range");
     pconoids.erase(pconoids.begin()+num);
     update();
@@ -227,7 +233,7 @@ double RocketModel::getmasscenterend() const{
         mx+=pnosecone->mass()*pnosecone->massCenter();
     if(pengine)
         mx+=pengine->getmassend()*(pengine->getX0()+pengine->getmasscenterend());
-  //  std::cout<<"peng mc:"<<pengine->getmasscenterend()<<std::endl;
+    //  std::cout<<"peng mc:"<<pengine->getmasscenterend()<<std::endl;
     if(ptailcone)
         mx+=ptailcone->mass()*(ptailcone->massCenter()+ptailcone->getX0());
     for(const conoid& c:pconoids)
@@ -255,23 +261,24 @@ double RocketModel::getLength() const{
 double RocketModel::getCp(double M, bool engineisactive)const{
     if(!pnosecone||!pengine)throw std::logic_error("model uncomplete");
 
-    double cp=pnosecone->getCp(pnosecone->getDend(),M);
- //   std::cout<<"getcp0000="<<cp<<std::endl;
-    for(const conoid& c:pconoids)
-        cp+=c.getCp(c.getDend(),M);
-   // std::cout<<"getcp000="<<cp<<std::endl;
-    engineparameters par=pengine->getparams();
-    cp+=Aerodynamics::CxpSternBottom(ptailcone->getL(),Dengine,ptailcone->getDend(),ptailcone->getDend(),M,engineisactive);
-//    std::cout<<"getcpstb="<<Aerodynamics::CxpSternBottom(ptailcone->getL(),Dengine,ptailcone->getDend(),ptailcone->getDend(),M,engineisactive)<<std::endl;
-    cp*=0.25*Dmax*Dmax*M_PI/SmidLA;
+    double cp=pnosecone->getCp(pnosecone->getDend(),M)*0.25*pnosecone->getDend()*pnosecone->getDend()*M_PI/SmidLA;
 
-   // std::cout<<"getcp0="<<cp<<std::endl;
+    for(const conoid& c:pconoids)
+        cp+=c.getCp(c.getDend(),M)*0.25*c.getDend()*c.getDend()*M_PI/SmidLA;
+
+    engineparameters par=pengine->getparams();
+
+    if(ptailcone){
+        cp+=Aerodynamics::CxpSternBottom(ptailcone->getL(),Dengine,ptailcone->getDend(),ptailcone->getDend(),M,engineisactive);
+        cp*=0.25*Dmax*Dmax*M_PI/SmidLA;
+    }
+
     for(const plane& p:pplanes)
         cp+=4*p.getCp(SmidLA,M);
-    //std::cout<<"getcp1="<<cp<<std::endl;
+
     if(ptailplane)
         cp+=4*ptailplane->getCp(SmidLA,M);
-  //  std::cout<<"getcp2="<<cp<<std::endl;
+
     return cp;//отнесен ко всему ЛА
 }
 
@@ -295,6 +302,7 @@ double RocketModel::getCya(double M, double sound_sp, double cin_visc) const{
 }
 
 double RocketModel::getCx0(double M, double sound_sp, double cin_visc, bool engineisactive) const{
+    getCp(M,engineisactive);
     return 0.5*getCp(M,engineisactive)+getCxTr(M,sound_sp,cin_visc);//*0.5 корр коэфф
 }
 
@@ -325,14 +333,20 @@ double RocketModel::getbalanceStart(double M, double sound_sp, double cin_visc){
     return (getmasscenter()-getXp(M,sound_sp,cin_visc))/getLength();
 }
 
+bool RocketModel::isheadcorrect(){
+    update();
+    return pnosecone&&
+            Dengine>0;
+}
+
 std::vector<size_t> RocketModel::state() const{
     return {
-             bool(pnosecone),
-             bool(ptailplane),
-             pconoids.size(),
-             pplanes.size(),
-             pequipments.size()
-            };
+        bool(pnosecone),
+                bool(ptailplane),
+                pconoids.size(),
+                pplanes.size(),
+                pequipments.size()
+    };
 }
 
 void RocketModel::update(){
@@ -343,7 +357,7 @@ void RocketModel::update(){
     else Dengine=0;
     Dmax=Dengine;
     for(conoid& c:pconoids)
-    if(c.getDend()>Dmax)
+        if(c.getDend()>Dmax)
             Dmax=c.getDend();
 
     double Lhead=Lnc=pnosecone?pnosecone->getL():0;
@@ -357,7 +371,7 @@ void RocketModel::update(){
         Lhead+=c.getL();
     }
 
-    if(pnosecone && pengine && ptailcone){  
+    if(pnosecone && pengine && ptailcone){
         pengine->setX0(Lhead);
         pengine->setname(std::to_string(++i));
         engineparameters par=pengine->getparams();
@@ -381,14 +395,14 @@ void RocketModel::update(){
 
 std::ostream& operator<<(std::ostream &os, const RocketModel& rm){
     os<<rocketmodelheader<<'{'
-                   <<rm.Dengine<<','
-               <<rm.isxplane<<','
-        <<bool(rm.pnosecone)<<','
-          <<bool(rm.ptailplane)<<','
-          <<bool(rm.pengine)<<','
-         <<rm.pconoids.size()<<','
-        <<rm.pplanes.size()<<','
-       <<rm.pequipments.size();
+     <<rm.Dengine<<','
+    <<rm.isxplane<<','
+    <<bool(rm.pnosecone)<<','
+    <<bool(rm.ptailplane)<<','
+    <<bool(rm.pengine)<<','
+    <<rm.pconoids.size()<<','
+    <<rm.pplanes.size()<<','
+    <<rm.pequipments.size();
 
     if(rm.pnosecone)
         os<<','<<*rm.pnosecone;
@@ -426,16 +440,13 @@ std::istream &operator>>(std::istream &is, RocketModel &rm){
     while((tmp=is.get())!=EOF && tmp!='{')
         header.push_back(static_cast<char>(tmp));
 
-std::cout<<"read header"<<std::endl;
-
     if(tmp==EOF)return is;
     if(header!=rocketmodelheader){
         is.clear(std::ios::failbit);
         return is;
     }
-std::cout<<"read rocket params"<<std::endl;
     is>>Dmax>>delim1
-       >>isxplane>>delim2
+            >>isxplane>>delim2
             >>pncone>>delim3
             >>ptplane>>delim4
             >>pengn>>delim5
@@ -458,21 +469,24 @@ std::cout<<"read rocket params"<<std::endl;
     std::vector<plane>planes(pplansize);
     std::vector<equipment>equip(peqsize);
 
-std::cout<<"read pcone"<<std::endl;
     if(pncone){
         nc.reset(new nosecone);
         is>>delim>>*nc;
         if(!is)return is;
-        if(delim!=','){std::cout<<"delim is:"<<delim<<"("<<int(delim)<<")"<<std::endl;is.clear(std::ios::failbit);return is;}
-    }
-    std::cout<<"read ptplane"<<std::endl;
-        if(ptplane){
-            tp.reset(new plane);
-            is>>delim>>*tp;
-            if(!is)return is;
-            if(delim!=','){std::cout<<"delim is:"<<delim<<"("<<int(delim)<<")"<<std::endl;is.clear(std::ios::failbit);return is;}
+        if(delim!=','){
+            is.clear(std::ios::failbit);
+            return is;
         }
-std::cout<<"read en"<<std::endl;
+    }
+    if(ptplane){
+        tp.reset(new plane);
+        is>>delim>>*tp;
+        if(!is)return is;
+        if(delim!=','){
+            is.clear(std::ios::failbit);
+            return is;
+        }
+    }
     if(pengn){
         en.reset(new engine);
         is>>delim>>*en;
@@ -480,38 +494,41 @@ std::cout<<"read en"<<std::endl;
         if(delim!=','){is.clear(std::ios::failbit);return is;}
     }
 
-std::cout<<"read conoids"<<std::endl;
-        for(size_t i=0;i<pconesize;i++){
-            is>>delim>>pcon[i];
-            if(!is)return is;
-            if(delim!=','){is.clear(std::ios::failbit);return is;}
-        }
-std::cout<<"read planes"<<std::endl;
-        for(size_t i=0;i<pplansize;i++){
-            is>>delim>>planes[i];
-            if(!is)return is;
-            if(delim!=','){is.clear(std::ios::failbit);return is;}
-        }
-        std::cout<<"read eqs"<<std::endl;
-        for(size_t i=0;i<peqsize;i++){
-            is>>delim>>equip[i];
-            if(!is)return is;
-            if(delim!=','){is.clear(std::ios::failbit);return is;}
-        }
-        is>>footer;
+    for(size_t i=0;i<pconesize;i++){
+        is>>delim>>pcon[i];
         if(!is)return is;
-        if(footer!='}'){is.clear(std::ios::failbit);return is;}
+        if(delim!=','){is.clear(std::ios::failbit);return is;}
+    }
 
-        rm.Dengine=Dmax;
-        rm.isxplane=isxplane;
-        if(pncone)rm.pnosecone.reset(nc.release());
-        if(ptplane)rm.ptailplane.reset(tp.release());
-        if(pengn)rm.pengine.reset(en.release());
-        if(rm.pengine)rm.Dengine=rm.pengine->getDend();
-        else rm.Dengine=rm.Dmax;
-        rm.pconoids=pcon;
-        rm.pplanes=planes;
-        rm.pequipments=equip;
-        rm.update();
+    for(size_t i=0;i<pplansize;i++){
+        is>>delim>>planes[i];
+        if(!is)return is;
+        if(delim!=','){is.clear(std::ios::failbit);return is;}
+    }
+
+    for(size_t i=0;i<peqsize;i++){
+        is>>delim>>equip[i];
+        if(!is)return is;
+        if(delim!=','){is.clear(std::ios::failbit);return is;}
+    }
+    is>>footer;
+    if(!is)return is;
+    if(footer!='}'){is.clear(std::ios::failbit);return is;}
+
+    rm.Dengine=Dmax;
+    rm.isxplane=isxplane;
+    if(pncone)rm.pnosecone.reset(nc.release());
+    if(ptplane)rm.ptailplane.reset(tp.release());
+    if(pengn)rm.pengine.reset(en.release());
+    if(rm.pengine)rm.Dengine=rm.pengine->getDend();
+    else rm.Dengine=rm.Dmax;
+    rm.pconoids=pcon;
+    rm.pplanes=planes;
+    rm.pequipments=equip;
+    rm.update();
     return is;
+}
+
+bool RocketHeadData::iscorrect() const{
+    return nconepar.mass>0&&headMass>0&&headLen>0&&headDend>0&&headDmax>0&&nconepar.dend>0&&nconepar.len>0;
 }

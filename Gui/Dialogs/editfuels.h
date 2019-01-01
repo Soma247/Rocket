@@ -3,12 +3,12 @@
 
 #include <QDialog>
 #include "ballisticcalc.h"
+
 namespace Ui {
 class EditFuels;
 }
 
-class EditFuels : public QDialog
-{
+class EditFuels : public QDialog{
     Q_OBJECT
     Ui::EditFuels *ui;
     std::vector<material>* mats;
@@ -35,8 +35,8 @@ signals:
     void matupdated();
     void flupdated();
 private slots:
-    void on_cb_fuels_currentIndexChanged(const QString &arg1);
-    void on_cb_mats_currentIndexChanged(const QString &arg1);
+    void on_cb_fuels_currentIndexChanged(const QString &);
+    void on_cb_mats_currentIndexChanged(const QString &);
     void on_le_mat_name_editingFinished();
     void on_le_mat_ro_editingFinished();
     void on_le_mat_sigma_editingFinished();

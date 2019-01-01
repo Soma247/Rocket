@@ -14,7 +14,6 @@ addConoidDialog::~addConoidDialog()
 }
 
 void addConoidDialog::setdata(size_t index){
-    std::cerr<<"setdata :"<<index<<std::endl;
         ui->label_warning->hide();
         isD1valid=isD2valid=isLvalid=isdeltvalid=false;
         curindex=index;
@@ -41,26 +40,19 @@ void addConoidDialog::setdata(size_t index){
     }
 }
 
-void addConoidDialog::on_buttonBox_accepted()
-{
-    std::cerr<<isDataValid()<<" "<<bool(bcmodel)<<" "<<bool(mats)<<std::endl;
+void addConoidDialog::on_buttonBox_accepted(){
     if(isDataValid() && bcmodel && mats){
-  std::cerr<<"data model mats valid;"<<std::endl;
-
         auto it=std::find_if(mats->begin(),mats->end(),
                              [&](const material& m){
             return m.name==ui->matComboBox->currentText().toStdString();});
         if(it!=mats->end()){
             if(curindex==overmaxindex){
-                  std::cerr<<"curindex==overmax"<<curindex<<std::endl;
                 bcmodel->addConoid(*it,ui->le_D1->text().toDouble(),
                                    ui->le_D2->text().toDouble(),
                                    ui->le_L->text().toDouble(),
                                    ui->le_delt->text().toDouble());
             }
             else{
-
-                std::cout<<"edit"<<std::endl;
                 bcmodel->ejectConoid(curindex);
                 bcmodel->insertConoid(*it,ui->le_D1->text().toDouble(),
                                       ui->le_D2->text().toDouble(),

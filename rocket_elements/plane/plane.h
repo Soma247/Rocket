@@ -23,39 +23,39 @@ struct planeparams{
 };
 
 class plane:public abstractRocketElement{
-public:
-    virtual double Smid()const override{return 0.5*(params.croot+params.ctip)*params.h*params.n;}//S площадь миделя всех элементов
+protected:
+    planeparams params;
+    std::string name;
+    bool tailstab=false;
 
-    virtual double mass()const override{return  params.massn;}
-    virtual void setmass(double m){params.massn=m;}
+public:
+    virtual double Smid()const override;//S площадь миделя всех элементов
+
+    virtual double mass()const override;
+    virtual void setmass(double m);
 
     virtual double massCenter()const override;
     virtual void setmassCenter(double){}//
 
-    virtual double getX0()const override{return params.XfromNose;}
-    virtual void setX0(double x0)override{params.XfromNose=x0;}
+    virtual double getX0()const override;
+    virtual void setX0(double x0)override;
 
-    virtual double getL()const override{return params.broot;}//заглушка
+    virtual double getL()const override;//заглушка
     virtual void setL(double)override{}//заглушка
 
-    virtual std::string getname()const override{return  name;}
-    virtual void setname(std::string n)override{name=n;}
+    virtual std::string getname()const override;
+    virtual void setname(std::string n)override;
 
-    virtual std::string toString()const override{return "plane";}
+    virtual std::string toString()const override;
 
     virtual double getCp(double SmidLA, double M)const;
 
-    double getXp(double M)const{
-        double k=M>1?0.45:0.35;
-        return (0.5*(params.broot+params.btip)*k)+params.XfromNose;
-    }
+    double getXp(double M)const;
     virtual double getCxtr(double SmidLA,double M,double sound_sp, double cin_visc)const;
     virtual double getcyaConsole(double Dmid, double SmidLA, double M,double sound_sp, double cin_visc)const;
     virtual ~plane()override{}
 
-    virtual planeparams getparams()const{
-        return params;
-    }
+    virtual planeparams getparams()const;
     plane(){}
     plane(material math,
           double Xfromnose,
@@ -65,16 +65,10 @@ public:
           double Xrr, double Xtf,
           double Xtr, double H,double N=4
     );
-
-protected:
-    planeparams params;
-    std::string name;
-    bool tailstab=false;
 };
 
 
 std::ostream &operator<<(std::ostream &os, const plane &pl);
-
 std::istream &operator>>(std::istream &in, plane &pl);
 
 

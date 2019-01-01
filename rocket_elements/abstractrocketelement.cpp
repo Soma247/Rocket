@@ -1,5 +1,5 @@
 #include "abstractrocketelement.h"
-
+#include <iostream>
 std::ostream &operator<<(std::ostream &os, const material &mat){
     return os<<materialheader<<'{'<<mat.name<<','<<mat.Ro<<','<<mat.SigmaV<<'}';
 }
@@ -38,4 +38,18 @@ std::istream &operator>>(std::istream &in, material &mat){
     }
     mat=material(name,ro,sigma);
     return in;
+}
+
+material::material(const std::string &matherialName, double Ro, double sigma):name{matherialName},Ro{Ro},SigmaV{sigma}{}
+
+material::material(const material &mat){
+    name=mat.name;
+    Ro=mat.Ro;
+    SigmaV=mat.SigmaV;
+}
+
+bool material::operator==(const material &second) const{
+    return name==second.name&&
+            Ro==second.Ro&&
+            SigmaV==second.SigmaV;
 }

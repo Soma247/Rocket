@@ -4,15 +4,22 @@
 #include "balcalcitem.h"
 #include <QAbstractItemModel>
 
-class balcalcItemModel : public QAbstractItemModel
-{
+class balcalcItemModel : public QAbstractItemModel{
     Q_OBJECT
+    std::unique_ptr<ballisticCalculator> balcal;
+    balcalcItem* rootItem;
+    balcalcItem* nosecone;
+    balcalcItem* tailstab;
+    balcalcItem* stabs;
+    balcalcItem* cones;
+    balcalcItem* equips;
+    balcalcItem* flytask;
+    RocketHeadData headData;
 
 public:
     explicit balcalcItemModel(std::unique_ptr<ballisticCalculator> bc, QObject *parent = nullptr);
     ~balcalcItemModel()override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
-
     Qt::ItemFlags flags(const QModelIndex &index) const override;
 
     // Header:
@@ -24,28 +31,17 @@ public:
     QModelIndex parent(const QModelIndex &index) const override;
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
-    int columnCount(const QModelIndex &parent = QModelIndex()) const override;
+    int columnCount(const QModelIndex &) const override;
 
 
-    bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override{
-        std::cout<<"setdata"<<std::endl;
-        return true;}
+    bool setData(const QModelIndex &, const QVariant &, int) override{return true;}
       //установить данные узла с индексом index в значение value
-     bool setHeaderData(int section, Qt::Orientation orientation, const QVariant &value,
-                        int role = Qt::EditRole) override{
-          std::cout<<"sethdata"<<std::endl;
-          return true;
-     }
+     bool setHeaderData(int, Qt::Orientation, const QVariant &,int) override{return true;}
       //установить данные заголовка столбца
-     bool insertColumns(int position, int columns,const QModelIndex &parent = QModelIndex()) override{
-          std::cout<<"insertcol"<<std::endl;
-          return true;}
-     bool removeColumns(int position, int columns, const QModelIndex &parent = QModelIndex()) override{
-          std::cout<<"remcol"<<std::endl;return true;}
-     bool insertRows(int position, int rows, const QModelIndex &parent = QModelIndex()) override{
-          std::cout<<"insrow"<<std::endl;return true;}
-     bool removeRows(int position, int rows, const QModelIndex &parent = QModelIndex()) override{
-          std::cout<<"remrow"<<std::endl;return true;}
+     bool insertColumns(int, int,const QModelIndex &) override{return true;}
+     bool removeColumns(int, int, const QModelIndex &) override{return true;}
+     bool insertRows(int, int, const QModelIndex &) override{return true;}
+     bool removeRows(int, int, const QModelIndex &) override{return true;}
       //вставка и удаление столбцов и строк
 
     balcalcItem* getItem(const QModelIndex &index) const;
@@ -67,49 +63,25 @@ public:
                   double Xtip, double Xrf,
                   double Xrr, double Xtf,
                   double Xtr, double H);
-    OutputData calculate(double Vend,double dt){
-        if(!balcal)throw std::exception();
-        return balcal->calculate(Vend,dt);
-    }
 
     void addEquipment(std::string eqname, double X, double mass);
-
-
     void ejectConoid(size_t index);
     void ejectPlane(size_t index);
     void ejectEquipment(size_t index);
     void ejectTailStab();
     void insertConoid(material math, double Dbegin, double Dend, double length, double delta, size_t index);
 
-
-    void openProject(std::string proFile){
-       balcal->openProject(proFile);
-       update();
-    }
-    void saveProject(std::string proFile)const{
-        balcal->saveProject(proFile);
-    }
-    std::vector<size_t>modelstate()const{
-        return balcal->state();
-    }
+    void openProject(std::string proFile);
+    void saveProject(std::string proFile)const;
+    std::vector<size_t>modelstate()const;
     void update();
-    const RocketHeadData& getheaddata()const{
-        return headData;
-    }
+    const RocketHeadData& getheaddata()const;
+public slots:
+       void calculate();
 
 signals:
     void updated();
-private:
-
-    std::unique_ptr<ballisticCalculator> balcal;
-    balcalcItem* rootItem;
-    balcalcItem* nosecone;
-    balcalcItem* tailstab;
-    balcalcItem* stabs;
-    balcalcItem* cones;
-    balcalcItem* equips;
-    balcalcItem* flytask;
-    RocketHeadData headData;
+    void calculateEnd(OutputData odat);
 };
 
 #endif // BALCALCITEMMODEL_H

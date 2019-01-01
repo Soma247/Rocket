@@ -1,7 +1,7 @@
 #include <algorithm>
-#include <iostream>
 #include "aerodynamics/aerodynamics.h"
 #include "math.h"
+#include <iostream>
 
 
 double Aerodynamics::CxTrF(double SmidLA, double Dmid, double Lnose, double Lcyl,
@@ -85,7 +85,8 @@ double Aerodynamics::CxTrPlane(double SmidLA,double h, double Broot,
 }
 
 double Aerodynamics::CxpNoseCone(double len, double d,double Dmid, double M){
-    return newtonInterp::interp3d(aerodynamics_tables::get_5_1_CxpNoseCone(),M,len/d,3,3)*d*d/(Dmid*Dmid);//к миделю корпуса
+    if(M<1)M=1;
+    return newtonInterp::interp3d(aerodynamics_tables::get_5_1_CxpNoseCone(),M,len/d,2,2)*d*d/(Dmid*Dmid);//к миделю корпуса
 }
 
 double Aerodynamics::CxpConoid(double len, double d1, double d2, double Dmid, double M){
@@ -94,18 +95,18 @@ double Aerodynamics::CxpConoid(double len, double d1, double d2, double Dmid, do
 
 double Aerodynamics::CxpSternBottom(double len, double Dmid, double DStern, double Dnozzle, double M, bool isEnActive){
     double nuk=DStern/Dmid;
-    double cx=newtonInterp::interp4d(aerodynamics_tables::get_5_5_CxpStern(),M,len/Dmid,DStern/Dmid,2,2,2)*
+    double cx=newtonInterp::interp4d(aerodynamics_tables::get_5_5_CxpStern(),M,len/Dmid,DStern/Dmid,3,3,2)*
             DStern*DStern/(Dmid*Dmid)+
-             newtonInterp::interp2d(aerodynamics_tables::get_5_8_CpSternNu1(),M,2)*
-              newtonInterp::interp3d(aerodynamics_tables::get_5_9_knu(),(1-nuk)/(2*len/Dmid-nuk*nuk),M,2,2)*
+             newtonInterp::interp2d(aerodynamics_tables::get_5_8_CpSternNu1(),M,3)*
+              newtonInterp::interp3d(aerodynamics_tables::get_5_9_knu(),(1-nuk)/(2*len/Dmid-nuk*nuk),M,3,2)*
               (DStern*DStern-isEnActive*Dnozzle*Dnozzle)/
                (Dmid*Dmid);//к миделю корпуса
     while(cx<0){
-        M--;
-        cx=newtonInterp::interp4d(aerodynamics_tables::get_5_5_CxpStern(),M,len/Dmid,DStern/Dmid,2,2,2)*
+        M>1?M--:M++;
+        cx=newtonInterp::interp4d(aerodynamics_tables::get_5_5_CxpStern(),M,len/Dmid,DStern/Dmid,3,3,2)*
                 DStern*DStern/(Dmid*Dmid)+
-                 newtonInterp::interp2d(aerodynamics_tables::get_5_8_CpSternNu1(),M,2)*
-                  newtonInterp::interp3d(aerodynamics_tables::get_5_9_knu(),(1-nuk)/(2*len/Dmid-nuk*nuk),M,2,2)*
+                 newtonInterp::interp2d(aerodynamics_tables::get_5_8_CpSternNu1(),M,3)*
+                  newtonInterp::interp3d(aerodynamics_tables::get_5_9_knu(),(1-nuk)/(2*len/Dmid-nuk*nuk),M,3,2)*
                   (DStern*DStern-isEnActive*Dnozzle*Dnozzle)/
                    (Dmid*Dmid);//к миделю корпуса
     }
@@ -121,14 +122,14 @@ double Aerodynamics::CxWavPlaneOneConsole(double SmidLA, double broot, double bt
     Mcr=M0+(0.9*pow(tan(anglecmax),1.2)+0.3*pow(lambdakr,-1.5))*(1-M0)*(M0-0.4);//критическое число маха
     if(M<Mcr)return 0;
     double cx= (0.5*(croot+ctip)*h/SmidLA)*
-            newtonInterp::interp4d(aerodynamics_tables::get_5_10_CxWavePlane(),lambdakr*sqrt(M*M-1),lambdakr*tan(anglecmax),nkr,2,2,2)*
+            newtonInterp::interp4d(aerodynamics_tables::get_5_10_CxWavePlane(),lambdakr*sqrt(M*M-1),lambdakr*tan(anglecmax),nkr,3,3,2)*
              (1+newtonInterp::interp2d(aerodynamics_tables::get_5_13_fi_CxWavePlane(),sqrt(M*M-1)*tan(anglecmax),2)*(k-1)
              )*(lambdakr*c*c);//уже отнесен к площади ла, 1 крыло(половина консоли)
     while(cx<0){
-        M--;
+        M>1?M--:M++;
         if(M<Mcr)return 0;
         cx=(0.5*(croot+ctip)*h/SmidLA)*
-                newtonInterp::interp4d(aerodynamics_tables::get_5_10_CxWavePlane(),lambdakr*sqrt(M*M-1),lambdakr*tan(anglecmax),nkr,2,2,2)*
+                newtonInterp::interp4d(aerodynamics_tables::get_5_10_CxWavePlane(),lambdakr*sqrt(M*M-1),lambdakr*tan(anglecmax),nkr,3,3,2)*
                  (1+newtonInterp::interp2d(aerodynamics_tables::get_5_13_fi_CxWavePlane(),sqrt(M*M-1)*tan(anglecmax),2)*(k-1)
                  )*(lambdakr*c*c);//уже отнесен к площади ла, 1 крыло(половина консоли)
     }
@@ -138,9 +139,10 @@ double Aerodynamics::CxWavPlaneOneConsole(double SmidLA, double broot, double bt
 double Aerodynamics::CyaNoseCyll(double Dmid, double SmidLA, double Lnose, double Lcyl, double M){
     double koef=0.25*Dmid*Dmid*M_PI/SmidLA;
     if(M<1.0)return 0.035*koef;
+    else if(M>5)M=5;
     return newtonInterp::interp3d(aerodynamics_tables::get_7_2_CyaNoseCyll(),
                                   sqrt(M*M-1)*Dmid/Lnose,
-                                  Lcyl/Lnose,3,3)*koef;//приведен к площади ЛА
+                                  Lcyl/Lnose,3,2)*koef;//приведен к площади ЛА
 }
 
 double Aerodynamics::CyaOnePlaneConsole(double Dmid, double SmidLA,double X0, double broot, double btip, double croot, double ctip,double h,  double anglecmax, double M,double sound_sp, double cin_visc){

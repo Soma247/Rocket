@@ -3,8 +3,6 @@
 #include <exception>
 #include <string>
 
-
-
 class InvalidIALparameter:public std::exception{
     std::string message;
 public:

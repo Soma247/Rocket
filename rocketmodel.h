@@ -1,15 +1,15 @@
 #ifndef ROCKETMODEL_H
 #define ROCKETMODEL_H
-#include<string>
+#include <string>
 #include <vector>
 #include <memory>
+#include <algorithm>
 #include "rocket_elements/equipment.h"
 #include "rocket_elements/plane/plane.h"
 #include "rocket_elements/modules/conoid.h"
 #include "rocket_elements/modules/nosecone.h"
 #include "rocket_elements/modules/engine.h"
 #include "aerodynamics/aerodynamics.h"
-#include <algorithm>
 
 struct equipmentparameters{
     std::string name;
@@ -26,14 +26,34 @@ struct RocketHeadData{
     double headLen=0;
     double headDend=0;
     double headDmax=0;
-    bool iscorrect(){
-        return nconepar.mass>0&&headMass>0&&headLen>0&&headDend>0&&headDmax>0&&nconepar.dend>0&&nconepar.len>0;
-    }
+    bool iscorrect()const;
 };
 
 
 
 class RocketModel{
+protected:
+    double getCp(double M, bool engineisactive)const;
+    double getCxTr(double M,double sound_sp, double cin_visc)const;
+    double getCya(double M, double sound_sp, double cin_visc)const;
+    double getCx0(double M,double sound_sp, double cin_visc, bool engineisactive)const;
+    double getCxai(double cyala,double M,double alphagrad,double sound_sp, double cin_visc)const;
+
+    void update();
+    double Dengine=0;
+    double Dmax=0;
+    double SmidLA=0;
+    double Lnc=0;
+    double Lcyl=0;
+    bool isxplane=true;
+    std::unique_ptr<nosecone> pnosecone;
+    std::unique_ptr<plane> ptailplane;
+    std::unique_ptr<engine> pengine;
+    std::unique_ptr<conoid> ptailcone;
+    std::vector<conoid>pconoids;
+    std::vector<plane>pplanes;
+    std::vector<equipment>pequipments;
+
 public:
     RocketModel(){}
     RocketModel(bool isXplane):isxplane{isXplane}{}
@@ -55,21 +75,17 @@ public:
     double getmasscenter()const;
     double getmassend()const;
     double getmasscenterend()const;
-    double getLength()const;  
-
+    double getLength()const;
 
     void setNosecone(material math,double Dend, double len, double delta);
     void setTailStab(material math,
-                  double Xfromnose,
-                  double Broot, double Btip,
-                  double Croot, double Ctip,
-                  double Xtip, double Xrf,
-                  double Xrr, double Xtf,
-                  double Xtr, double H);
-    void ejectTailStab(){
-        if(ptailplane)
-            ptailplane.reset(nullptr);
-    }
+                     double Xfromnose,
+                     double Broot, double Btip,
+                     double Croot, double Ctip,
+                     double Xtip, double Xrf,
+                     double Xrr, double Xtf,
+                     double Xtr, double H);
+    void ejectTailStab();
     void setEngine(material mathShell, material mathbr, material mathnozzle, material mathtzp,
                    fuel fuel,double fuelmass, double Pk, double Pa);
     void addConoid(material math, double Dbegin, double Dend, double length, double delta);
@@ -93,38 +109,11 @@ public:
     double getbalanceEnd(double M=3,double sound_sp=340, double cin_visc=1.4E-5);
     double getbalanceStart(double M=1,double sound_sp=340, double cin_visc=1.4E-5);
     double getS()const{return SmidLA;}
-    bool isheadcorrect(){
-        update();
-        return pnosecone&&
-                Dengine>0;
-    }
-
+    bool isheadcorrect();
     std::vector<size_t>state()const;
 
     friend std::ostream& operator<<(std::ostream &os, const RocketModel& rm);
     friend std::istream& operator>>(std::istream &in, RocketModel& rm);
-
-protected:
-    double getCp(double M, bool engineisactive)const;
-    double getCxTr(double M,double sound_sp, double cin_visc)const;
-    double getCya(double M, double sound_sp, double cin_visc)const;
-    double getCx0(double M,double sound_sp, double cin_visc, bool engineisactive)const;
-    double getCxai(double cyala,double M,double alphagrad,double sound_sp, double cin_visc)const;
-
-    void update();
-    double Dengine=0;
-    double Dmax=0;
-    double SmidLA=0;
-    double Lnc=0;
-    double Lcyl=0;
-    bool isxplane=true;
-    std::unique_ptr<nosecone> pnosecone;
-    std::unique_ptr<plane> ptailplane;
-    std::unique_ptr<engine> pengine;
-    std::unique_ptr<conoid> ptailcone;
-    std::vector<conoid>pconoids;
-    std::vector<plane>pplanes;
-    std::vector<equipment>pequipments;
 };
 
 

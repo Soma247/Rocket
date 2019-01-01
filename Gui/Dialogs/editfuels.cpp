@@ -4,13 +4,11 @@
 #include <QMessageBox>
 
 EditFuels::EditFuels(std::vector<material> *materials, std::vector<fuel> *fuels, QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::EditFuels),mats{materials},fls{fuels}
-{
+                                   QDialog(parent),ui(new Ui::EditFuels),mats{materials},fls{fuels}{
+
     ui->setupUi(this);
     ui->label_warning_f->hide();
     ui->label_warning_m->hide();
-    std::cerr<<"mats:"<<mats->size()<<' '<<fls->size();
     if(mats&&fls&&mats->size()&&fls->size()){
 
         for(const material& m:*mats)
@@ -46,7 +44,7 @@ EditFuels::~EditFuels()
     delete ui;
 }
 
-void EditFuels::on_cb_fuels_currentIndexChanged(const QString &arg1){
+void EditFuels::on_cb_fuels_currentIndexChanged(const QString &){
   /*  auto mat_iterator=std::find_if(mats->begin(),mats->end(),[&](const material& m){
         return m.name==ui->cb_mats->currentText().toStdString();});*/
     auto fuel_iterator=std::find_if(fls->begin(),fls->end(),[&](const fuel& m){
@@ -66,7 +64,7 @@ void EditFuels::on_cb_fuels_currentIndexChanged(const QString &arg1){
     }
 }
 
-void EditFuels::on_cb_mats_currentIndexChanged(const QString &arg1)
+void EditFuels::on_cb_mats_currentIndexChanged(const QString &)
 {
     auto mat_iterator=std::find_if(mats->begin(),mats->end(),[&](const material& m){
           return m.name==ui->cb_mats->currentText().toStdString();});
@@ -225,6 +223,7 @@ void EditFuels::on_btn_savemat_clicked()
               return m.name==ui->le_mat_name->text().toStdString();});
         if(mat_iterator!=mats->end()){//если существует такой
             QMessageBox msgBox(this);
+            msgBox.setStyleSheet(ui->le_mat_sigma->styleSheet());
             msgBox.setInformativeText("Вы действительно хотите изменить этот материал?");
             msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
             msgBox.setDefaultButton(QMessageBox::Cancel);

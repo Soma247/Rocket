@@ -20,7 +20,6 @@ void SetNoseConeDialog::setdata(bool edit){
 
     if(mats){
         ui->mat_comboBox->clear();
-        std::cerr<<mats->size()<<std::endl;
         for(const material& m:*mats)
             ui->mat_comboBox->addItem(QString::fromStdString(m.name));
 

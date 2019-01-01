@@ -7,8 +7,7 @@ namespace Ui {
 class addPlaneDialog;
 }
 
-class addPlaneDialog : public QDialog
-{
+class addPlaneDialog : public QDialog{
     Q_OBJECT
     Ui::addPlaneDialog *ui;
     balcalcItemModel* bcmodel;
@@ -33,8 +32,6 @@ public:
     ~addPlaneDialog();
     void setdata (bool tail=false, bool edit =false, int index=0);
     bool isDataValid();
-
-
 
 private slots:
     void on_le_broot_editingFinished();

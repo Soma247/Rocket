@@ -1,6 +1,6 @@
 #ifndef HFUEL_H
 #define HFUEL_H
-#include <iostream>
+
 #include <string>
 
 const std::string fuelheader{"Hfuel"};
@@ -16,19 +16,14 @@ struct fuel{
     double upow=0;
     double U(double pk);
     bool operator==(const fuel& second)const;
-    bool iscorrect()const{return AL>=0 && Prelst>=0 &&
-                              rot>=0 && tst>=0 &&
-                               rst>=0 && kst>=0 &&
-                                 ukoef>=0 && upow>=0;
-    }
+    bool iscorrect()const;
     bool operator!=(const fuel&second)const;
     fuel(){}
-    fuel(std::string modulename, double Alper, double PrelativeST,double RoT, double Tst, double Rst, double Kst, double Ukoef, double Upow):
-        name{modulename},AL{Alper},Prelst{PrelativeST},rot{RoT},tst{Tst},rst{Rst},kst{Kst},ukoef{Ukoef},upow{Upow}
-    {
-    }
+    fuel(std::string modulename, double Alper,
+         double PrelativeST,double RoT, double Tst,
+         double Rst, double Kst, double Ukoef, double Upow);
+    ~fuel(){}
 };
     std::ostream &operator<<(std::ostream &os, const fuel &fl);
-
     std::istream &operator>>(std::istream &in, fuel& fl);
 #endif // HFUEL_H

@@ -43,6 +43,11 @@ bool balcalcItem::removeAllChildrens(){
     return true;
 }
 
+bool balcalcItem::setData(int, const QVariant &value){
+    m_name=value.toString();
+    return true;
+}
+
 bool balcalcItem::removeChildren(int position){
     if(position<0||position>childrens.size()-1)return 0;
     delete childrens.takeAt(position);
@@ -63,6 +68,11 @@ QString balcalcItem::getName() const{
 
 int balcalcItem::childCount() const{
     return childrens.size();
+}
+
+QVariant balcalcItem::data(int, int role) const{
+    if(role==Qt::UserRole+1)return int(m_type);
+    return m_name;
 }
 
 int balcalcItem::getPosition() const{

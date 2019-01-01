@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>607</width>
+    <height>430</height>
    </rect>
   </property>
   <property name="palette">
@@ -837,82 +837,69 @@
    <string notr="true">background-color: qconicalgradient(cx:0, cy:0.972, angle:170.1, stop:0 rgba(81, 81, 73, 69), stop:0.0224719 rgba(49, 49, 49, 255), stop:0.179775 rgba(19, 19, 17, 231), stop:0.258427 rgba(33, 33, 31, 222), stop:0.365169 rgba(24, 24, 24, 235), stop:0.483146 rgba(51, 51, 51, 250), stop:0.617978 rgba(21, 21, 19, 248), stop:0.724719 rgba(12, 12, 10, 252), stop:0.842697 rgba(5, 5, 4, 215), stop:0.921348 rgba(26, 22, 19, 234), stop:0.949438 rgba(58, 58, 51, 69), stop:1 rgba(74, 74, 57, 255));</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QPushButton" name="btn_balcalculate">
-    <property name="geometry">
-     <rect>
-      <x>569</x>
-      <y>360</y>
-      <width>141</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: qconicalgradient(cx:0, cy:0, angle:170.1, stop:0 rgba(81, 81, 73, 69), stop:0.235955 rgba(92, 92, 83, 231), stop:0.353933 rgba(51, 51, 51, 250), stop:0.423533 rgba(49, 49, 49, 255), stop:0.477581 rgba(58, 58, 53, 248), stop:0.55 rgba(51, 51, 40, 255), stop:0.57754 rgba(58, 54, 37, 130), stop:0.625 rgba(58, 58, 51, 69), stop:0.921348 rgba(26, 22, 19, 234), stop:1 rgba(74, 74, 57, 255));</string>
-    </property>
-    <property name="text">
-     <string>Баллистический расчет</string>
-    </property>
-   </widget>
-   <widget class="QWidget" name="layoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>50</x>
-      <y>10</y>
-      <width>461</width>
-      <height>471</height>
-     </rect>
-    </property>
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QTreeView" name="treeView">
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">
-background-color: qconicalgradient(cx:0, cy:0.625, angle:281.613, stop:0.0224719 rgba(130, 15, 15, 213), stop:0.162011 rgba(147, 42, 32, 231), stop:0.258427 rgba(206, 29, 4, 174), stop:0.365169 rgba(128, 26, 26, 199), stop:0.47486 rgba(185, 45, 38, 181), stop:0.483146 rgba(126, 58, 44, 209), stop:0.625698 rgba(124, 25, 0, 211), stop:0.724719 rgba(152, 19, 0, 159), stop:0.842697 rgba(193, 37, 37, 215), stop:0.921348 rgba(209, 26, 0, 234), stop:0.949438 rgba(199, 35, 35, 206), stop:1 rgba(118, 25, 25, 224));</string>
-       </property>
-       <property name="locale">
-        <locale language="Russian" country="Russia"/>
-       </property>
-       <property name="editTriggers">
-        <set>QAbstractItemView::NoEditTriggers</set>
-       </property>
-       <attribute name="headerVisible">
-        <bool>false</bool>
-       </attribute>
-      </widget>
-     </item>
-     <item>
-      <widget class="QTextBrowser" name="textBrowser">
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">background-color: qconicalgradient(cx:0, cy:1, angle:281.613, stop:0.0224719 rgba(130, 15, 15, 213), stop:0.162011 rgba(147, 42, 32, 231), stop:0.258427 rgba(206, 29, 4, 174), stop:0.365169 rgba(128, 26, 26, 199), stop:0.47486 rgba(185, 45, 38, 181), stop:0.483146 rgba(126, 58, 44, 209), stop:0.625698 rgba(124, 25, 0, 211), stop:0.724719 rgba(152, 19, 0, 159), stop:0.842697 rgba(193, 37, 37, 215), stop:0.921348 rgba(209, 26, 0, 234), stop:0.949438 rgba(199, 35, 35, 206), stop:1 rgba(74, 74, 57, 255));</string>
-       </property>
-       <property name="html">
-        <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QTreeView" name="treeView">
+        <property name="font">
+         <font>
+          <pointsize>10</pointsize>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: qconicalgradient(cx:0, cy:1, angle:281.613, stop:0.0224719 rgba(130, 15, 15, 213), stop:0.162011 rgba(83, 23, 18, 231), stop:0.258427 rgba(145, 20, 2, 174), stop:0.365169 rgba(158, 32, 32, 199), stop:0.47486 rgba(152, 10, 3, 181), stop:0.483146 rgba(126, 58, 44, 209), stop:0.625698 rgba(145, 29, 0, 211), stop:0.724719 rgba(152, 19, 0, 159), stop:0.842697 rgba(161, 31, 31, 215), stop:0.921348 rgba(191, 23, 0, 234), stop:0.949438 rgba(199, 35, 35, 206), stop:1 rgba(74, 74, 57, 255));</string>
+        </property>
+        <property name="locale">
+         <locale language="Russian" country="Russia"/>
+        </property>
+        <property name="editTriggers">
+         <set>QAbstractItemView::NoEditTriggers</set>
+        </property>
+        <attribute name="headerVisible">
+         <bool>false</bool>
+        </attribute>
+       </widget>
+      </item>
+      <item>
+       <widget class="QTextBrowser" name="textBrowser">
+        <property name="font">
+         <font>
+          <pointsize>10</pointsize>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: qconicalgradient(cx:0, cy:1, angle:281.613, stop:0.0224719 rgba(130, 15, 15, 213), stop:0.162011 rgba(83, 23, 18, 231), stop:0.258427 rgba(145, 20, 2, 174), stop:0.365169 rgba(158, 32, 32, 199), stop:0.47486 rgba(152, 10, 3, 181), stop:0.483146 rgba(126, 58, 44, 209), stop:0.625698 rgba(145, 29, 0, 211), stop:0.724719 rgba(152, 19, 0, 159), stop:0.842697 rgba(161, 31, 31, 215), stop:0.921348 rgba(191, 23, 0, 234), stop:0.949438 rgba(199, 35, 35, 206), stop:1 rgba(74, 74, 57, 255));</string>
+        </property>
+        <property name="html">
+         <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8.25pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="0" column="1">
+     <widget class="QPushButton" name="btn_balcalculate">
+      <property name="styleSheet">
+       <string notr="true">background-color: qconicalgradient(cx:0, cy:0, angle:170.1, stop:0 rgba(81, 81, 73, 69), stop:0.235955 rgba(92, 92, 83, 231), stop:0.353933 rgba(51, 51, 51, 250), stop:0.423533 rgba(49, 49, 49, 255), stop:0.477581 rgba(58, 58, 53, 248), stop:0.55 rgba(51, 51, 40, 255), stop:0.57754 rgba(58, 54, 37, 130), stop:0.625 rgba(58, 58, 51, 69), stop:0.921348 rgba(26, 22, 19, 234), stop:1 rgba(74, 74, 57, 255));</string>
+      </property>
+      <property name="text">
+       <string>Баллистический расчет</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>607</width>
      <height>20</height>
     </rect>
    </property>
@@ -1788,7 +1775,6 @@ p, li { white-space: pre-wrap; }
    <addaction name="menu_2"/>
    <addaction name="menu_3"/>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
   <action name="action_new">
    <property name="text">
     <string>Новый проект</string>

@@ -3,6 +3,10 @@
 #include "abstractrocketelement.h"
 
 class equipment:public abstractRocketElement{
+protected:
+    std::string name;
+    double eqmass=0;
+    double Xm=0;
 public:
     virtual double Smid()const override;//S площадь миделя элемента
 
@@ -25,10 +29,6 @@ public:
     virtual ~equipment()override{}
     equipment(){}
     equipment(std::string eqname, double X, double mass);
-protected:
-    std::string name;
-    double eqmass=0;
-    double Xm=0;
 };
 
 std::ostream& operator<<(std::ostream& os, const equipment& eq);

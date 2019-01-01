@@ -47,6 +47,8 @@ void SetFlyTask::setdata(bool edit)
             ui->le_Xmax->setText(QString("%1").arg(indat.Xmax));
             ui->le_Vtar->setText(QString("%1").arg(indat.Vtar));
             ui->le_mstone->setText(QString("%1").arg(indat.mstone));
+            ui->le_Vend->setText(QString("%1").arg(indat.Vend));
+            ui->le_alpha->setText(QString("%1").arg(indat.alpha));
             ui->le_Pk->setText(QString("%1").arg(indat.enPk));
             ui->le_Pa->setText(QString("%1").arg(indat.enPa));
             auto mat_cyl=std::find(mats->begin(),mats->end(),indat.enmatShell);
@@ -71,6 +73,8 @@ void SetFlyTask::setdata(bool edit)
             ui->le_Xmax->clear();
             ui->le_Vtar->clear();
             ui->le_mstone->clear();
+            ui->le_Vend->clear();
+            ui->le_alpha->clear();
             ui->le_Pk->setText(QString("10"));
             ui->le_Pa->setText(QString("0.06"));
             ui->cb_cyl->setCurrentIndex(0);
@@ -94,6 +98,8 @@ bool SetFlyTask::isDataValid()
     on_le_Xmax_editingFinished();
     on_le_mstone_editingFinished();
     on_le_teth_editingFinished();
+    on_le_Vend_editingFinished();
+    on_le_alpha_editingFinished();
     return isHmaxValid&&
             isHminValid&&
             isPaValid&&
@@ -101,7 +107,9 @@ bool SetFlyTask::isDataValid()
             isVtargetValid&&
             isXmaxValid&&
             isMilestoneValid&&
-            isTethValid;
+            isTethValid&&
+            isVendValid&&
+            isalphaValid;
 }
 
 void SetFlyTask::on_le_Hmax_editingFinished()
@@ -193,6 +201,27 @@ void SetFlyTask::on_le_Pk_editingFinished()
     }
 
 }
+void SetFlyTask::on_le_alpha_editingFinished()
+{
+    isalphaValid=true;
+    double alpha{0};
+    if(ui->le_alpha->text().isEmpty()||(alpha=ui->le_alpha->text().toDouble())<=0||alpha>45*M_PI/180){
+        ui->label_warning->setText("угол атаки введен неверно");
+        ui->label_warning->show();
+        isalphaValid=false;
+    }
+}
+
+void SetFlyTask::on_le_Vend_editingFinished()
+{
+    isVendValid=true;
+    double Vend{0};
+    if(ui->le_Vend->text().isEmpty()||(Vend=ui->le_Vend->text().toDouble())<0){
+        ui->label_warning->setText("Конечная скорость введена неверно");
+        ui->label_warning->show();
+        isVendValid=false;
+    }
+}
 
 void SetFlyTask::on_buttonBox_accepted()
 {
@@ -222,6 +251,8 @@ void SetFlyTask::on_buttonBox_accepted()
                                 ui->le_Xmax->text().toDouble(),
                                 ui->le_Vtar->text().toDouble(),
                                 ui->le_mstone->text().toDouble(),
+                                ui->le_Vend->text().toDouble(),
+                                ui->le_alpha->text().toDouble(),
                                 *mat_cyl,*mat_nozzle,*mat_br,*mat_tzp,
                                 *fuel_iterator,
                                 ui->le_teth->text().toDouble(),
@@ -250,3 +281,5 @@ void SetFlyTask::on_buttonBox_accepted()
 
 
 }
+
+

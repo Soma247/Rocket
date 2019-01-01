@@ -1,8 +1,9 @@
 #ifndef WORKWINDOW_H
 #define WORKWINDOW_H
 #include <QMainWindow>
-#include "Gui/ItemModel/balcalcitemmodel.h"
 #include <QItemSelection>
+#include <QSplashScreen>
+#include "Gui/ItemModel/balcalcitemmodel.h"
 #include "Dialogs/addconoiddialog.h"
 #include "Dialogs/setnoseconedialog.h"
 #include "Dialogs/errordialog.h"
@@ -18,37 +19,50 @@ namespace Ui {
 class WorkWindow;
 }
 
-class WorkWindow : public QMainWindow
-{
+class WorkWindow : public QMainWindow{
     Q_OBJECT
+    Ui::WorkWindow *ui;
+    addConoidDialog* addconedial;
+    SetNoseConeDialog* ncdial;
+    addPlaneDialog* addplane;
+    addequipmentDialog* addeqdial;
+    std::vector<fuel> hardfuels;
+    std::vector<material>materials;
+    std::list<std::pair<QString,QString>> fnames;
+    std::string profile;
+    std::string matfile;
+    std::string flfile;
+    errorDialog* errd;
+    SetFlyTask* setflytaskdial;
+    chooseWindow* choosedial;
+    about* aboutdial;
+    EditFuels* editfuelmatdial;
+    resultWindow* resultw;
+    size_t curindex=0;
+    bool isfirstSetInputData=true;
 
 public:
     explicit WorkWindow(QString matfile, QString hfuelsfile, QString lastprojectsfile, QWidget *parent = nullptr);
     ~WorkWindow();
-
-  bool readMaterials(QString matfile);
-  bool readHardfuels(QString hfuelsfile);
-
-
+    bool readMaterials(QString matfile);
+    bool readHardfuels(QString hfuelsfile);
+protected:
+    void closeEvent( QCloseEvent *__e ){
+        exit(0);
+    }
 
 private slots:
-    void on_pushButton_clicked();
+  //  void on_pushButton_clicked();
     void selectionChangedSlot(const QItemSelection &, const QItemSelection &);
     void on_treeView_customContextMenuRequested(const QPoint &pos);
-
     void on_action_open_triggered();
-
     void on_action_save_as_triggered();
-
     void on_action_save_triggered();
-
     void on_action_new_triggered();
-
     void on_about_triggered();
-
     void on_btn_balcalculate_clicked();
-
     void on_flmatedit_triggered();
+    void showresult(OutputData odat);
 
 public slots: //для реализации сигнала selectionChanged у QTreeView::selectionModel
     void updateActions(const QItemSelection &,const QItemSelection &);
@@ -76,28 +90,8 @@ public slots: //для реализации сигнала selectionChanged у Q
     void newProject();
     void savemats();
     void savefuels();
-
-private:
-    Ui::WorkWindow *ui;
-    addConoidDialog* addconedial;
-    SetNoseConeDialog* ncdial;
-    addPlaneDialog* addplane;
-    addequipmentDialog* addeqdial;
-    std::vector<fuel> hardfuels;
-    std::vector<material>materials;
-    std::list<std::pair<QString,QString>> fnames;
-    std::string profile;
-    std::string matfile;
-    std::string flfile;
-    errorDialog* errd;
-    SetFlyTask* setflytaskdial;
-    chooseWindow* choosedial;
-    about* aboutdial;
-    EditFuels* editfuelmatdial;
-    resultWindow* resultw;
-
-    size_t curindex=0;
-    bool isfirstSetInputData=true;
+signals:
+    void startCalculate();
 };
 
 #endif // WORKWINDOW_H

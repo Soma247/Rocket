@@ -1,31 +1,40 @@
-#include "workwindow.h"
-#include "ui_workwindow.h"
 #include <QStandardItem>
 #include <QPair>
 #include <QVariant>
 #include <fstream>
-#include "Dialogs/errordialog.h"
 #include <QMessageBox>
 #include <sstream>
 #include <QFileDialog>
 #include <QStringList>
+#include <QThread>
+#include "workwindow.h"
+#include "ui_workwindow.h"
+#include "Dialogs/errordialog.h"
+
+#include <iostream>
+Q_DECLARE_METATYPE(OutputData)
 constexpr int MAX_lastprojects=10;
 
 WorkWindow::WorkWindow(QString materialsfile, QString hfuelsfile, QString lastprojectsfile, QWidget *parent) :
     QMainWindow(parent),ui(new Ui::WorkWindow),profile{lastprojectsfile.toStdString()},matfile{materialsfile.toStdString()},
     flfile{hfuelsfile.toStdString()}
 {
+    qRegisterMetaType<OutputData>("OutputData");
     ui->setupUi(this);
-
+    QThread* bcThread=new QThread(this);
     //register the model
     auto bc=new balcalcItemModel(std::make_unique<ballisticCalculator>(new fInterpAtmosphere("1.txt")));
+    bc->moveToThread(bcThread);
+    bcThread->start();
+
     ui->treeView->setModel(bc);
     updateActions();
     ui->treeView->setContextMenuPolicy(Qt::CustomContextMenu);
     ui->treeView->setAutoExpandDelay(0);
     connect(bc,SIGNAL(updated()),ui->treeView,SLOT(expandAll()));
     connect(bc,SIGNAL(updated()),this,SLOT(updateActions()));
-
+    connect(bc,SIGNAL(calculateEnd(OutputData)),this,SLOT(showresult(OutputData)));
+    connect (this,SIGNAL(startCalculate()),bc,SLOT(calculate()));
     try{
         std::ifstream in(lastprojectsfile.toStdString());
         std::string temp;
@@ -34,10 +43,9 @@ WorkWindow::WorkWindow(QString materialsfile, QString hfuelsfile, QString lastpr
         while(in){
             in>>temp;
             bool dup=false;
-            for(const auto& fn:fnames){
-                std::cerr<<temp<<std::endl<<" !!! "<<fn.second.toStdString()<<std::endl<<std::endl;
+            for(const auto& fn:fnames)
                 if(fn.second.toStdString()==temp){dup=true;break;}
-            }
+
             if(!dup){
                 lst=QString::fromStdString(temp).split("/");
                 if(!temp.size()||!lst.size())break;
@@ -83,7 +91,7 @@ WorkWindow::WorkWindow(QString materialsfile, QString hfuelsfile, QString lastpr
     editfuelmatdial=new EditFuels(&materials,&hardfuels,this);
     connect(editfuelmatdial,SIGNAL(matupdated()),this,SLOT(savemats()));
     connect(editfuelmatdial,SIGNAL(flupdated()),this,SLOT(savefuels()));
-
+    resultw=new resultWindow(this);
 }
 
 WorkWindow::~WorkWindow()
@@ -101,13 +109,10 @@ WorkWindow::~WorkWindow()
 }
 
 
-void WorkWindow::on_pushButton_clicked()
-{
-}
+
 
 void WorkWindow::selectionChangedSlot(const QItemSelection &, const QItemSelection &)
 {
-    std::cout<<"selch"<<std::endl;
 }
 
 void WorkWindow::on_treeView_customContextMenuRequested(const QPoint &pos){
@@ -241,7 +246,7 @@ void WorkWindow::on_treeView_customContextMenuRequested(const QPoint &pos){
 
 
 
-void WorkWindow::updateActions(const QItemSelection &selected,const QItemSelection &deselected) {
+void WorkWindow::updateActions(const QItemSelection &,const QItemSelection &) {
     updateActions();
 }
 
@@ -270,6 +275,7 @@ void WorkWindow::EditConDialog(){
 
 void WorkWindow::RemoveConoid(){
     QMessageBox msgBox(this);
+    msgBox.setStyleSheet(ui->textBrowser->styleSheet());
     msgBox.setInformativeText("Вы действительно хотите удалить данный отсек?");
     msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
     msgBox.setDefaultButton(QMessageBox::Cancel);
@@ -297,6 +303,7 @@ void WorkWindow::EditTailStabDialog()
 void WorkWindow::RemoveTailStabDialog()
 {
     QMessageBox msgBox(this);
+    msgBox.setStyleSheet(ui->textBrowser->styleSheet());
     msgBox.setInformativeText("Вы действительно хотите удалить хвостовой стабилизатор?");
     msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
     msgBox.setDefaultButton(QMessageBox::Cancel);
@@ -322,6 +329,7 @@ void WorkWindow::EditStabDialog()
 void WorkWindow::RemoveStabDialog()
 {
     QMessageBox msgBox(this);
+    msgBox.setStyleSheet(ui->textBrowser->styleSheet());
     msgBox.setInformativeText("Вы действительно хотите удалить данную плоскость?");
     msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
     msgBox.setDefaultButton(QMessageBox::Cancel);
@@ -340,13 +348,14 @@ void WorkWindow::AddEqDialog()
 
 void WorkWindow::EditEqDialog()
 {
-    addeqdial->setdata(curindex);
+    addeqdial->setdata(int(curindex));
     addeqdial->show();
 }
 
 void WorkWindow::RemoveEqDialog()
 {
     QMessageBox msgBox(this);
+    msgBox.setStyleSheet(ui->textBrowser->styleSheet());
     msgBox.setInformativeText("Вы действительно этот груз?");
     msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
     msgBox.setDefaultButton(QMessageBox::Cancel);
@@ -372,14 +381,13 @@ void WorkWindow::openFile()
 
 void WorkWindow::saveFile()
 {
-    std::cerr<<"savefile"<<std::endl;
     QString str = QFileDialog::getSaveFileName(nullptr, "Сохранить проект", "", "*.bcpr");
     if(!str.isEmpty())
     saveFile(str.toStdString());
 }
 void WorkWindow::saveFile(std::string filename){
-    errd->setdata(QString::fromStdString(filename),false);
-    errd->show();
+ //   errd->setdata(QString::fromStdString(filename),false);
+ //   errd->show();
     balcalcItemModel* bc=dynamic_cast<balcalcItemModel*>(ui->treeView->model());
     if(bc){
         try{
@@ -389,7 +397,7 @@ void WorkWindow::saveFile(std::string filename){
                                   QString::fromStdString(filename)));
             savefnames();
         }
-        catch(ballisticCalculator::error_reading_file& erf){
+        catch(ballisticCalculator::error_reading_file&){
             errd->setdata(QString("Файл %1 недоступен").arg(QString::fromStdString(filename)),false);
             errd->show();
         }
@@ -409,20 +417,18 @@ void WorkWindow::newProject(){
     balcalcItemModel* bc=dynamic_cast<balcalcItemModel*>(ui->treeView->model());
     if(bc){
         try{
-        bc->clear();
-        choosedial->hide();
-        this->show();
-    }
-    catch(ballisticCalculator::error_reading_file& erf){
-        std::cerr<<"error opfile"<<std::endl;
-        errd->setdata(QString("Создание файла невозможно"),false);
-        errd->show();
-    }
-    catch(...){
-        std::cerr<<"error opfile2"<<std::endl;
-        errd->setdata(QString("неизвестная ошибка"),false);
-        errd->show();
-    }
+            bc->clear();
+            choosedial->hide();
+            this->show();
+        }
+        catch(ballisticCalculator::error_reading_file&){
+            errd->setdata(QString("Создание файла невозможно"),false);
+            errd->show();
+        }
+        catch(...){
+            errd->setdata(QString("неизвестная ошибка"),false);
+            errd->show();
+        }
     }
 }
 
@@ -453,7 +459,6 @@ void WorkWindow::savefuels()
 
 void WorkWindow::openFile(std::string filename)
 {
-    std::cerr<<"ww:openfile "<<filename<<std::endl;
     balcalcItemModel* bc=dynamic_cast<balcalcItemModel*>(ui->treeView->model());
     if(bc)
         try{
@@ -466,13 +471,11 @@ void WorkWindow::openFile(std::string filename)
         choosedial->hide();
         this->show();
     }
-    catch(ballisticCalculator::error_reading_file& erf){
-        std::cerr<<"error opfile"<<std::endl;
+    catch(ballisticCalculator::error_reading_file&){
         errd->setdata(QString("Файл %1 поврежден").arg(QString::fromStdString(filename)),false);
         errd->show();
     }
     catch(...){
-        std::cerr<<"error opfile2"<<std::endl;
         errd->setdata(QString("неизвестная ошибка").arg(QString::fromStdString(filename)),false);
         errd->show();
     }
@@ -480,8 +483,7 @@ void WorkWindow::openFile(std::string filename)
 
 void WorkWindow::savefnames()
 {
-
-    std::cerr<<"savefnames:"<<fnames.size()<<std::endl;
+//    std::cerr<<"savefnames:"<<fnames.size()<<std::endl;
     try {
         while(fnames.size()>MAX_lastprojects)
             fnames.pop_back();
@@ -548,9 +550,7 @@ bool WorkWindow::readMaterials(QString matfile){
     material mat;
     while(in>>mat){
         materials.push_back(mat);
-        std::cout<<mat.name<<std::endl;
     }
-    std::cout<<in.eof()<<std::endl;
     if(in.eof())return true;
     return false;
 }
@@ -590,12 +590,33 @@ void WorkWindow::on_about_triggered()
 void WorkWindow::on_btn_balcalculate_clicked()
 {
      balcalcItemModel* bc=dynamic_cast<balcalcItemModel*>(ui->treeView->model());
-     resultw=new resultWindow(bc->calculate(450,1),this);
-     std::cerr<<"created"<<std::endl;
-     resultw->show();
+     if(bc){
+         OutputData odat;
+         std::cout<<"ww:start calculate"<<std::endl;
+         emit startCalculate();
+         this->hide();
+     }
+     else{
+         errd->setdata(QString("Критическая ошибка 3."),false);
+         errd->show();
+     }
 }
 
 void WorkWindow::on_flmatedit_triggered()
 {
     editfuelmatdial->show();
+}
+
+void WorkWindow::showresult(OutputData odat)
+{
+    if(odat.iscorrect()){
+        resultw->setdata(odat,fnames.front().second);
+        resultw->show();
+        this->hide();
+    }
+    else{
+        std::cout<<"incorrect odat"<<std::endl;
+        errd->setdata(QString("точка встречи не достигнута с заданной скоростью."),false);
+        errd->show();
+    }
 }

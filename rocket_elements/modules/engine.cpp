@@ -18,11 +18,21 @@ std::string engine::toString() const{return "";}
 double engine::getdelt() const{return params.delt;}
 void engine::setdelt(double){}
 
+double engine::getDbegin() const{return params.engineDiameter;}
+
+double engine::getmassend() const{
+    return mass()-params.mfuel-params.mtz/2.0;
+}
+
+double engine::getmasscenterend(){
+    return (massCenter()*(mass()-params.mtz)-params.mfuel*params.Xmfuel)/getmassend();
+}
+
 engineparameters engine::getparams() const{return params;}//
 
 engine::engine(material mathShell, material mathbr, material mathnozzle, material mathtz,
                fuel fuel, double Dmid, double mfuel, double Pk, double Pa){//pk/pa~40, pk,pa в мегапаскалях
-    constexpr double beth=13*M_PI/180;//угол полураствора
+    constexpr double beth=20*M_PI/180;//угол полураствора
     constexpr double fi=0.15;//коэффициент степени утопленности сопла
     const double atz=7E-7;//коэфф. теплопроводности тзп
 

@@ -20,6 +20,7 @@ interp3DMat &aerodynamics_tables::get_5_1_CxpNoseCone(){
                            {4.0,0.240},
                            {4.5,0.237},
                            {5.0,0.236},
+                           {100.0,0.001}
                        }
                        ),
                 std::make_pair(2.0,
@@ -38,6 +39,7 @@ interp3DMat &aerodynamics_tables::get_5_1_CxpNoseCone(){
                                    {4.0,0.142},
                                    {4.5,0.140},
                                    {5.0,0.138},
+                                   {100.0,0.001}
                                }
                                ),
                 std::make_pair(2.5,
@@ -56,6 +58,7 @@ interp3DMat &aerodynamics_tables::get_5_1_CxpNoseCone(){
                                    {4.0,0.1030},
                                    {4.5,0.1010},
                                    {5.0,0.0980},
+                                   {100.0,0.001}
                                }
                                ),
                 std::make_pair(3.0,
@@ -74,6 +77,7 @@ interp3DMat &aerodynamics_tables::get_5_1_CxpNoseCone(){
                                    {4.0,0.0780},
                                    {4.5,0.0760},
                                    {5.0,0.0750},
+                                   {100.0,0.001}
                                }
                                ),
                 std::make_pair(4.0,
@@ -92,6 +96,7 @@ interp3DMat &aerodynamics_tables::get_5_1_CxpNoseCone(){
                                    {4.0,0.051},
                                    {4.5,0.050},
                                    {5.0,0.050},
+                                   {100.0,0.001}
                                }
                                ),
                 std::make_pair(5.0,
@@ -110,6 +115,14 @@ interp3DMat &aerodynamics_tables::get_5_1_CxpNoseCone(){
                                    {4.0,0.038},
                                    {4.5,0.037},
                                    {5.0,0.038},
+                                   {100.0,0.001}
+                               }
+                               ),
+                std::make_pair(100.0,
+                               interpVector{
+                                   {0.6,0.001},
+                                   {0.8,0.001},
+                                   {100.0,0.001}
                                }
                                )
 

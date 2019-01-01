@@ -1,3 +1,4 @@
+#include <fstream>
 #include "abstractatmosphere.h"
 #include "interpolation/newtoninterp.h"
 
@@ -41,13 +42,6 @@ void fInterpAtmosphere::loadfromFile(const std::string& fname){
                // ||!temp.iscorrect()
                )
            ){
-            std::cout<<char(c1)<<temp.high<<
-                    char(c2)<<temp.temperature<<
-                    char(c3)<<temp.sound_sp<<
-                    char(c4)<<temp.Pression<<
-                    char(c5)<<temp.density<<
-                    char(c6)<<temp.cinematic_viscidity<<
-                    char(c7)<<std::endl;
             throw std::invalid_argument(std::string("line ")+std::to_string(linecount));
 
         }
@@ -81,11 +75,22 @@ double fInterpAtmosphere::get_density(double h) const{
 
 
 
-std::string AbstractAtmosphere::toString()
-{
+std::string AbstractAtmosphere::toString(){
     return "AbstractAtmosphere";
 }
 
 InvalidIALparameter::InvalidIALparameter(const std::string &fname):message{fname}{}
 
 
+
+bool InterpAtmoLine::iscorrect() const{
+    if(high<0||high>80000||//m
+            temperature>1000||temperature<190||//K
+            sound_sp<280||sound_sp>350||//m/sec
+            Pression<1||Pression>127800||//Pa
+            density<0||density>1.5||//kg/m^3
+            cinematic_viscidity<0.000012525||
+            cinematic_viscidity>0.716//m^2/sec
+            )return false;
+    return true;
+}

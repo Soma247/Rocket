@@ -1,4 +1,5 @@
 #include "equipment.h"
+#include <iostream>
 const std::string equipmentheader{"equipment"};
 equipment::equipment(std::string eqname, double X, double mass):
     name{eqname},eqmass{mass},Xm{X}

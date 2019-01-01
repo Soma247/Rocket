@@ -3,10 +3,6 @@
 #include "rocket_elements/rocketmodule.h"
 #include "rocket_elements/modules/hfuel.h"
 
-
-
-
-
 struct engineparameters{
     material matShell;
     material matnozzle;
@@ -49,13 +45,14 @@ struct engineparameters{
     double Xemptyengine=0;
     double Xend=0;
     double engineDiameter=0;
-  //  double len=0;
     double delt=0;
 };
 
 
-
 class engine:public Module{
+    engineparameters params;
+    double X0=0;
+    std::string name;
 public:
     virtual double getX0()const override;
     virtual void setX0(double x)override;
@@ -75,36 +72,24 @@ public:
     virtual double getCp(double Dmid, double M)const override;
     virtual std::string toString()const override;
 
-    virtual ~engine()override{}
-
     virtual double getdelt()const;
     virtual void setdelt(double d);
 
-    virtual double getDbegin()const{return params.engineDiameter;}
-    virtual void setDbegin(double){}//
-    virtual double getmassend()const{
-        return mass()-params.mfuel-params.mtz/2.0;
-    }
-    virtual double getmasscenterend(){
-        return (massCenter()*(mass()-params.mtz)-params.mfuel*params.Xmfuel)/getmassend();
-    }
+    virtual double getDbegin()const;
+    virtual void setDbegin(double){}//заглушка
+    virtual double getmassend()const;
+    virtual double getmasscenterend();
 
     virtual engineparameters getparams()const;
-
     engine(){}
     engine(material mathShell, material mathbr,
            material mathnozzle, material mathtz, fuel fuel,
            double Dmid, double mfuel, double Pk, double Pa);
-
-private:
-    engineparameters params;
-    double X0=0;
-    std::string name;
+    virtual ~engine()override{}
 };
 
 
 std::ostream &operator<<(std::ostream &os, const engine &en);
-
 std::istream &operator>>(std::istream &in, engine &en);
 
 

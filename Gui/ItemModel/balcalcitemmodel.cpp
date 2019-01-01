@@ -29,9 +29,7 @@ balcalcItemModel::~balcalcItemModel(){
 }
 
 
-int balcalcItemModel::columnCount(const QModelIndex &parent) const {
-    return rootItem->columnCount();
-}
+int balcalcItemModel::columnCount(const QModelIndex &) const {return rootItem->columnCount();}
 
 QVariant balcalcItemModel::data (const QModelIndex &index, int role) const {
  if (!index.isValid()) return QVariant();
@@ -91,13 +89,15 @@ void balcalcItemModel::addplane(material math, double Xfromnose, double Broot, d
     update();
 }
 
-void balcalcItemModel::addEquipment(std::string eqname, double X, double mass)
-{
-    std::cerr<<"addeq"<<std::endl;
+void balcalcItemModel::calculate(){
+    if(!balcal)throw std::exception();
+    emit calculateEnd(balcal->calculate());
+}
+
+void balcalcItemModel::addEquipment(std::string eqname, double X, double mass){
     if(balcal)
         balcal->addEquipment(eqname,X,mass);
     update();
-
 }
 
 void balcalcItemModel::ejectConoid(size_t index){
@@ -131,6 +131,19 @@ void balcalcItemModel::insertConoid(material math, double Dbegin, double Dend, d
     update();
 }
 
+void balcalcItemModel::openProject(std::string proFile){
+    balcal->openProject(proFile);
+    update();
+}
+
+void balcalcItemModel::saveProject(std::string proFile) const{
+    balcal->saveProject(proFile);
+}
+
+std::vector<size_t> balcalcItemModel::modelstate() const{
+    return balcal->state();
+}
+
 void balcalcItemModel::update(){
     beginResetModel();
     if(rootItem&&balcal){
@@ -143,9 +156,6 @@ void balcalcItemModel::update(){
 
         if(state.size()==statevlen){
            headData=balcal->getheadData();
-            for(auto&s:state)
-                std::cout<<s<<" ";
-            std::cout<<std::endl;
             if(state.at(0))
                 nosecone->appendChild(
                             new balcalcItem(balcalcItem::itemtype::Nosecone,"Носовой обтекатель",nosecone));
@@ -170,6 +180,10 @@ void balcalcItemModel::update(){
     }
     endResetModel();
     emit updated();
+}
+
+const RocketHeadData &balcalcItemModel::getheaddata() const{
+    return headData;
 }
 
 Qt::ItemFlags balcalcItemModel::flags(const QModelIndex &index) const {

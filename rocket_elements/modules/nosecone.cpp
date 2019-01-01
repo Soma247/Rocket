@@ -40,6 +40,10 @@ std::string nosecone::toString() const{
 void nosecone::setdelt(double d){
     delt=d;
 }
+
+coneparam nosecone::getparams() const{
+    return coneparam{mat,0,dend,len,delt,mass()};
+}
 void nosecone::setDend(double d){
     dend=d;
 }

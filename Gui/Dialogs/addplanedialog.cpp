@@ -119,17 +119,6 @@ bool addPlaneDialog::isDataValid(){
     on_le_Xtip_editingFinished();
     on_le_Xtr_editingFinished();
     on_le_broot_editingFinished();
-    std::cerr<<(isTail||isXvalid)<<
-            isBrootValid<<
-            isBtipValid<<
-            isCrootValid<<
-            isCtipValid<<
-            isXtipValid<<
-            isXrfValid<<
-            isXrrValid<<
-            isXtfValid<<
-            isXtrValid<<
-            isHvalid<<std::endl;
     return (isTail||isXvalid)&&
             isBrootValid&&
             isBtipValid&&
@@ -277,7 +266,7 @@ void addPlaneDialog::on_le_H_editingFinished()
 }
 
 void addPlaneDialog::on_buttonBox_accepted()
-{std::cerr<<isDataValid()<<bool(bcmodel)<<bool(mats)<<std::endl;
+{
     if(isDataValid() && bcmodel && mats){
         auto mat_iterator=std::find_if(mats->begin(),mats->end(),
                                        [&](const material& m){

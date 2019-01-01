@@ -18,9 +18,18 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>321</width>
-     <height>241</height>
+     <width>350</width>
+     <height>300</height>
     </rect>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>350</width>
+     <height>300</height>
+    </size>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: qconicalgradient(cx:0, cy:1, angle:281.613, stop:0.0224719 rgba(130, 15, 15, 213), stop:0.162011 rgba(83, 23, 18, 231), stop:0.258427 rgba(145, 20, 2, 174), stop:0.365169 rgba(158, 32, 32, 199), stop:0.47486 rgba(152, 10, 3, 181), stop:0.483146 rgba(126, 58, 44, 209), stop:0.625698 rgba(145, 29, 0, 211), stop:0.724719 rgba(152, 19, 0, 159), stop:0.842697 rgba(161, 31, 31, 215), stop:0.921348 rgba(191, 23, 0, 234), stop:0.949438 rgba(199, 35, 35, 206), stop:1 rgba(74, 74, 57, 255));</string>
    </property>
   </widget>
   <widget class="QPushButton" name="pushButton">

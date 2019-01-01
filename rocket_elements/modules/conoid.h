@@ -3,6 +3,13 @@
 #include "rocket_elements/rocketmodule.h"
 
 class conoid:public Module{
+    material mat;
+    double dbegin=0;
+    double dend=0;
+    double len=0;
+    double delt=0;
+    double X0=0;
+    std::string name;
 public:
     virtual double Smid()const override;
     virtual double mass()const override;
@@ -35,14 +42,6 @@ public:
     }
     conoid(){}
     conoid(material math, double Dbegin, double Dend, double length, double delta);
-private:
-    material mat;
-    double dbegin=0;
-    double dend=0;
-    double len=0;
-    double delt=0;
-    double X0=0;
-    std::string name;
 };
 
 std::ostream& operator<<(std::ostream& os, const conoid& cone);

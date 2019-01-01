@@ -3,6 +3,12 @@
 #include <rocket_elements/rocketmodule.h>
 
 class nosecone:public Module{
+    material mat;
+    double dend=0;
+    double len=0;
+    double delt=0;
+    double x0=0;
+    std::string name;
 public:
     virtual double Smid()const override;
     virtual double mass()const override;
@@ -27,23 +33,13 @@ public:
     virtual double getdelt()const{return delt;}
     virtual void setdelt(double d);
 
-    virtual coneparam getparams()const{
-        return coneparam{mat,0,dend,len,delt,mass()};
-    }
+    virtual coneparam getparams()const;
     virtual ~nosecone()override{}
     nosecone(){}
     nosecone(material math, double Dend, double length, double delta);
-private:
-    material mat;
-    double dend=0;
-    double len=0;
-    double delt=0;
-    double x0=0;
-    std::string name;
 };
 
 std::ostream &operator<<(std::ostream &os, const nosecone &ncone);
-
 std::istream &operator>>(std::istream &in, nosecone &ncone);
 
 

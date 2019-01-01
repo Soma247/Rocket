@@ -4,7 +4,25 @@
 #include "aerodynamics/aerodynamics.h"
 
 const std::string planeheader{"plane"};
+double plane::Smid() const{return 0.5*(params.croot+params.ctip)*params.h*params.n;}
+
+double plane::mass() const{return  params.massn;}
+
+void plane::setmass(double m){params.massn=m;}
+
 double plane::massCenter() const{return 0.6*params.broot+params.XfromNose;}
+
+double plane::getX0() const{return params.XfromNose;}
+
+void plane::setX0(double x0){params.XfromNose=x0;}
+
+double plane::getL() const{return params.broot;}
+
+std::string plane::getname() const{return  name;}
+
+void plane::setname(std::string n){name=n;}
+
+std::string plane::toString() const{return "plane";}
 
 double plane::getCp(double SmidLA,double M) const{
     if(M<1)return Smid()*(0.1*M+0.06)/SmidLA;
@@ -16,6 +34,11 @@ double plane::getCp(double SmidLA,double M) const{
                                     params.h,params.angleCmax,M)/SmidLA;
 }
 
+double plane::getXp(double M) const{
+    double k=M>1?0.45:0.35;
+    return (0.5*(params.broot+params.btip)*k)+params.XfromNose;
+}
+
 double plane::getCxtr(double SmidLA, double M, double sound_sp, double cin_visc) const{
     return Aerodynamics::CxTrPlane(SmidLA,params.h,params.broot,params.btip,params.croot,params.ctip,M,sound_sp,cin_visc);
 }
@@ -24,6 +47,10 @@ double plane::getcyaConsole(double Dmid, double SmidLA, double M, double sound_s
     return Aerodynamics::CyaOnePlaneConsole(Dmid,SmidLA,params.XfromNose,params.broot,
                                             params.btip,params.croot,params.ctip,
                                             params.h,params.angleCmax,M,sound_sp,cin_visc);
+}
+
+planeparams plane::getparams() const{
+    return params;
 }
 
 plane::plane(material math,

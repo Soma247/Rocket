@@ -8,14 +8,16 @@ namespace Ui {
 class chooseWindow;
 }
 
-class chooseWindow : public QMainWindow
-{
+class chooseWindow : public QMainWindow{
     Q_OBJECT
 
 public:
     explicit chooseWindow(std::list<std::pair<QString,QString>>* filenames, QWidget *parent = nullptr);
     ~chooseWindow();
-
+protected:
+    void closeEvent( QCloseEvent *__e ){
+        exit(0);
+    }
 private slots:
     void on_listWidget_itemClicked(QListWidgetItem *item);
     void on_pushButton_clicked();

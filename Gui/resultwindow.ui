@@ -6,94 +6,292 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>751</width>
-    <height>449</height>
+    <width>750</width>
+    <height>550</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>750</width>
+    <height>550</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="tabShape">
+   <enum>QTabWidget::Triangular</enum>
+  </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QTabWidget" name="tabs">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>0</y>
-      <width>721</width>
-      <height>411</height>
-     </rect>
-    </property>
-    <property name="currentIndex">
-     <number>3</number>
-    </property>
-    <widget class="QWidget" name="tab">
-     <attribute name="title">
-      <string>Траектория</string>
-     </attribute>
-     <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="0">
-       <widget class="QChartView" name="chart_traect"/>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>750</width>
+     <height>530</height>
+    </size>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_5">
+    <item row="0" column="0">
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QTabWidget" name="tabs">
+        <property name="styleSheet">
+         <string notr="true">background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0.0224719 rgba(17, 17, 17, 227), stop:0.106742 rgba(19, 19, 19, 252), stop:0.179775 rgba(19, 19, 17, 231), stop:0.258427 rgba(33, 33, 31, 252), stop:0.365169 rgba(24, 24, 24, 235), stop:0.483146 rgba(26, 26, 26, 250), stop:0.617978 rgba(30, 30, 30, 248), stop:0.735955 rgba(24, 24, 24, 231), stop:0.842697 rgba(19, 19, 19, 227), stop:0.853933 rgba(21, 21, 21, 231), stop:0.921348 rgba(26, 22, 19, 234), stop:1 rgba(39, 39, 39, 247));</string>
+        </property>
+        <property name="currentIndex">
+         <number>0</number>
+        </property>
+        <widget class="QWidget" name="tab">
+         <attribute name="title">
+          <string>Траектория</string>
+         </attribute>
+         <layout class="QGridLayout" name="gridLayout">
+          <item row="0" column="0">
+           <widget class="QChartView" name="chart_traect">
+            <property name="styleSheet">
+             <string notr="true">background-color: qconicalgradient(cx:0, cy:1, angle:281.613, stop:0.0224719 rgba(130, 15, 15, 213), stop:0.162011 rgba(147, 42, 32, 231), stop:0.258427 rgba(206, 29, 4, 174), stop:0.365169 rgba(128, 26, 26, 199), stop:0.47486 rgba(185, 45, 38, 181), stop:0.483146 rgba(126, 58, 44, 209), stop:0.625698 rgba(124, 25, 0, 211), stop:0.724719 rgba(152, 19, 0, 159), stop:0.842697 rgba(193, 37, 37, 215), stop:0.921348 rgba(209, 26, 0, 234), stop:0.949438 rgba(199, 35, 35, 206), stop:1 rgba(74, 74, 57, 255));
+color: rgb(185, 185, 185);</string>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Plain</enum>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="tab_2">
+         <attribute name="title">
+          <string>Скорость</string>
+         </attribute>
+         <layout class="QGridLayout" name="gridLayout_2">
+          <item row="0" column="0">
+           <widget class="QChartView" name="chart_V">
+            <property name="styleSheet">
+             <string notr="true">background-color: qconicalgradient(cx:0, cy:1, angle:281.613, stop:0.0224719 rgba(130, 15, 15, 213), stop:0.162011 rgba(147, 42, 32, 231), stop:0.258427 rgba(206, 29, 4, 174), stop:0.365169 rgba(128, 26, 26, 199), stop:0.47486 rgba(185, 45, 38, 181), stop:0.483146 rgba(126, 58, 44, 209), stop:0.625698 rgba(124, 25, 0, 211), stop:0.724719 rgba(152, 19, 0, 159), stop:0.842697 rgba(193, 37, 37, 215), stop:0.921348 rgba(209, 26, 0, 234), stop:0.949438 rgba(199, 35, 35, 206), stop:1 rgba(74, 74, 57, 255));</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="tab_3">
+         <attribute name="title">
+          <string>Аэрод. коэфф.</string>
+         </attribute>
+         <layout class="QGridLayout" name="gridLayout_3">
+          <item row="0" column="0">
+           <widget class="QChartView" name="chart_cxcy">
+            <property name="styleSheet">
+             <string notr="true">background-color: qconicalgradient(cx:0, cy:1, angle:281.613, stop:0.0224719 rgba(130, 15, 15, 213), stop:0.162011 rgba(147, 42, 32, 231), stop:0.258427 rgba(206, 29, 4, 174), stop:0.365169 rgba(128, 26, 26, 199), stop:0.47486 rgba(185, 45, 38, 181), stop:0.483146 rgba(126, 58, 44, 209), stop:0.625698 rgba(124, 25, 0, 211), stop:0.724719 rgba(152, 19, 0, 159), stop:0.842697 rgba(193, 37, 37, 215), stop:0.921348 rgba(209, 26, 0, 234), stop:0.949438 rgba(199, 35, 35, 206), stop:1 rgba(74, 74, 57, 255));</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="tab_6">
+         <attribute name="title">
+          <string>Скоростн. зоны</string>
+         </attribute>
+         <layout class="QGridLayout" name="gridLayout_7">
+          <item row="0" column="0">
+           <widget class="QChartView" name="chart_zones">
+            <property name="styleSheet">
+             <string notr="true">background-color: qconicalgradient(cx:0, cy:1, angle:281.613, stop:0.0224719 rgba(130, 15, 15, 213), stop:0.162011 rgba(147, 42, 32, 231), stop:0.258427 rgba(206, 29, 4, 174), stop:0.365169 rgba(128, 26, 26, 199), stop:0.47486 rgba(185, 45, 38, 181), stop:0.483146 rgba(126, 58, 44, 209), stop:0.625698 rgba(124, 25, 0, 211), stop:0.724719 rgba(152, 19, 0, 159), stop:0.842697 rgba(193, 37, 37, 215), stop:0.921348 rgba(209, 26, 0, 234), stop:0.949438 rgba(199, 35, 35, 206), stop:1 rgba(74, 74, 57, 255));</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="tab_5">
+         <attribute name="title">
+          <string>Таблица</string>
+         </attribute>
+         <layout class="QGridLayout" name="gridLayout_6">
+          <item row="0" column="0">
+           <layout class="QGridLayout" name="gridLayout_4">
+            <item row="0" column="0">
+             <widget class="QTableWidget" name="table_all">
+              <property name="autoFillBackground">
+               <bool>true</bool>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">background-color: rgb(152, 152, 152);
+color: rgb(0, 0, 0);</string>
+              </property>
+              <property name="editTriggers">
+               <set>QAbstractItemView::NoEditTriggers</set>
+              </property>
+              <property name="textElideMode">
+               <enum>Qt::ElideMiddle</enum>
+              </property>
+              <property name="showGrid">
+               <bool>true</bool>
+              </property>
+              <property name="gridStyle">
+               <enum>Qt::SolidLine</enum>
+              </property>
+              <property name="rowCount">
+               <number>2</number>
+              </property>
+              <property name="columnCount">
+               <number>9</number>
+              </property>
+              <row/>
+              <row/>
+              <column/>
+              <column/>
+              <column/>
+              <column/>
+              <column/>
+              <column/>
+              <column/>
+              <column/>
+              <column/>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <spacer name="verticalSpacer">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Fixed</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>125</width>
+                <height>363</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="tab_4">
+         <attribute name="title">
+          <string>Сводная информация</string>
+         </attribute>
+         <layout class="QGridLayout" name="gridLayout_8">
+          <item row="0" column="0">
+           <widget class="QTextBrowser" name="textBrowser">
+            <property name="styleSheet">
+             <string notr="true">background-color: qconicalgradient(cx:0, cy:1, angle:281.613, stop:0.0224719 rgba(130, 15, 15, 213), stop:0.162011 rgba(83, 23, 18, 231), stop:0.258427 rgba(145, 20, 2, 174), stop:0.365169 rgba(158, 32, 32, 199), stop:0.47486 rgba(152, 10, 3, 181), stop:0.483146 rgba(126, 58, 44, 209), stop:0.625698 rgba(145, 29, 0, 211), stop:0.724719 rgba(152, 19, 0, 159), stop:0.842697 rgba(161, 31, 31, 215), stop:0.921348 rgba(191, 23, 0, 234), stop:0.949438 rgba(199, 35, 35, 206), stop:1 rgba(74, 74, 57, 255));</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+      </item>
+      <item>
+       <spacer name="verticalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Fixed</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>1</width>
+          <height>418</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout">
+          <item>
+           <widget class="QPushButton" name="pushButton_2">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>75</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background-color: qconicalgradient(cx:0, cy:0, angle:170.1, stop:0 rgba(81, 81, 73, 69), stop:0.235955 rgba(92, 92, 83, 231), stop:0.353933 rgba(51, 51, 51, 250), stop:0.423533 rgba(49, 49, 49, 255), stop:0.477581 rgba(58, 58, 53, 248), stop:0.55 rgba(51, 51, 40, 255), stop:0.57754 rgba(58, 54, 37, 130), stop:0.625 rgba(58, 58, 51, 69), stop:0.921348 rgba(26, 22, 19, 234), stop:1 rgba(74, 74, 57, 255));</string>
+            </property>
+            <property name="text">
+             <string>Закрыть</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton_3">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>75</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background-color: qconicalgradient(cx:0, cy:0, angle:170.1, stop:0 rgba(81, 81, 73, 69), stop:0.235955 rgba(92, 92, 83, 231), stop:0.353933 rgba(51, 51, 51, 250), stop:0.423533 rgba(49, 49, 49, 255), stop:0.477581 rgba(58, 58, 53, 248), stop:0.55 rgba(51, 51, 40, 255), stop:0.57754 rgba(58, 54, 37, 130), stop:0.625 rgba(58, 58, 51, 69), stop:0.921348 rgba(26, 22, 19, 234), stop:1 rgba(74, 74, 57, 255));</string>
+            </property>
+            <property name="text">
+             <string>Сохранить </string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>75</width>
+            <height>500</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
       </item>
      </layout>
-    </widget>
-    <widget class="QWidget" name="tab_2">
-     <attribute name="title">
-      <string>Скорость</string>
-     </attribute>
-     <layout class="QGridLayout" name="gridLayout_2">
-      <item row="0" column="0">
-       <widget class="QChartView" name="chart_V"/>
-      </item>
-     </layout>
-    </widget>
-    <widget class="QWidget" name="tab_3">
-     <attribute name="title">
-      <string>Аэрод. коэфф.</string>
-     </attribute>
-     <layout class="QGridLayout" name="gridLayout_3">
-      <item row="0" column="0">
-       <widget class="QChartView" name="chart_cxcy"/>
-      </item>
-     </layout>
-    </widget>
-    <widget class="QWidget" name="tab_6">
-     <attribute name="title">
-      <string>Страница</string>
-     </attribute>
-     <widget class="QChartView" name="chart_zones">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>10</y>
-        <width>699</width>
-        <height>366</height>
-       </rect>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="tab_5">
-     <attribute name="title">
-      <string>Таблица</string>
-     </attribute>
-     <layout class="QGridLayout" name="gridLayout_4">
-      <item row="0" column="0">
-       <widget class="QTableWidget" name="table_all"/>
-      </item>
-     </layout>
-    </widget>
-    <widget class="QWidget" name="tab_4">
-     <attribute name="title">
-      <string>Результат</string>
-     </attribute>
-    </widget>
-   </widget>
+    </item>
+   </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>751</width>
+     <width>750</width>
      <height>20</height>
     </rect>
    </property>

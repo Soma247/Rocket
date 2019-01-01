@@ -8,8 +8,7 @@ namespace Ui {
 class addequipmentDialog;
 }
 
-class addequipmentDialog : public QDialog
-{
+class addequipmentDialog : public QDialog{
     Q_OBJECT
     Ui::addequipmentDialog *ui;
     balcalcItemModel* bcmodel;

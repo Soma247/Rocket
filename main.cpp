@@ -7,7 +7,7 @@
 #include <memory>
 #include "ballisticcalc.h"
 #include "Gui/workwindow.h"
-
+#include "algorithm"
 constexpr int LOAD_TIME_MSEC = 1000;
 constexpr int PROGRESS_X_PX = 272;
 constexpr int PROGRESS_Y_PX = 333;

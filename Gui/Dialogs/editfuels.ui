@@ -6,511 +6,591 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>671</width>
+    <width>670</width>
     <height>390</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>670</width>
+    <height>390</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>770</width>
+    <height>407</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
+  <property name="autoFillBackground">
+   <bool>false</bool>
+  </property>
   <property name="styleSheet">
    <string notr="true">background-color: qconicalgradient(cx:0, cy:0.972, angle:170.1, stop:0 rgba(81, 81, 73, 69), stop:0.0224719 rgba(49, 49, 49, 255), stop:0.179775 rgba(19, 19, 17, 231), stop:0.258427 rgba(33, 33, 31, 222), stop:0.365169 rgba(24, 24, 24, 235), stop:0.483146 rgba(51, 51, 51, 250), stop:0.617978 rgba(21, 21, 19, 248), stop:0.724719 rgba(12, 12, 10, 252), stop:0.842697 rgba(5, 5, 4, 215), stop:0.921348 rgba(26, 22, 19, 234), stop:0.949438 rgba(58, 58, 51, 69), stop:1 rgba(74, 74, 57, 255));</string>
   </property>
-  <widget class="QWidget" name="widget_info" native="true">
-   <property name="geometry">
-    <rect>
-     <x>210</x>
-     <y>10</y>
-     <width>451</width>
-     <height>211</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(0, 0, 0, 0));</string>
-   </property>
-   <widget class="QWidget" name="layoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>30</x>
-      <y>40</y>
-      <width>404</width>
-      <height>137</height>
-     </rect>
-    </property>
-    <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="0">
-      <widget class="QLabel" name="label">
+  <layout class="QGridLayout" name="gridLayout_2">
+   <item row="0" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_4">
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout_8">
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="QLabel" name="label_15">
+           <property name="styleSheet">
+            <string notr="true">background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(0, 0, 0, 0));color: rgb(180, 180, 180);</string>
+           </property>
+           <property name="text">
+            <string>Топлива</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="cb_fuels">
+           <property name="styleSheet">
+            <string notr="true">background-color: qradialgradient(spread:pad, cx:0.022, cy:0, radius:0.5, fx:0.386689, fy:0.341325, stop:0 rgba(255, 83, 83, 133));</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_16">
+           <property name="styleSheet">
+            <string notr="true">background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(0, 0, 0, 0));color: rgb(180, 180, 180);</string>
+           </property>
+           <property name="text">
+            <string>Материалы</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="cb_mats">
+           <property name="styleSheet">
+            <string notr="true">background-color: qradialgradient(spread:pad, cx:0.022, cy:0, radius:0.5, fx:0.386689, fy:0.341325, stop:0 rgba(255, 83, 83, 133));</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>218</width>
+           <height>30</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="Line" name="line_2">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>5</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(0, 0, 0, 0));
+color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(255, 63, 24, 255), stop:0.55 rgba(235, 61, 61, 255), stop:1 rgba(88, 38, 38, 255));</string>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_13">
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(0, 0, 0, 0));color: rgb(180, 180, 180);</string>
+         </property>
+         <property name="text">
+          <string>характеристики материала</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <item>
+          <layout class="QVBoxLayout" name="verticalLayout">
+           <item>
+            <widget class="QLabel" name="label_14">
+             <property name="styleSheet">
+              <string notr="true">background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(0, 0, 0, 0));color: rgb(180, 180, 180);</string>
+             </property>
+             <property name="text">
+              <string>Название</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="le_mat_name">
+             <property name="styleSheet">
+              <string notr="true">background-color: qconicalgradient(cx:0, cy:0.625, angle:281.613, stop:0.0224719 rgba(130, 15, 15, 213), stop:0.162011 rgba(147, 42, 32, 231), stop:0.258427 rgba(206, 29, 4, 174), stop:0.365169 rgba(128, 26, 26, 199), stop:0.47486 rgba(185, 45, 38, 181), stop:0.483146 rgba(126, 58, 44, 209), stop:0.625698 rgba(124, 25, 0, 211), stop:0.724719 rgba(152, 19, 0, 159), stop:0.842697 rgba(193, 37, 37, 215), stop:0.921348 rgba(209, 26, 0, 234), stop:0.949438 rgba(199, 35, 35, 206), stop:1 rgba(118, 25, 25, 224));</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_10">
+             <property name="styleSheet">
+              <string notr="true">background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(0, 0, 0, 0));color: rgb(180, 180, 180);</string>
+             </property>
+             <property name="text">
+              <string>плотность(кг/м^3)</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="le_mat_ro">
+             <property name="styleSheet">
+              <string notr="true">background-color: qconicalgradient(cx:0, cy:0.625, angle:281.613, stop:0.0224719 rgba(130, 15, 15, 213), stop:0.162011 rgba(147, 42, 32, 231), stop:0.258427 rgba(206, 29, 4, 174), stop:0.365169 rgba(128, 26, 26, 199), stop:0.47486 rgba(185, 45, 38, 181), stop:0.483146 rgba(126, 58, 44, 209), stop:0.625698 rgba(124, 25, 0, 211), stop:0.724719 rgba(152, 19, 0, 159), stop:0.842697 rgba(193, 37, 37, 215), stop:0.921348 rgba(209, 26, 0, 234), stop:0.949438 rgba(199, 35, 35, 206), stop:1 rgba(118, 25, 25, 224));</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_11">
+             <property name="styleSheet">
+              <string notr="true">color: rgb(180, 180, 180);
+background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(0, 0, 0, 0));</string>
+             </property>
+             <property name="text">
+              <string>предел прочности(МПА)</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="le_mat_sigma">
+             <property name="styleSheet">
+              <string notr="true">background-color: qconicalgradient(cx:0, cy:0.625, angle:281.613, stop:0.0224719 rgba(130, 15, 15, 213), stop:0.162011 rgba(147, 42, 32, 231), stop:0.258427 rgba(206, 29, 4, 174), stop:0.365169 rgba(128, 26, 26, 199), stop:0.47486 rgba(185, 45, 38, 181), stop:0.483146 rgba(126, 58, 44, 209), stop:0.625698 rgba(124, 25, 0, 211), stop:0.724719 rgba(152, 19, 0, 159), stop:0.842697 rgba(193, 37, 37, 215), stop:0.921348 rgba(209, 26, 0, 234), stop:0.949438 rgba(199, 35, 35, 206), stop:1 rgba(118, 25, 25, 224));</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btn_savemat">
+           <property name="styleSheet">
+            <string notr="true">background-color: qconicalgradient(cx:0, cy:1, angle:281.613, stop:0.0224719 rgba(222, 50, 50, 213), stop:0.162011 rgba(191, 54, 41, 231), stop:0.258427 rgba(204, 8, 0, 175), stop:0.365169 rgba(197, 16, 16, 199), stop:0.47486 rgba(241, 11, 0, 181), stop:0.483146 rgba(211, 47, 13, 209), stop:0.625698 rgba(213, 43, 0, 211), stop:0.724719 rgba(236, 29, 0, 159), stop:0.842697 rgba(225, 43, 43, 215), stop:0.921348 rgba(206, 25, 0, 234), stop:0.949438 rgba(199, 0, 0, 206), stop:1 rgba(74, 74, 57, 255));
+color: rgb(0, 0, 0);</string>
+           </property>
+           <property name="text">
+            <string> Сохранить материал</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="Line" name="line">
        <property name="styleSheet">
-        <string notr="true">color: rgb(180, 180, 180);</string>
+        <string notr="true">background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(0, 0, 0, 0));
+color: qconicalgradient(cx:0, cy:0.625, angle:281.613, stop:0.0224719 rgba(130, 15, 15, 213), stop:0.162011 rgba(147, 42, 32, 231), stop:0.258427 rgba(206, 29, 4, 174), stop:0.365169 rgba(128, 26, 26, 199), stop:0.47486 rgba(185, 45, 38, 181), stop:0.483146 rgba(126, 58, 44, 209), stop:0.625698 rgba(124, 25, 0, 211), stop:0.724719 rgba(152, 19, 0, 159), stop:0.842697 rgba(193, 37, 37, 215), stop:0.921348 rgba(209, 26, 0, 234), stop:0.949438 rgba(199, 35, 35, 206), stop:1 rgba(118, 25, 25, 224));</string>
        </property>
-       <property name="text">
-        <string>Название</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
        </property>
       </widget>
      </item>
-     <item row="0" column="1">
-      <widget class="QLabel" name="label_5">
-       <property name="styleSheet">
-        <string notr="true">color: rgb(180, 180, 180);</string>
-       </property>
-       <property name="text">
-        <string>плотность(кг/м^3)</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="2">
-      <widget class="QLabel" name="label_8">
-       <property name="styleSheet">
-        <string notr="true">color: rgb(180, 180, 180);</string>
-       </property>
-       <property name="text">
-        <string>показатель адиабаты k</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLineEdit" name="le_fl_name">
-       <property name="styleSheet">
-        <string notr="true">background-color: qradialgradient(spread:pad, cx:0.022, cy:0, radius:0.5, fx:0.386689, fy:0.341325, stop:0 rgba(255, 83, 83, 133));</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QLineEdit" name="le_fl_ro">
-       <property name="styleSheet">
-        <string notr="true">background-color: qradialgradient(spread:pad, cx:0.022, cy:0, radius:0.5, fx:0.386689, fy:0.341325, stop:0 rgba(255, 83, 83, 133));</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="2">
-      <widget class="QLineEdit" name="le_fl_k">
-       <property name="styleSheet">
-        <string notr="true">background-color: qradialgradient(spread:pad, cx:0.022, cy:0, radius:0.5, fx:0.386689, fy:0.341325, stop:0 rgba(255, 83, 83, 133));</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="label_2">
-       <property name="styleSheet">
-        <string notr="true">color: rgb(180, 180, 180);</string>
-       </property>
-       <property name="text">
-        <string>% AL</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QLabel" name="label_6">
-       <property name="styleSheet">
-        <string notr="true">color: rgb(180, 180, 180);</string>
-       </property>
-       <property name="text">
-        <string>Темп. гор-я(К)</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="2">
-      <widget class="QLabel" name="label_9">
-       <property name="styleSheet">
-        <string notr="true">color: rgb(180, 180, 180);</string>
-       </property>
-       <property name="text">
-        <string>коэфф. закона расхода</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="0">
-      <widget class="QLineEdit" name="le_fl_al">
-       <property name="styleSheet">
-        <string notr="true">background-color: qradialgradient(spread:pad, cx:0.022, cy:0, radius:0.5, fx:0.386689, fy:0.341325, stop:0 rgba(255, 83, 83, 133));</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="1">
-      <widget class="QLineEdit" name="le_fl_Tst">
-       <property name="styleSheet">
-        <string notr="true">background-color: qradialgradient(spread:pad, cx:0.022, cy:0, radius:0.5, fx:0.386689, fy:0.341325, stop:0 rgba(255, 83, 83, 133));</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="2">
-      <widget class="QLineEdit" name="le_fl_ukoef">
-       <property name="styleSheet">
-        <string notr="true">background-color: qradialgradient(spread:pad, cx:0.022, cy:0, radius:0.5, fx:0.386689, fy:0.341325, stop:0 rgba(255, 83, 83, 133));</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="label_3">
-       <property name="styleSheet">
-        <string notr="true">color: rgb(180, 180, 180);</string>
-       </property>
-       <property name="text">
-        <string>уд. импульс тяги(м/с)</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="1">
-      <widget class="QLabel" name="label_4">
-       <property name="styleSheet">
-        <string notr="true">color: rgb(180, 180, 180);</string>
-       </property>
-       <property name="text">
-        <string>Газовая пост-я R(Дж/кг*град)</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="2">
-      <widget class="QLabel" name="label_7">
-       <property name="styleSheet">
-        <string notr="true">color: rgb(180, 180, 180);</string>
-       </property>
-       <property name="text">
-        <string>степень закона расхода</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="0">
-      <widget class="QLineEdit" name="le_fl_Pudst">
-       <property name="styleSheet">
-        <string notr="true">background-color: qradialgradient(spread:pad, cx:0.022, cy:0, radius:0.5, fx:0.386689, fy:0.341325, stop:0 rgba(255, 83, 83, 133));</string>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="1">
-      <widget class="QLineEdit" name="le_fl_Rst">
-       <property name="styleSheet">
-        <string notr="true">background-color: qradialgradient(spread:pad, cx:0.022, cy:0, radius:0.5, fx:0.386689, fy:0.341325, stop:0 rgba(255, 83, 83, 133));</string>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="2">
-      <widget class="QLineEdit" name="le_fl_upow">
-       <property name="styleSheet">
-        <string notr="true">background-color: qradialgradient(spread:pad, cx:0.022, cy:0, radius:0.5, fx:0.386689, fy:0.341325, stop:0 rgba(255, 83, 83, 133));</string>
-       </property>
-      </widget>
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout_9">
+       <item>
+        <widget class="QLabel" name="label_12">
+         <property name="font">
+          <font>
+           <pointsize>14</pointsize>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(0, 0, 0, 0));
+color: rgb(180, 180, 180);</string>
+         </property>
+         <property name="text">
+          <string>характеристики топлива</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <item>
+          <spacer name="verticalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>18</width>
+             <height>388</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" name="verticalLayout_7">
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout_5">
+             <item>
+              <layout class="QGridLayout" name="gridLayout">
+               <item row="0" column="0">
+                <widget class="QLabel" name="label">
+                 <property name="styleSheet">
+                  <string notr="true">color: rgb(180, 180, 180);</string>
+                 </property>
+                 <property name="text">
+                  <string>Название</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1">
+                <widget class="QLabel" name="label_5">
+                 <property name="styleSheet">
+                  <string notr="true">color: rgb(180, 180, 180);</string>
+                 </property>
+                 <property name="text">
+                  <string>плотность(кг/м^3)</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="2">
+                <widget class="QLabel" name="label_8">
+                 <property name="styleSheet">
+                  <string notr="true">color: rgb(180, 180, 180);</string>
+                 </property>
+                 <property name="text">
+                  <string>показатель адиабаты k</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <widget class="QLineEdit" name="le_fl_name">
+                 <property name="styleSheet">
+                  <string notr="true">background-color: qconicalgradient(cx:0, cy:1, angle:281.613, stop:0.0224719 rgba(130, 15, 15, 213), stop:0.162011 rgba(83, 23, 18, 231), stop:0.258427 rgba(145, 20, 2, 174), stop:0.365169 rgba(158, 32, 32, 199), stop:0.47486 rgba(152, 10, 3, 181), stop:0.483146 rgba(126, 58, 44, 209), stop:0.625698 rgba(145, 29, 0, 211), stop:0.724719 rgba(152, 19, 0, 159), stop:0.842697 rgba(161, 31, 31, 215), stop:0.921348 rgba(191, 23, 0, 234), stop:0.949438 rgba(199, 35, 35, 206), stop:1 rgba(74, 74, 57, 255));</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <widget class="QLineEdit" name="le_fl_ro">
+                 <property name="styleSheet">
+                  <string notr="true">background-color: qconicalgradient(cx:0, cy:1, angle:281.613, stop:0.0224719 rgba(130, 15, 15, 213), stop:0.162011 rgba(83, 23, 18, 231), stop:0.258427 rgba(145, 20, 2, 174), stop:0.365169 rgba(158, 32, 32, 199), stop:0.47486 rgba(152, 10, 3, 181), stop:0.483146 rgba(126, 58, 44, 209), stop:0.625698 rgba(145, 29, 0, 211), stop:0.724719 rgba(152, 19, 0, 159), stop:0.842697 rgba(161, 31, 31, 215), stop:0.921348 rgba(191, 23, 0, 234), stop:0.949438 rgba(199, 35, 35, 206), stop:1 rgba(74, 74, 57, 255));</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="2">
+                <widget class="QLineEdit" name="le_fl_k">
+                 <property name="styleSheet">
+                  <string notr="true">background-color: qconicalgradient(cx:0, cy:1, angle:281.613, stop:0.0224719 rgba(130, 15, 15, 213), stop:0.162011 rgba(83, 23, 18, 231), stop:0.258427 rgba(145, 20, 2, 174), stop:0.365169 rgba(158, 32, 32, 199), stop:0.47486 rgba(152, 10, 3, 181), stop:0.483146 rgba(126, 58, 44, 209), stop:0.625698 rgba(145, 29, 0, 211), stop:0.724719 rgba(152, 19, 0, 159), stop:0.842697 rgba(161, 31, 31, 215), stop:0.921348 rgba(191, 23, 0, 234), stop:0.949438 rgba(199, 35, 35, 206), stop:1 rgba(74, 74, 57, 255));</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="0">
+                <widget class="QLabel" name="label_2">
+                 <property name="styleSheet">
+                  <string notr="true">color: rgb(180, 180, 180);</string>
+                 </property>
+                 <property name="text">
+                  <string>% AL</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="1">
+                <widget class="QLabel" name="label_6">
+                 <property name="styleSheet">
+                  <string notr="true">color: rgb(180, 180, 180);</string>
+                 </property>
+                 <property name="text">
+                  <string>Темп. гор-я(К)</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="2">
+                <widget class="QLabel" name="label_9">
+                 <property name="styleSheet">
+                  <string notr="true">color: rgb(180, 180, 180);</string>
+                 </property>
+                 <property name="text">
+                  <string>коэфф. закона расхода</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="0">
+                <widget class="QLineEdit" name="le_fl_al">
+                 <property name="styleSheet">
+                  <string notr="true">background-color: qconicalgradient(cx:0, cy:1, angle:281.613, stop:0.0224719 rgba(130, 15, 15, 213), stop:0.162011 rgba(83, 23, 18, 231), stop:0.258427 rgba(145, 20, 2, 174), stop:0.365169 rgba(158, 32, 32, 199), stop:0.47486 rgba(152, 10, 3, 181), stop:0.483146 rgba(126, 58, 44, 209), stop:0.625698 rgba(145, 29, 0, 211), stop:0.724719 rgba(152, 19, 0, 159), stop:0.842697 rgba(161, 31, 31, 215), stop:0.921348 rgba(191, 23, 0, 234), stop:0.949438 rgba(199, 35, 35, 206), stop:1 rgba(74, 74, 57, 255));</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="1">
+                <widget class="QLineEdit" name="le_fl_Tst">
+                 <property name="styleSheet">
+                  <string notr="true">background-color: qconicalgradient(cx:0, cy:1, angle:281.613, stop:0.0224719 rgba(130, 15, 15, 213), stop:0.162011 rgba(83, 23, 18, 231), stop:0.258427 rgba(145, 20, 2, 174), stop:0.365169 rgba(158, 32, 32, 199), stop:0.47486 rgba(152, 10, 3, 181), stop:0.483146 rgba(126, 58, 44, 209), stop:0.625698 rgba(145, 29, 0, 211), stop:0.724719 rgba(152, 19, 0, 159), stop:0.842697 rgba(161, 31, 31, 215), stop:0.921348 rgba(191, 23, 0, 234), stop:0.949438 rgba(199, 35, 35, 206), stop:1 rgba(74, 74, 57, 255));</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="2">
+                <widget class="QLineEdit" name="le_fl_ukoef">
+                 <property name="styleSheet">
+                  <string notr="true">background-color: qconicalgradient(cx:0, cy:1, angle:281.613, stop:0.0224719 rgba(130, 15, 15, 213), stop:0.162011 rgba(83, 23, 18, 231), stop:0.258427 rgba(145, 20, 2, 174), stop:0.365169 rgba(158, 32, 32, 199), stop:0.47486 rgba(152, 10, 3, 181), stop:0.483146 rgba(126, 58, 44, 209), stop:0.625698 rgba(145, 29, 0, 211), stop:0.724719 rgba(152, 19, 0, 159), stop:0.842697 rgba(161, 31, 31, 215), stop:0.921348 rgba(191, 23, 0, 234), stop:0.949438 rgba(199, 35, 35, 206), stop:1 rgba(74, 74, 57, 255));</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="4" column="0">
+                <widget class="QLabel" name="label_3">
+                 <property name="styleSheet">
+                  <string notr="true">color: rgb(180, 180, 180);</string>
+                 </property>
+                 <property name="text">
+                  <string>уд. импульс тяги(м/с)</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="4" column="1">
+                <widget class="QLabel" name="label_4">
+                 <property name="styleSheet">
+                  <string notr="true">color: rgb(180, 180, 180);</string>
+                 </property>
+                 <property name="text">
+                  <string>Газовая пост-я R(Дж/кг*град)</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="4" column="2">
+                <widget class="QLabel" name="label_7">
+                 <property name="styleSheet">
+                  <string notr="true">color: rgb(180, 180, 180);</string>
+                 </property>
+                 <property name="text">
+                  <string>степень закона расхода</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="5" column="0">
+                <widget class="QLineEdit" name="le_fl_Pudst">
+                 <property name="styleSheet">
+                  <string notr="true">background-color: qconicalgradient(cx:0, cy:1, angle:281.613, stop:0.0224719 rgba(130, 15, 15, 213), stop:0.162011 rgba(83, 23, 18, 231), stop:0.258427 rgba(145, 20, 2, 174), stop:0.365169 rgba(158, 32, 32, 199), stop:0.47486 rgba(152, 10, 3, 181), stop:0.483146 rgba(126, 58, 44, 209), stop:0.625698 rgba(145, 29, 0, 211), stop:0.724719 rgba(152, 19, 0, 159), stop:0.842697 rgba(161, 31, 31, 215), stop:0.921348 rgba(191, 23, 0, 234), stop:0.949438 rgba(199, 35, 35, 206), stop:1 rgba(74, 74, 57, 255));</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="5" column="1">
+                <widget class="QLineEdit" name="le_fl_Rst">
+                 <property name="styleSheet">
+                  <string notr="true">background-color: qconicalgradient(cx:0, cy:1, angle:281.613, stop:0.0224719 rgba(130, 15, 15, 213), stop:0.162011 rgba(83, 23, 18, 231), stop:0.258427 rgba(145, 20, 2, 174), stop:0.365169 rgba(158, 32, 32, 199), stop:0.47486 rgba(152, 10, 3, 181), stop:0.483146 rgba(126, 58, 44, 209), stop:0.625698 rgba(145, 29, 0, 211), stop:0.724719 rgba(152, 19, 0, 159), stop:0.842697 rgba(161, 31, 31, 215), stop:0.921348 rgba(191, 23, 0, 234), stop:0.949438 rgba(199, 35, 35, 206), stop:1 rgba(74, 74, 57, 255));</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="5" column="2">
+                <widget class="QLineEdit" name="le_fl_upow">
+                 <property name="styleSheet">
+                  <string notr="true">background-color: qconicalgradient(cx:0, cy:1, angle:281.613, stop:0.0224719 rgba(130, 15, 15, 213), stop:0.162011 rgba(83, 23, 18, 231), stop:0.258427 rgba(145, 20, 2, 174), stop:0.365169 rgba(158, 32, 32, 199), stop:0.47486 rgba(152, 10, 3, 181), stop:0.483146 rgba(126, 58, 44, 209), stop:0.625698 rgba(145, 29, 0, 211), stop:0.724719 rgba(152, 19, 0, 159), stop:0.842697 rgba(161, 31, 31, 215), stop:0.921348 rgba(191, 23, 0, 234), stop:0.949438 rgba(199, 35, 35, 206), stop:1 rgba(74, 74, 57, 255));</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout">
+               <item>
+                <spacer name="verticalSpacer_4">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>148</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QPushButton" name="btn_savefl">
+                 <property name="styleSheet">
+                  <string notr="true">background-color: qconicalgradient(cx:0, cy:1, angle:281.613, stop:0.0224719 rgba(222, 50, 50, 213), stop:0.162011 rgba(191, 54, 41, 231), stop:0.258427 rgba(204, 8, 0, 175), stop:0.365169 rgba(197, 16, 16, 199), stop:0.47486 rgba(241, 11, 0, 181), stop:0.483146 rgba(211, 47, 13, 209), stop:0.625698 rgba(213, 43, 0, 211), stop:0.724719 rgba(236, 29, 0, 159), stop:0.842697 rgba(225, 43, 43, 215), stop:0.921348 rgba(206, 25, 0, 234), stop:0.949438 rgba(199, 0, 0, 206), stop:1 rgba(74, 74, 57, 255));
+color: rgb(0, 0, 0);</string>
+                 </property>
+                 <property name="text">
+                  <string> Сохранить топливо</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="verticalSpacer_3">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>178</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>448</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout_6">
+             <item>
+              <layout class="QVBoxLayout" name="verticalLayout_4">
+               <item>
+                <widget class="QLabel" name="label_warning_f">
+                 <property name="styleSheet">
+                  <string notr="true">background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(0, 0, 0, 0));
+color: rgb(214, 0, 0);</string>
+                 </property>
+                 <property name="text">
+                  <string>errfl</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_warning_m">
+                 <property name="styleSheet">
+                  <string notr="true">background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(0, 0, 0, 0));
+color: rgb(214, 0, 0);</string>
+                 </property>
+                 <property name="text">
+                  <string>errmat</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_2">
+               <item>
+                <spacer name="verticalSpacer">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>350</width>
+                   <height>58</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pushButton_3">
+                 <property name="minimumSize">
+                  <size>
+                   <width>100</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>100</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">background-color: qconicalgradient(cx:0, cy:0, angle:170.1, stop:0 rgba(81, 81, 73, 69), stop:0.235955 rgba(92, 92, 83, 231), stop:0.353933 rgba(51, 51, 51, 250), stop:0.423533 rgba(49, 49, 49, 255), stop:0.477581 rgba(58, 58, 53, 248), stop:0.55 rgba(51, 51, 40, 255), stop:0.57754 rgba(58, 54, 37, 130), stop:0.625 rgba(58, 58, 51, 69), stop:0.921348 rgba(26, 22, 19, 234), stop:1 rgba(74, 74, 57, 255));</string>
+                 </property>
+                 <property name="text">
+                  <string>Выйти</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+      </layout>
      </item>
     </layout>
-   </widget>
-   <widget class="QLabel" name="label_12">
-    <property name="geometry">
-     <rect>
-      <x>80</x>
-      <y>10</y>
-      <width>301</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>14</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(0, 0, 0, 0));
-color: rgb(180, 180, 180);</string>
-    </property>
-    <property name="text">
-     <string>характеристики топлива</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="btn_savefl">
-    <property name="geometry">
-     <rect>
-      <x>160</x>
-      <y>180</y>
-      <width>121</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: qradialgradient(spread:pad, cx:0.5, cy:0.5, radius:0.5, fx:0.494382, fy:0.489, stop:0 rgba(255, 32, 0, 193), stop:1 rgba(255, 87, 87, 216));
-color: rgb(0, 0, 0);</string>
-    </property>
-    <property name="text">
-     <string> Сохранить топливо</string>
-    </property>
-   </widget>
-  </widget>
-  <widget class="QLabel" name="label_13">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>140</y>
-     <width>201</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>12</pointsize>
-    </font>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(0, 0, 0, 0));color: rgb(180, 180, 180);</string>
-   </property>
-   <property name="text">
-    <string>характеристики материала</string>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignCenter</set>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="pushButton_3">
-   <property name="geometry">
-    <rect>
-     <x>520</x>
-     <y>340</y>
-     <width>121</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">background-color: qconicalgradient(cx:0, cy:0, angle:170.1, stop:0 rgba(81, 81, 73, 69), stop:0.235955 rgba(92, 92, 83, 231), stop:0.353933 rgba(51, 51, 51, 250), stop:0.423533 rgba(49, 49, 49, 255), stop:0.477581 rgba(58, 58, 53, 248), stop:0.55 rgba(51, 51, 40, 255), stop:0.57754 rgba(58, 54, 37, 130), stop:0.625 rgba(58, 58, 51, 69), stop:0.921348 rgba(26, 22, 19, 234), stop:1 rgba(74, 74, 57, 255));</string>
-   </property>
-   <property name="text">
-    <string>Выйти</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_warning_f">
-   <property name="geometry">
-    <rect>
-     <x>230</x>
-     <y>230</y>
-     <width>341</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(0, 0, 0, 0));
-color: rgb(214, 0, 0);</string>
-   </property>
-   <property name="text">
-    <string>errfl</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_warning_m">
-   <property name="geometry">
-    <rect>
-     <x>230</x>
-     <y>250</y>
-     <width>341</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(0, 0, 0, 0));
-color: rgb(214, 0, 0);</string>
-   </property>
-   <property name="text">
-    <string>errmat</string>
-   </property>
-  </widget>
-  <widget class="Line" name="line">
-   <property name="geometry">
-    <rect>
-     <x>210</x>
-     <y>-20</y>
-     <width>20</width>
-     <height>431</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(0, 0, 0, 0));
-color: qconicalgradient(cx:0, cy:0.625, angle:281.613, stop:0.0224719 rgba(130, 15, 15, 213), stop:0.162011 rgba(147, 42, 32, 231), stop:0.258427 rgba(206, 29, 4, 174), stop:0.365169 rgba(128, 26, 26, 199), stop:0.47486 rgba(185, 45, 38, 181), stop:0.483146 rgba(126, 58, 44, 209), stop:0.625698 rgba(124, 25, 0, 211), stop:0.724719 rgba(152, 19, 0, 159), stop:0.842697 rgba(193, 37, 37, 215), stop:0.921348 rgba(209, 26, 0, 234), stop:0.949438 rgba(199, 35, 35, 206), stop:1 rgba(118, 25, 25, 224));</string>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Vertical</enum>
-   </property>
-  </widget>
-  <widget class="Line" name="line_2">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>120</y>
-     <width>221</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(0, 0, 0, 0));
-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(255, 63, 24, 255), stop:0.55 rgba(235, 61, 61, 255), stop:1 rgba(88, 38, 38, 255));</string>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Horizontal</enum>
-   </property>
-  </widget>
-  <widget class="QWidget" name="">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>10</y>
-     <width>131</width>
-     <height>101</height>
-    </rect>
-   </property>
-   <layout class="QVBoxLayout" name="verticalLayout_2">
-    <item>
-     <widget class="QLabel" name="label_15">
-      <property name="styleSheet">
-       <string notr="true">background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(0, 0, 0, 0));color: rgb(180, 180, 180);</string>
-      </property>
-      <property name="text">
-       <string>Топлива</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QComboBox" name="cb_fuels">
-      <property name="styleSheet">
-       <string notr="true">background-color: qradialgradient(spread:pad, cx:0.022, cy:0, radius:0.5, fx:0.386689, fy:0.341325, stop:0 rgba(255, 83, 83, 133));</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QLabel" name="label_16">
-      <property name="styleSheet">
-       <string notr="true">background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(0, 0, 0, 0));color: rgb(180, 180, 180);</string>
-      </property>
-      <property name="text">
-       <string>Материалы</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QComboBox" name="cb_mats">
-      <property name="styleSheet">
-       <string notr="true">background-color: qradialgradient(spread:pad, cx:0.022, cy:0, radius:0.5, fx:0.386689, fy:0.341325, stop:0 rgba(255, 83, 83, 133));</string>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QWidget" name="">
-   <property name="geometry">
-    <rect>
-     <x>40</x>
-     <y>170</y>
-     <width>131</width>
-     <height>171</height>
-    </rect>
-   </property>
-   <layout class="QVBoxLayout" name="verticalLayout_3">
-    <item>
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <item>
-       <widget class="QLabel" name="label_14">
-        <property name="styleSheet">
-         <string notr="true">background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(0, 0, 0, 0));color: rgb(180, 180, 180);</string>
-        </property>
-        <property name="text">
-         <string>Название</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="le_mat_name">
-        <property name="styleSheet">
-         <string notr="true">background-color: qconicalgradient(cx:0, cy:0.625, angle:281.613, stop:0.0224719 rgba(130, 15, 15, 213), stop:0.162011 rgba(147, 42, 32, 231), stop:0.258427 rgba(206, 29, 4, 174), stop:0.365169 rgba(128, 26, 26, 199), stop:0.47486 rgba(185, 45, 38, 181), stop:0.483146 rgba(126, 58, 44, 209), stop:0.625698 rgba(124, 25, 0, 211), stop:0.724719 rgba(152, 19, 0, 159), stop:0.842697 rgba(193, 37, 37, 215), stop:0.921348 rgba(209, 26, 0, 234), stop:0.949438 rgba(199, 35, 35, 206), stop:1 rgba(118, 25, 25, 224));</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="label_10">
-        <property name="styleSheet">
-         <string notr="true">background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(0, 0, 0, 0));color: rgb(180, 180, 180);</string>
-        </property>
-        <property name="text">
-         <string>плотность(кг/м^3)</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="le_mat_ro">
-        <property name="styleSheet">
-         <string notr="true">background-color: qconicalgradient(cx:0, cy:0.625, angle:281.613, stop:0.0224719 rgba(130, 15, 15, 213), stop:0.162011 rgba(147, 42, 32, 231), stop:0.258427 rgba(206, 29, 4, 174), stop:0.365169 rgba(128, 26, 26, 199), stop:0.47486 rgba(185, 45, 38, 181), stop:0.483146 rgba(126, 58, 44, 209), stop:0.625698 rgba(124, 25, 0, 211), stop:0.724719 rgba(152, 19, 0, 159), stop:0.842697 rgba(193, 37, 37, 215), stop:0.921348 rgba(209, 26, 0, 234), stop:0.949438 rgba(199, 35, 35, 206), stop:1 rgba(118, 25, 25, 224));</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="label_11">
-        <property name="styleSheet">
-         <string notr="true">color: rgb(180, 180, 180);
-background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(0, 0, 0, 0));</string>
-        </property>
-        <property name="text">
-         <string>предел прочности(МПА)</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="le_mat_sigma">
-        <property name="styleSheet">
-         <string notr="true">background-color: qconicalgradient(cx:0, cy:0.625, angle:281.613, stop:0.0224719 rgba(130, 15, 15, 213), stop:0.162011 rgba(147, 42, 32, 231), stop:0.258427 rgba(206, 29, 4, 174), stop:0.365169 rgba(128, 26, 26, 199), stop:0.47486 rgba(185, 45, 38, 181), stop:0.483146 rgba(126, 58, 44, 209), stop:0.625698 rgba(124, 25, 0, 211), stop:0.724719 rgba(152, 19, 0, 159), stop:0.842697 rgba(193, 37, 37, 215), stop:0.921348 rgba(209, 26, 0, 234), stop:0.949438 rgba(199, 35, 35, 206), stop:1 rgba(118, 25, 25, 224));</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <widget class="QPushButton" name="btn_savemat">
-      <property name="styleSheet">
-       <string notr="true">background-color: qconicalgradient(cx:0, cy:0.625, angle:281.613, stop:0.0224719 rgba(130, 15, 15, 213), stop:0.162011 rgba(147, 42, 32, 231), stop:0.258427 rgba(206, 29, 4, 174), stop:0.365169 rgba(128, 26, 26, 199), stop:0.47486 rgba(185, 45, 38, 181), stop:0.483146 rgba(126, 58, 44, 209), stop:0.625698 rgba(124, 25, 0, 211), stop:0.724719 rgba(152, 19, 0, 159), stop:0.842697 rgba(193, 37, 37, 215), stop:0.921348 rgba(209, 26, 0, 234), stop:0.949438 rgba(199, 35, 35, 206), stop:1 rgba(118, 25, 25, 224));
-color: rgb(0, 0, 0);</string>
-      </property>
-      <property name="text">
-       <string> Сохранить материал</string>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
+   </item>
+  </layout>
  </widget>
  <resources/>
  <connections/>
