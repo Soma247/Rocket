@@ -9,6 +9,7 @@ chooseWindow::chooseWindow(std::list<std::pair<QString,QString>>* filenames, QWi
     fnames{filenames}
 {
     ui->setupUi(this);
+    this->setWindowFlags(Qt::Window);
     for(auto& n:*fnames)
         ui->listWidget->addItem(new QListWidgetItem(
                                     QIcon("resources/cont_red_circle.png"),n.first));

@@ -13,6 +13,7 @@ resultWindow::resultWindow(QMainWindow *parent) :
     ui(new Ui::resultWindow)
 {
     ui->setupUi(this);
+    setWindowModality(Qt::ApplicationModal);
 }
 
 resultWindow::~resultWindow()
@@ -252,7 +253,7 @@ void resultWindow::setdata(const OutputData &outdata,QString filename)
                 .arg(odat.headData.planespar.at(i).massn/4,0,'D',2)
                 .arg(QString::fromStdString(odat.headData.planespar.at(i).mat.name));
 
-        mes+=QString("<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Broot= %1, Btip= %2, Croot=%3, Ctip=%3, H=%4, стреловидность=%5 град;</span></p>")
+        mes+=QString("<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Broot= %1, Btip= %2, Croot=%3, Ctip=%4, H=%5, стреловидность=%6 град;</span></p>")
                 .arg(odat.headData.planespar.at(i).broot)
                 .arg(odat.headData.planespar.at(i).btip)
                 .arg(odat.headData.planespar.at(i).croot)
@@ -272,7 +273,7 @@ void resultWindow::setdata(const OutputData &outdata,QString filename)
 
         mes+=QString("<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px;"
                      " -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">"
-                     "Broot= %1, Btip= %2, Croot=%3, Ctip=%3, H=%4, стреловидность=%5 град;</span></p>")
+                     "Broot= %1, Btip= %2, Croot=%3, Ctip=%4, H=%5, стреловидность=%6 град;</span></p>")
                 .arg(odat.headData.tailstabpar.broot)
                 .arg(odat.headData.tailstabpar.btip)
                 .arg(odat.headData.tailstabpar.croot)

@@ -44,6 +44,5 @@ int main(int argc, char *argv[]){
     splashScreen.close();
 
     WorkWindow ww("D:/Qt/projects/Rocket/materials.txt","D:/Qt/projects/Rocket/hardfuels.txt","D:/Qt/projects/Rocket/projects.ini");
-
     return app.exec();
 }

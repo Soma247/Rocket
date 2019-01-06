@@ -56,15 +56,21 @@ WorkWindow::WorkWindow(QString materialsfile, QString hfuelsfile, QString lastpr
         while(fnames.size()>MAX_lastprojects)
             fnames.pop_back();
 
-        //  bc->openProject("D:/Qt/projects/Rocket/projext.txt");
         addconedial=new addConoidDialog(&materials,bc,this);
+        addconedial->setModal(true);
         ncdial=new SetNoseConeDialog(&materials,bc,this);
+        ncdial->setModal(true);
         addplane=new addPlaneDialog(&materials,bc,this);
+        addplane->setModal(true);
         addeqdial=new addequipmentDialog(bc,this);
+        addeqdial->setModal(true);
         setflytaskdial=new SetFlyTask(&materials,&hardfuels,bc,this);
+        setflytaskdial->setModal(true);
         choosedial=new chooseWindow(&fnames,this);
         aboutdial=new about(this);
+        aboutdial->setModal(true);
         errd=new errorDialog("some err",true,this);
+        errd->setModal(true);
         connect(choosedial, SIGNAL(openfile(std::string)), this, SLOT(openFile(std::string)));
         connect(choosedial, SIGNAL(openfileD()), this, SLOT(openFile()));
         connect(choosedial, SIGNAL(newproject()), this, SLOT(newProject()));
@@ -89,6 +95,7 @@ WorkWindow::WorkWindow(QString materialsfile, QString hfuelsfile, QString lastpr
         errd->show();
     }
     editfuelmatdial=new EditFuels(&materials,&hardfuels,this);
+    editfuelmatdial->setModal(true);
     connect(editfuelmatdial,SIGNAL(matupdated()),this,SLOT(savemats()));
     connect(editfuelmatdial,SIGNAL(flupdated()),this,SLOT(savefuels()));
     resultw=new resultWindow(this);
@@ -592,9 +599,10 @@ void WorkWindow::on_btn_balcalculate_clicked()
      balcalcItemModel* bc=dynamic_cast<balcalcItemModel*>(ui->treeView->model());
      if(bc){
          OutputData odat;
-         std::cout<<"ww:start calculate"<<std::endl;
          emit startCalculate();
-         this->hide();
+         ui->btn_balcalculate->setDisabled(true);
+         ui->treeView->setDisabled(true);
+         ui->menu->setDisabled(true);
      }
      else{
          errd->setdata(QString("Критическая ошибка 3."),false);
@@ -612,10 +620,12 @@ void WorkWindow::showresult(OutputData odat)
     if(odat.iscorrect()){
         resultw->setdata(odat,fnames.front().second);
         resultw->show();
+        ui->btn_balcalculate->setDisabled(false);
+        ui->treeView->setDisabled(false);
+        ui->menu->setDisabled(false);
         this->hide();
     }
     else{
-        std::cout<<"incorrect odat"<<std::endl;
         errd->setdata(QString("точка встречи не достигнута с заданной скоростью."),false);
         errd->show();
     }
