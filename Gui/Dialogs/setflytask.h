@@ -24,6 +24,7 @@ class SetFlyTask : public QDialog{
     bool isPkValid=false;
     bool isVendValid=false;
     bool isalphaValid=false;
+    bool isdtValid=false;
 
 public:
     explicit SetFlyTask(const std::vector<material>* materials,
@@ -45,6 +46,7 @@ private slots:
     void on_buttonBox_accepted();
     void on_le_alpha_editingFinished();
     void on_le_Vend_editingFinished();
+    void on_le_dt_editingFinished();
 };
 
 #endif // SETFLYTASK_H

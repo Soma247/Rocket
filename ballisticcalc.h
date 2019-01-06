@@ -53,11 +53,13 @@ struct InputData{
     fuel enfl;
     double enPk=10;
     double enPa=0.06;
+    double dt=1;
 
     InputData(){}
-    InputData(double Hmaximum, double Hminimum, double Xmaximum, double Vtarget,  double milestone, double VendMin, double alphaRad,
-              material enmatShell, material enmatnozzle, material enmatbr,  material enmatTz, fuel enfl, double dteth, double enPk,
-              double enPa);
+    InputData(double Hmaximum, double Hminimum, double Xmaximum, double Vtarget,  double milestone, double VendMin, double alphaRad,material enmatShell, material enmatnozzle,
+              material enmatbr,  material enmatTz, fuel enfl,
+              double dteth, double enPk,
+              double enPa, double deltat);
     bool iscorrect()const;
     double LmaxC()const;//наклонная дальность
     double TaverageC()const;//среднее время полета к цели

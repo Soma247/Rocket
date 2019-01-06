@@ -123,7 +123,7 @@ std::pair<double, double> RocketModel::getCyaaCx(double M, double alphagrad, dou
     double Cx0=getCx0(M,sound_sp,cin_visc,engineisactive);
     double Cya=getCya(M,sound_sp,cin_visc);
     return std::pair<double,double>(Cya-(Cx0/57.3),
-                                    Cx0+alphagrad*alphagrad*(Cya+2*(0.1*(Dengine*sqrt(fabs(M*M-1))/Lnc)-0.2)/57.3)/57.3);
+                     Cx0+alphagrad*alphagrad*(Cya+2*(0.1*(Dengine*sqrt(fabs(M*M-1))/Lnc)-0.2)/57.3)/57.3);
 }
 
 double RocketModel::getXp(double M, double sound_sp, double cin_visc) const{
@@ -261,7 +261,8 @@ double RocketModel::getLength() const{
 double RocketModel::getCp(double M, bool engineisactive)const{
     if(!pnosecone||!pengine)throw std::logic_error("model uncomplete");
 
-    double cp=pnosecone->getCp(pnosecone->getDend(),M)*0.25*pnosecone->getDend()*pnosecone->getDend()*M_PI/SmidLA;
+    double cp=pnosecone->getCp(pnosecone->getDend(),M)*
+            0.25*pnosecone->getDend()*pnosecone->getDend()*M_PI/SmidLA;
 
     for(const conoid& c:pconoids)
         cp+=c.getCp(c.getDend(),M)*0.25*c.getDend()*c.getDend()*M_PI/SmidLA;
@@ -303,7 +304,7 @@ double RocketModel::getCya(double M, double sound_sp, double cin_visc) const{
 
 double RocketModel::getCx0(double M, double sound_sp, double cin_visc, bool engineisactive) const{
     getCp(M,engineisactive);
-    return 0.5*getCp(M,engineisactive)+getCxTr(M,sound_sp,cin_visc);//*0.5 корр коэфф
+    return getCp(M,engineisactive)+getCxTr(M,sound_sp,cin_visc);//*0.5 корр коэфф
 }
 
 void RocketModel::setscalePlane(size_t num, double scale){

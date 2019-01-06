@@ -1,6 +1,5 @@
 #include "ballisticcalc.h"
 #include <fstream>
-
 const std::string indatheader="input_data";
 ballisticCalculator::ballisticCalculator(AbstractAtmosphere *atm):atmo{atm}
 {
@@ -165,7 +164,7 @@ OutputData ballisticCalculator::calculate(){
         double dmasscenter=(model->getmasscenterend()-model->getmasscenter())/indat.TaverageC();
 
 
-        for(double t=0;t<=indat.TaverageC();t+=1){//одна траектория по времени полета
+        for(double t=0;t<=indat.TaverageC();t+=indat.dt){//одна траектория по времени полета
             V+=dV;
             H+=dH;
             X+=dX;
@@ -181,13 +180,13 @@ OutputData ballisticCalculator::calculate(){
             P=(t<enpar.t)?enpar.Pvacuum:0.0;
 
             dV=(P*cos(indat.alpha)-cyacx.second*q*model->getS()-
-                mass*9.81*sin(teth))/mass;
+                mass*9.81*sin(teth))*indat.dt/mass;
 
             teth=atan(2*A*X+B);//dteth=(P*sin(alpha)+    cyacx.first*(alpha)*q*model->getS()-   mass*9.81*cos(teth))/(mass*V);
-            dH=V*sin(teth);
-            dX=V*cos(teth);
+            dH=V*sin(teth)*indat.dt;
+            dX=V*cos(teth)*indat.dt;
 
-            if(V<0||H<0||(H>=indat.Hmax&&X>=indat.mstone))break;
+            if(V<0||H<0||(H>=indat.Hmax&&X>=indat.mstone)||t>indat.TaverageC())break;
             ballisticData.push_back(baldat(t,V,H,X,teth,mass,cyacx.second,cyacx.first,
                                            (masscenter-model->getXp(V/atmo->get_sound_sp(H),
                                                                     atmo->get_sound_sp(H),
@@ -313,7 +312,8 @@ bool InputData::iscorrect()const{
             && Vtar>0
             && alpha>0
             &&alpha<(45*M_PI/180)
-            && Vend>0;
+            && Vend>0&&
+            dt>0&&dt<TaverageC();
 }
 
 double InputData::LmaxC() const{
@@ -328,7 +328,7 @@ double InputData::VavgC() const{
     return LmaxC()/TaverageC();
 }
 
-InputData::InputData(double Hmaximum, double Hminimum, double Xmaximum, double Vtarget, double milestone, double VendMin, double alphaRad, material enMatShell, material enMatnozzle, material enMatbr, material enMatTz, fuel enFl, double dteth, double Pk, double Pa):
+InputData::InputData(double Hmaximum, double Hminimum, double Xmaximum, double Vtarget, double milestone, double VendMin, double alphaRad, material enMatShell, material enMatnozzle, material enMatbr, material enMatTz, fuel enFl, double dteth, double Pk, double Pa, double deltat):
     //   Dmid{DmidMax},
     Hmax{Hmaximum},
     Hmin{Hminimum},
@@ -344,7 +344,8 @@ InputData::InputData(double Hmaximum, double Hminimum, double Xmaximum, double V
     enmatTz{enMatTz},
     enfl{enFl},
     enPk{Pk},
-    enPa{Pa}{
+    enPa{Pa},
+    dt{deltat}{
     if(!iscorrect())throw IDexception("incorrect input parameter");//заменить на подходящую
 }
 
@@ -381,13 +382,15 @@ void ballisticCalculator::clear(bool isxplane)
         <<indat.enmatnozzle<<','
         <<indat.enPa<<','
         <<indat.enPk<<','
-        <<indat.enfl<<'}';
+        <<indat.enfl<<','
+        <<indat.dt<<'}';
     }
 
     std::istream &operator>>(std::istream &in, InputData &input){
         std::string name,header;
         char delim1{0},delim2{0},delim3{0},delim4{0},delim5{0},delim6{0},
-        delim7{0},delim8{0},delim9{0},delim10{0},delim11{0},delim12{0},delim13{0},delim14{0},delim15{0},delim16{0},footer{0};
+        delim7{0},delim8{0},delim9{0},delim10{0},delim11{0},delim12{0},delim13{0},delim14{0},delim15{0},
+        delim16{0},delim17{0},footer{0};
         int tmp{0};
         InputData indat;
         while((tmp=in.get())!=EOF && isspace(tmp));
@@ -400,6 +403,7 @@ void ballisticCalculator::clear(bool isxplane)
             in.clear(std::ios::failbit);
             return in;
         }
+
         in>>indat.Hmax>>delim1
                 >>indat.Hmin>>delim2
                 >>indat.Vtar>>delim3
@@ -416,8 +420,10 @@ void ballisticCalculator::clear(bool isxplane)
                 >>indat.enmatnozzle>>delim14
                 >>indat.enPa>>delim15
                 >>indat.enPk>>delim16
-                >>indat.enfl>>footer;
+                >>indat.enfl>>delim17
+                >>indat.dt>>footer;
         if(!in)return in;
+
         if(delim1!=delim2||
                 delim2!=delim3||
                 delim3!=delim4||
@@ -433,7 +439,8 @@ void ballisticCalculator::clear(bool isxplane)
                 delim13!=delim14||
                 delim14!=delim15||
                 delim15!=delim16||
-                delim16!=',' || footer!='}'|| !indat.iscorrect()){
+                delim16!=delim17||
+                delim17!=',' || footer!='}'|| !indat.iscorrect()){
             in.clear(std::ios::failbit);
             return in;
         }

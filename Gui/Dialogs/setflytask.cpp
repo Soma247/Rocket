@@ -19,7 +19,7 @@ SetFlyTask::~SetFlyTask()
 
 void SetFlyTask::setdata(bool edit)
 {
-    isHmaxValid=isHminValid=
+    isdtValid=isHmaxValid=isHminValid=
             isXmaxValid=isMilestoneValid=
             isPaValid=isPkValid=
             isTethValid=isVtargetValid=false;
@@ -51,6 +51,7 @@ void SetFlyTask::setdata(bool edit)
             ui->le_alpha->setText(QString("%1").arg(indat.alpha));
             ui->le_Pk->setText(QString("%1").arg(indat.enPk));
             ui->le_Pa->setText(QString("%1").arg(indat.enPa));
+            ui->le_dt->setText(QString("%1").arg(indat.dt));
             auto mat_cyl=std::find(mats->begin(),mats->end(),indat.enmatShell);
             auto mat_br=std::find(mats->begin(),mats->end(),indat.enmatbr);
             auto mat_tzp=std::find(mats->begin(),mats->end(),indat.enmatTz);
@@ -75,8 +76,9 @@ void SetFlyTask::setdata(bool edit)
             ui->le_mstone->clear();
             ui->le_Vend->clear();
             ui->le_alpha->clear();
-            ui->le_Pk->setText(QString("10"));
-            ui->le_Pa->setText(QString("0.06"));
+            ui->le_dt->setText("1");
+            ui->le_Pk->setText("10");
+            ui->le_Pa->setText("0.06");
             ui->cb_cyl->setCurrentIndex(0);
             ui->cb_br->setCurrentIndex(0);
             ui->cb_tzp->setCurrentIndex(0);
@@ -100,6 +102,7 @@ bool SetFlyTask::isDataValid()
     on_le_teth_editingFinished();
     on_le_Vend_editingFinished();
     on_le_alpha_editingFinished();
+    on_le_dt_editingFinished();
     return isHmaxValid&&
             isHminValid&&
             isPaValid&&
@@ -109,7 +112,8 @@ bool SetFlyTask::isDataValid()
             isMilestoneValid&&
             isTethValid&&
             isVendValid&&
-            isalphaValid;
+            isalphaValid&&
+            isdtValid;
 }
 
 void SetFlyTask::on_le_Hmax_editingFinished()
@@ -223,6 +227,18 @@ void SetFlyTask::on_le_Vend_editingFinished()
     }
 }
 
+void SetFlyTask::on_le_dt_editingFinished()
+{
+    isdtValid=true;
+    double dt{0};
+    if(ui->le_Vend->text().isEmpty()||(dt=ui->le_Vend->text().toDouble())<0){
+        ui->label_warning->setText("шаг по времени введен неверно.");
+        ui->label_warning->show();
+        isdtValid=false;
+    }
+
+}
+
 void SetFlyTask::on_buttonBox_accepted()
 {
     if(isDataValid() && bcmodel && mats && fls){
@@ -257,7 +273,8 @@ void SetFlyTask::on_buttonBox_accepted()
                                 *fuel_iterator,
                                 ui->le_teth->text().toDouble(),
                                 ui->le_Pk->text().toDouble(),
-                                ui->le_Pa->text().toDouble()
+                                ui->le_Pa->text().toDouble(),
+                                ui->le_dt->text().toDouble()
                                 ));
                 accept();
             }
@@ -281,5 +298,7 @@ void SetFlyTask::on_buttonBox_accepted()
 
 
 }
+
+
 
 
